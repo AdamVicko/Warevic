@@ -1,0 +1,22 @@
+<meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="<?=App::config('url')?>public/css/bootstrap.css">
+    <link rel="stylesheet" href="<?=App::config('url')?>public/css/app.css">
+    <title><?=App::config('nazivApp');?></title>
+
+
+
+    <?php /*  Essential META Tags https://css-tricks.com/essential-meta-tags-social-media/
+    stavili smo ga u php da se nebi vidio na klijentu */ 
+    ?> 
+    <meta property="og:title" content="<?=App::config('nazivApp');?>">
+    <meta property="og:type" content="article" />
+    <meta property="og:image" content="<?=App::config('url')?>public/img/thumbnail.jpg">
+    <meta property="og:url" content="<?=App::config('url')?>">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <!--  Non-Essential, But Recommended -->
+    <meta property="og:description" content="<?=App::config('nazivApp');?>">
+    <meta property="og:site_name" content="<?=App::config('nazivApp');?>">
+    <meta name="twitter:image:alt" content="<?=App::config('nazivApp');?>">
