@@ -12,7 +12,7 @@ class App
         //print_r($_SERVER);
         //echo '</pre>';
 
-        $ruta = Request::getRuta(); // dobivamo autoload ove klase
+        $ruta = Request::getRuta(); // dobivamo autoload ove klase 
 
         //Log::info($ruta);
 
@@ -23,7 +23,7 @@ class App
         //idemosaznat kontrolerr
         $controller = '';
 
-        if(!isset($djelovi[0]) || $djelovi[0]==='') // ako nije!
+        if(!isset($djelovi[0]) || $djelovi[0]==='') // ako nema niceg ili ako je prazno
         {
             $controller='IndexController';
         }
@@ -38,7 +38,7 @@ class App
         $metoda='';
         if(!isset($djelovi[1]) || $djelovi[1]==='')
         {
-            $metoda='index';
+            $metoda='prijava';
         }
         else
         {
@@ -76,5 +76,15 @@ class App
         }
 
         return $config[$kljuc];
+    }
+
+    public static function auth()
+    {
+        return isset($_SESSION['auth']); // ako sam ulogiran true a ako nisam onda false
+    }
+
+    public static function operater()
+    {
+        return $_SESSION['auth']->imeprezime;
     }
 }

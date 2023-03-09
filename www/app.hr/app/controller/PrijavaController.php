@@ -26,7 +26,21 @@ class PrijavaController extends Controller // zbog viewa extenda controller
         }
 
         //ovdje sam siguran da imam email i lozinku
+        $operater = Operater::autoriziraj($_POST['email'], $_POST['password']);
 
+        if($operater==null)
+        {
+            $this->view->render('prijava',[
+                'poruka' =>'Wrong email or password!',
+                'email'=> $_POST['email']
+            ]);
+            return;
+        }
+
+        //uspjesno prijavljen
+        $_SESSION['auth']=$operater;
+        header('location:' . App::config('url') . 
+        'nadzornaploca/index');
         
 
     }
