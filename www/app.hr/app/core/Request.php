@@ -1,6 +1,6 @@
 <?php
 
-class Request
+class Request //3
 {
     public static function getRuta()//nazuivamo ju getRuta da se drzimo OOP ucahurivanja
     {

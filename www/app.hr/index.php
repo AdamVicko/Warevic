@@ -4,6 +4,8 @@
 
 //ova datoteka ce definirati temeljne preduvjete i napraviti autoloading
 
+session_start();
+
 define('BP',__DIR__ . DIRECTORY_SEPARATOR);
 //BP je base path
 define('BP_APP', BP . 'app' . DIRECTORY_SEPARATOR);

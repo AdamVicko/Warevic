@@ -3,7 +3,14 @@
     min-height: 400px;
 }
 
-#fot a:hover{
+#fot a:hover
+{
     font-weight: 700;
     color: orange !important;
+}
+
+.navbar a:hover
+{
+    font-weight: 500;
+    color: white;
 }

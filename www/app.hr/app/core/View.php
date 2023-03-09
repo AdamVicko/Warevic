@@ -1,6 +1,6 @@
 <?php
-
-class View
+//6
+class View //ubacivanje sadrzaja u predlozak odnosno slanje sarzaja za svaki drugi view pacijent,prijava...
 {
 
     private $predlozak;
@@ -29,7 +29,7 @@ class View
         }
         $sadrzaj=ob_get_clean(); // vrijednost unutar datoteke index.phtml dodjeljuje varijabli sadrzaj
         include_once BP_APP . 'view' . DIRECTORY_SEPARATOR . 
-        $this->predlozak . '.phtml'; // pozivam view datoteko predlozak.phtml u kojem ispisujem sadrzaj
+        $this->predlozak . '.phtml'; // pozivam view datoteko predlozak.phtml u kojem ispisujem sadrzaj dostupan samo u predlozku!
     }
 
 }
