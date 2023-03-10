@@ -1,6 +1,6 @@
 <?php
 
-class Operater
+class Operater // osoba koja moze dodavati u upisivati stnje sa svim mogucim parametrima i opcijama
 {
     public static function autoriziraj($email,$password)
     {

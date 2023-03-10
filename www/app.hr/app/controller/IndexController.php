@@ -24,7 +24,7 @@ class IndexController extends Controller //4
     {
         unset($_SESSION['auth']);
         session_destroy();
-        header('location' . App::config('url'));
+        header('location:' . App::config('url'));
     }
 
     public function pacijent()

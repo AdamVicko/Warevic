@@ -40,7 +40,7 @@ class PrijavaController extends Controller // zbog viewa extenda controller
         //uspjesno prijavljen
         $_SESSION['auth']=$operater;
         header('location:' . App::config('url') . 
-        'nadzornaploca/index');
+        'index/index');
         
 
     }
