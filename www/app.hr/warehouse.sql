@@ -1,6 +1,6 @@
 
 
-# C:\Users\Adam\xampp\mysql\bin>mysql -uroot --default_character_set=utf8 < C:\Users\Adam\Desktop\programiranje\PHP\Warevic\www\app.hr\warehouse.sql
+# C:\Users\Adam\xampp\mysql\bin>mysql -uroot --default_character_set=utf8 < C:\Users\Adam\Desktop\repositories\Warevic\www\app.hr\warehouse.sql
 
 drop database if exists edunovapp26;
 create database edunovapp26 default charset utf8mb4;
@@ -8,17 +8,22 @@ use edunovapp26;
 
 # TABLICE
 
-create table operater (
+create table djelatnik (
     sifra int not null primary key auto_increment,
     imeprezime varchar(50) not null,
     telefon varchar (50) not null,
     email varchar(50) not null,
-    lozinka char(61) not null /*stavljam char 61 jer je encoder lozinke dug 61 character i vujek ce bit */
+    lozinka char(61) not null, /*stavljam char 61 jer je encoder lozinke dug 61 character i vujek ce bit */
+    uloga varchar(20) not null
 );
 
-insert into operater (imeprezime,telefon,email,lozinka)
+insert into djelatnik (imeprezime,telefon,email,lozinka,uloga)
 values ('Proba Operater','0945645645','proba@gmail.com',
-    '$2y$10$Z41mPstzZZKpx0A1/g6g0OoQ43IyUZwqF/fcaHBipdQNdHlXQ4lR.');
+    '$2y$10$Z41mPstzZZKpx0A1/g6g0OoQ43IyUZwqF/fcaHBipdQNdHlXQ4lR.',
+    'operater'),
+    ('Admin Operater','0945677645','admin@gmail.com',
+    '$2y$10$Z41mPstzZZKpx0A1/g6g0OoQ43IyUZwqF/fcaHBipdQNdHlXQ4lR.',
+    'administrator');
 
 create table pacijent (
     sifra int not null primary key auto_increment,

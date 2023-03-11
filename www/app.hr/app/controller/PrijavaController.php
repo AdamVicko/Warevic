@@ -26,9 +26,9 @@ class PrijavaController extends Controller // zbog viewa extenda controller
         }
 
         //ovdje sam siguran da imam email i lozinku
-        $operater = Operater::autoriziraj($_POST['email'], $_POST['password']);
+        $djelatnik = Djelatnik::autoriziraj($_POST['email'], $_POST['password']);
 
-        if($operater==null)
+        if($djelatnik==null)
         {
             $this->view->render('prijava',[
                 'poruka' =>'Wrong email or password!',
@@ -38,10 +38,26 @@ class PrijavaController extends Controller // zbog viewa extenda controller
         }
 
         //uspjesno prijavljen
-        $_SESSION['auth']=$operater;
+        $_SESSION['auth']=$djelatnik;
         header('location:' . App::config('url') . 
         'index/index');
         
 
+    }
+
+    public function prijava()//5
+    {
+        $this->view->render('prijava',
+        [
+            'poruka'=>'',
+            'email'=>''
+        ]);
+    }
+
+    public function odjava()//on click
+    {
+        unset($_SESSION['auth']);
+        session_destroy();
+        header('location:' . App::config('url'));
     }
 }

@@ -25,7 +25,7 @@ class App
 
         if(!isset($djelovi[0]) || $djelovi[0]==='') // ako nema niceg ili ako je prazno
         {
-            $controller='IndexController';
+            $controller='PrijavaController';
         }
         else
         {
@@ -83,8 +83,13 @@ class App
         return isset($_SESSION['auth']); // ako sam ulogiran true a ako nisam onda false
     }
 
-    public static function operater()
+    public static function djelatnik()
     {
         return $_SESSION['auth']->imeprezime;
+    }
+
+    public static function admin()
+    {
+        return $_SESSION['auth']->uloga==='administrator';
     }
 }
