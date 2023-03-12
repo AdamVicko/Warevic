@@ -27,7 +27,7 @@ class View //ubacivanje sadrzaja u predlozak odnosno slanje sarzaja za svaki dru
             include_once BP_APP . 'view' . 
             DIRECTORY_SEPARATOR . 'errorViewDatoteka.phtml';
         }
-        $sadrzaj=ob_get_clean(); // vrijednost unutar datoteke index.phtml dodjeljuje varijabli sadrzaj
+        $sadrzaj=ob_get_clean(); // vrijednost unutar datoteke index.phtml,prijava.phtml... dodjeljuje varijabli sadrzaj
         include_once BP_APP . 'view' . DIRECTORY_SEPARATOR . 
         $this->predlozak . '.phtml'; // pozivam view datoteko predlozak.phtml u kojem ispisujem sadrzaj dostupan samo u predlozku!
     }
