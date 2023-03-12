@@ -20,7 +20,6 @@ class DjelatnikController extends AdminController
         $this->view->render($this->viewPutanja . 'index',
         [
             'podaci'=>$djelatnici
-        ]
-    );
+        ]);
     }
 }

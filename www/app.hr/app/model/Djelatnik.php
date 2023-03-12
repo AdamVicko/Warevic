@@ -1,6 +1,6 @@
 <?php
 
-class Djelatnik // osoba koja moze dodavati u upisivati stnje sa svim mogucim parametrima i opcijama
+class Djelatnik // osoba koja moze mjenjati stanje koncentratora isporuka prikupa pacijenata
 {
 
     public static function read() //CRUD!

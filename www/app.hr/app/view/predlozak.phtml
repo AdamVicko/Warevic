@@ -4,8 +4,12 @@
         <?php include_once 'includes\head.phtml'; ?>
     </head>
     <body>
-        <?php include_once 'includes\izbornik.phtml'; ?> 
-        <div class="container" id="program">
+        <?php include_once 'includes\izbornik.phtml'; ?>
+        
+        <div class="container" id="program" 
+            <?php if(App::dev()): ?>
+            	style="background-color: red;"
+            <?php endif; ?>>
             <?php echo $sadrzaj; ?>
         </div>
 

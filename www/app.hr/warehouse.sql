@@ -40,7 +40,7 @@ create table pacijent (
 
 create table koncentratorKisika(
     sifra int not null primary key auto_increment,
-    serijskiKod varchar(50),
+    serijskiKod varchar(50) not null,
     radnisat decimal(18,2),
     naziv varchar(50),
     proizvodac varchar(50),
@@ -101,7 +101,7 @@ insert into koncentratorKisika(sifra,serijskikod,radniSat,naziv,proizvodac,
                                 model,datumKupovine)
 values
 (null,'BK533456343','124,5','Koncentrator_Kisika','Devilbiss','5L','2020.03.14'),
-(null,'BK345674343','14,5','Koncentrator_Kisika','Devilbiss','5L','2020.02.19'),
+(null,'BK345674343',null,'Koncentrator_Kisika','Devilbiss','5L','2020.02.19'),
 (null,'BK345746343','12','Koncentrator_Kisika','Devilbiss','5L','2020.01.29'),
 (null,'BK3464566343','925','Koncentrator_Kisika','Devilbiss','5L','2020.07.21'),
 (null,'BK3456343','5874','Koncentrator_Kisika','Devilbiss','5L','2020.04.10'),
@@ -128,6 +128,12 @@ values
 (null,'2022.01.11',4,4),
 (null,'2022.10.07',5,5),
 (null,'2022.04.01',6,6);
+
+insert into prikup(sifra,datumPrikupa,pacijent,koncentratorKisika)
+values
+(null,'2022.11.13',1,3),
+(null,'2023.03.07',2,2),
+(null,'2022.08.22',6,6);
 
 
 
