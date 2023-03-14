@@ -28,8 +28,8 @@ $dev = $_SERVER['SERVER_ADDR']==='127.0.0.1' ? true : false;//inline if ako je a
             'baza'=>
             [
                 'dsn'=>'mysql:host=localhost;dbname=nika_edunovapp26;charset=utf8mb4',
-                'user'=>'nika_edunova',
-                'password'=>'Nika90876'
+                'user'=>'nika_adam',
+                'password'=>'nijenika*123'
             ]
         ];
        

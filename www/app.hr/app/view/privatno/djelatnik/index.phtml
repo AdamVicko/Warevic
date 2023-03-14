@@ -8,7 +8,7 @@
         <thead>
             <tr>
                 <th scope="col">#</th>
-                <th scope="col">Ime i Prezime</th>
+                <th scope="col">Name and Surname</th>
                 <th scope="col">Email</th>
                 <th scope="col">Phone</th>
                 <th scope="col">Role</th>
@@ -24,7 +24,12 @@
                     <td><?=$p->telefon?></td>
                     <td><?=$p->uloga?></td>
                     <td>
-                        <a href="promjeni?id=<?=$p->sifra?>">Change</a>
+                        <a href="promjeni?id=<?=$p->sifra?>">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a href="izbrisi?id=<?=$p->sifra?>">
+                            <i class="bi bi-trash3" style="color: tomato;"></i>
+                        </a>
                     </td>
                 </tr>
             <?php endforeach; ?>

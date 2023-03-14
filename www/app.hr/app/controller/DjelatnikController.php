@@ -11,15 +11,17 @@ class DjelatnikController extends AdminController
 
     public function index()
     {
-        $djelatnici = Djelatnik::read();
-        foreach($djelatnici as $loz)
+        $djelatnik = Djelatnik::read();
+        foreach($djelatnik as $loz)
         {
             unset($loz->lozinka); //onemogucuje da se lozinka povuce iz baze
         }
 
         $this->view->render($this->viewPutanja . 'index',
         [
-            'podaci'=>$djelatnici
+            'podaci'=>$djelatnik,
+            'css' => 'djelatnik.css'
         ]);
     }
+    
 }

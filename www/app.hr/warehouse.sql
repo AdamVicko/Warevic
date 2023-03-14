@@ -35,7 +35,8 @@ create table pacijent (
     telefon varchar (50),
     datumRodenja date,
     adresa text(50),
-    oib char(11)
+    oib char(11),
+    komentar varchar(100)
 );
 
 create table koncentratorKisika(

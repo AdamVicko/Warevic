@@ -14,7 +14,7 @@ class Prikup
         select a.datumPrikupa, b.imeprezime , c.serijskiKod 
         from prikup a 
         inner join pacijent b on a.pacijent = b.sifra 
-        inner join koncentratorkisika c on a.koncentratorKisika = c.sifra 
+        inner join koncentratorKisika c on a.koncentratorKisika = c.sifra 
         order by datumPrikupa desc;
 
         ');

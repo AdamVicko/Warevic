@@ -3,12 +3,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="<?=App::config('url')?>public/css/bootstrap.min.css">
     <link rel="stylesheet" href="<?=App::config('url')?>public/css/app.css">
+    <link rel="stylesheet" href="<?=App::config('url')?>public/css/bootstrap-icons-1.10.3/bootstrap-icons.css">
     <?php if(isset($css)): ?>
-        <link rel="stylesheet" href="<?=App::config('url')?>public/css/prikup.css">
+        <link rel="stylesheet" href="<?=App::config('url')?>public/css/<?=$css?>">
     <?php endif; ?>
+                    
     <title><?=App::config('nazivApp');?></title>
-
-
 
     <?php /*  Essential META Tags https://css-tricks.com/essential-meta-tags-social-media/
     stavili smo ga u php da se nebi vidio na klijentu */ 
