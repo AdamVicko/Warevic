@@ -37,6 +37,8 @@
             <input type="text" class="form-control" id="telefon" 
                 name="telefon" value="<?=$e->telefon?>">
         </div>
+        <hr>
+        <?=$poruka?>
         <div class="row" style="margin-top: 50px;">
             <div class="d-grid col">
                 <button type="submit" class="btn btn-success" 
@@ -44,9 +46,10 @@
             </div>
             <div class="d-grid col">
                 <a href="<?=App::config('url')?>prikup/index"
-                    class="btn btn-danger">Quit</a>
+                    class="btn btn-danger">Cancle</a>
             </div>
         </div>
+        
     </form>
 
 </div>

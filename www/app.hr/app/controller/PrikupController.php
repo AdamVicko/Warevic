@@ -7,19 +7,20 @@ class PrikupController extends AutorizacijaController
     DIRECTORY_SEPARATOR . 'prikup' . 
     DIRECTORY_SEPARATOR;
     private $e;
-    //private $nf; // number formater dostupan u svim metodama ove klase 
+    private $poruka='';
+    private $nf; // number formater dostupan u svim metodama ove klase 
     
-    /*public function __construct()
+    public function __construct()
     {
         parent::__construct(); // pozivam parent construct da ode provjerit u autorizacijacontroller dal ima ovlasti
         $this->nf = new NumberFormatter('hr-HR',NumberFormatter::DECIMAL); // format za prikaz broja(radni sat)
         $this->nf->setPattern('###,##0.00');
-    }*/
+    }
 
     public function index()
     {
-        $prikup = Prikup::read();
-        /*foreach($prikup as $p)
+       $prikup = Prikup::read();
+       foreach($prikup as $p)
         {
             if($p->radnisat==null)
             {
@@ -29,7 +30,7 @@ class PrikupController extends AutorizacijaController
             {
                 $p->radnisat = $this->nf->format($p->radnisat);
             }
-        }*/
+        }
 
 
         $this->view->render($this->viewPutanja . 'index',
@@ -46,22 +47,192 @@ class PrikupController extends AutorizacijaController
             $this->view->render($this->viewPutanja . 
             'novi',
             [
-                'e'=>$this->pocetniPodaci()
+                'e'=>$this->pocetniPodaci(),
+                'poruka'=>$this->poruka
             ]);
             return;
         }
-       //ovdje sam siguran da nije GET,za nas je onda POST
+       
+        //ovdje sam siguran da nije GET,za nas je onda POST
+       
+        $this->e = (object)$_POST; // prebacim post u objekt i posaljem na view koji prima taj objekt
+       //Log::info($this->e);
+       //Log::info($this->poruka);
 
-       $this->e=(object)$_POST; // prebacim post u objekt i posaljem na view koji prima taj objekt
-       $this->view->render($this->viewPutanja . // view postavlje vrijednosti RED
-       'novi',
-       [
-           'e'=>$this->e // ono sto se zapise u input ostane sacuvano
-       ]);
-       //kontrola podataka i ako je sve ok spremit u bazu 
-       //ako nesto ne valja vratiti na view s odgovorom
+       //kontrola podataka
+        if(!$this->kontrolaDatumPrikupa())
+        {
+            $this->view->render($this->viewPutanja .
+            'novi',
+            [
+                'e'=>$this->e, 
+                'poruka'=>$this->poruka
+             ]);
+             return;
+        }
+        if(!$this->kontrolaSerijskiKod())
+        {
+            $this->view->render($this->viewPutanja .
+            'novi',
+            [
+                'e'=>$this->e, 
+                'poruka'=>$this->poruka
+             ]);
+             return;
+        }
+        if(!$this->kontrolaradnisat())
+        {
+            $this->view->render($this->viewPutanja .
+            'novi',
+            [
+                'e'=>$this->e, 
+                'poruka'=>$this->poruka
+             ]);
+             return;
+        }
+        if(!$this->kontrolaimeprezime())
+        {
+            $this->view->render($this->viewPutanja .
+            'novi',
+            [
+                'e'=>$this->e, 
+                'poruka'=>$this->poruka
+             ]);
+             return;
+        }
+        if(!$this->kontrolatelefon())
+        {
+            $this->view->render($this->viewPutanja .
+            'novi',
+            [
+                'e'=>$this->e, 
+                'poruka'=>$this->poruka
+             ]);
+             return;
+        }
+        if(!$this->kontrolaadresa())
+        {
+            $this->view->render($this->viewPutanja .
+            'novi',
+            [
+                'e'=>$this->e, 
+                'poruka'=>$this->poruka
+             ]);
+             return;
+        }
+        //sve ok spremi u bazu
+        
+       
+         //ako nesto ne valja vratiti na view s odgovorom
 
        
+    }
+
+    private function kontrolaimeprezime()
+    {
+
+        $s = $this->e->imeprezime;
+        if(strlen(trim($s))===0)
+        {
+            $this->poruka='Patient Name and Surname are mandatory!';
+            return false;
+        }
+
+        if(strlen(trim($s)) > 50)
+        {
+            $this->poruka='Must not have more than 50 characters in Patient Name and Surname!';
+            return false;
+        }
+
+        return true;
+    }
+    private function kontrolatelefon()
+    {
+
+        $s = $this->e->telefon;
+        if(strlen(trim($s))===0)
+        {
+            $this->poruka='Patient telephone is mandatory!';
+            return false;
+        }
+
+        if(strlen(trim($s)) > 50)
+        {
+            $this->poruka='Must not have more than 50 characters in Patient telephone!';
+            return false;
+        }
+
+        return true;
+    }
+    private function kontrolaadresa()
+    {
+
+        $s = $this->e->adresa;
+        if(strlen(trim($s))===0)
+        {
+            $this->poruka='Patient adres is mandatory!';
+            return false;
+        }
+
+        if(strlen(trim($s)) > 50)
+        {
+            $this->poruka='Must not have more than 50 characters in Patient adres!';
+            return false;
+        }
+
+        return true;
+    }
+    private function kontrolaDatumPrikupa()
+    {
+
+        $s = $this->e->datumPrikupa;
+        if(strlen(trim($s))===0)
+        {
+            $this->poruka='Collection date is mandatory!';
+            return false;
+        }
+
+        if(strlen(trim($s)) > 50)
+        {
+            $this->poruka='Must not have more than 50 characters in Collection date!';
+            return false;
+        }
+
+        return true;
+    }
+    private function kontrolaSerijskiKod()
+    {
+        $s = $this->e->serijskikod;
+        if(strlen(trim($s))===0)
+        {
+            $this->poruka='OC Serial number is mandatory!';
+            return false;
+        }
+
+        if(strlen(trim($s)) > 50)
+        {
+            $this->poruka='Must not have more than 50 characters in Serial number!';
+            return false;
+        }
+
+        return true;
+    }
+    private function kontrolaradnisat()
+    {
+        $s = $this->e->radnisat;
+        if(strlen(trim($s))===0)
+        {
+            $this->poruka='OC Working hour is mandatory!';
+            return false;
+        }
+
+        if(strlen(trim($s)) > 50)
+        {
+            $this->poruka='Must not have more than 50 characters in Working hour!';
+            return false;
+        }
+
+        return true;
     }
 
     private function pocetniPodaci()
