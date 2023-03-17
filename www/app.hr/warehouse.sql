@@ -36,17 +36,17 @@ create table pacijent (
     datumRodenja date,
     adresa text(50),
     oib char(11),
-    komentar varchar(100)
+    pacijentKomentar varchar(100)
 );
 
 create table koncentratorKisika(
     sifra int not null primary key auto_increment,
     serijskiKod varchar(50) not null,
-    radnisat decimal(18,2),
+    radniSat decimal(18,2),
     naziv varchar(50),
     proizvodac varchar(50),
     model varchar(50),
-    komentar varchar(100),
+    ocKomentar varchar(100),
     datumKupovine date
 );
 

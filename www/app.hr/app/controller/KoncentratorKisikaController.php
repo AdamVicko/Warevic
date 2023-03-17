@@ -2,11 +2,13 @@
 
 class KoncentratorKisikaController extends AutorizacijaController
 {
+    private $viewPutanja = 'privatno'. 
+    DIRECTORY_SEPARATOR . 'koncentratorkisika' . 
+    DIRECTORY_SEPARATOR;
 
     public function index()
     {
-        $this->view->render('privatno' . DIRECTORY_SEPARATOR . 
-                            'koncentratorKisika');
+        $this->view->render($this->viewPutanja.'index');
     }
 
 

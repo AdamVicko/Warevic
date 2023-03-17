@@ -4,33 +4,33 @@ class PrikupController extends AutorizacijaController
 {
 
     private $viewPutanja = 'privatno'. 
-    DIRECTORY_SEPARATOR . 'prikup' . 
+    DIRECTORY_SEPARATOR . 'isporuka' . 
     DIRECTORY_SEPARATOR;
     private $e;
     private $poruka='';
-    private $nf; // number formater dostupan u svim metodama ove klase 
+    //private $nf; // number formater dostupan u svim metodama ove klase 
     
-    public function __construct()
+    /*public function __construct()
     {
         parent::__construct(); // pozivam parent construct da ode provjerit u autorizacijacontroller dal ima ovlasti
         $this->nf = new NumberFormatter('hr-HR',NumberFormatter::DECIMAL); // format za prikaz broja(radni sat)
         $this->nf->setPattern('###,##0.00');
-    }
+    }*/
 
     public function index()
     {
        $prikup = Prikup::read();
-       foreach($prikup as $p)
+       /*foreach($prikup as $p)
         {
-            if($p->radniSat==null)
+            if($p->radnisat==null)
             {
-                $p->radniSat = $this->nf->format(0);
+                $p->radnisat = $this->nf->format(0);
             }
             else
             {
-                $p->radniSat = $this->nf->format($p->radniSat);
+                $p->radnisat = $this->nf->format($p->radnisat);
             }
-        }
+        }*/
 
 
         $this->view->render($this->viewPutanja . 'index',
@@ -60,7 +60,7 @@ class PrikupController extends AutorizacijaController
        //Log::info($this->poruka);
 
        //kontrola podataka
-       if(!$this->kontrola())
+        if(!$this->kontrolaDatumPrikupa())
         {
             $this->view->render($this->viewPutanja .
             'novi',
@@ -70,28 +70,64 @@ class PrikupController extends AutorizacijaController
              ]);
              return;
         }
-        //priprema za bazu
-        $this->e->radniSat = $this->nf->parse($this->e->radniSat);
-
+        if(!$this->kontrolaSerijskiKod())
+        {
+            $this->view->render($this->viewPutanja .
+            'novi',
+            [
+                'e'=>$this->e, 
+                'poruka'=>$this->poruka
+             ]);
+             return;
+        }
+        if(!$this->kontrolaradnisat())
+        {
+            $this->view->render($this->viewPutanja .
+            'novi',
+            [
+                'e'=>$this->e, 
+                'poruka'=>$this->poruka
+             ]);
+             return;
+        }
+        if(!$this->kontrolaimeprezime())
+        {
+            $this->view->render($this->viewPutanja .
+            'novi',
+            [
+                'e'=>$this->e, 
+                'poruka'=>$this->poruka
+             ]);
+             return;
+        }
+        if(!$this->kontrolatelefon())
+        {
+            $this->view->render($this->viewPutanja .
+            'novi',
+            [
+                'e'=>$this->e, 
+                'poruka'=>$this->poruka
+             ]);
+             return;
+        }
+        if(!$this->kontrolaadresa())
+        {
+            $this->view->render($this->viewPutanja .
+            'novi',
+            [
+                'e'=>$this->e, 
+                'poruka'=>$this->poruka
+             ]);
+             return;
+        }
         //sve ok spremi u bazu
-        Prikup::create((array)$this->e);
-
-        $this->view->render($this->viewPutanja . 'novi',
-        [
-            'e'=>$this->pocetniPodaci(),
-            'poruka'=>'Collection added!'
-        ]);
+        
+       
         
 
        
     }
     //ako nesto ne valja vratiti na view s odgovorom
-    private function kontrola()
-    {
-        return $this->kontrolaimeprezime() && $this->kontrolaDatumPrikupa() && 
-        $this->kontrolaadresa() && $this->kontrolaradnisat() && $this->kontrolaSerijskiKod()
-        && $this->kontrolatelefon();
-    }
     private function kontrolaimeprezime()
     {
 
@@ -166,7 +202,7 @@ class PrikupController extends AutorizacijaController
     }
     private function kontrolaSerijskiKod()
     {
-        $s = $this->e->serijskiKod;
+        $s = $this->e->serijskikod;
         if(strlen(trim($s))===0)
         {
             $this->poruka='OC Serial number is mandatory!';
@@ -183,23 +219,7 @@ class PrikupController extends AutorizacijaController
     }
     private function kontrolaradnisat()
     {
-        $s = $this->nf->parse($this->e->radniSat); //provjera jel u floaatu(double)
-        //Log::info($s);
-        if(!$s)
-        {
-            $this->poruka='OC Working hours are not in good format!';
-            return false;
-        }
-        if($s<=0)
-        {
-            $this->poruka='OC Working hours must be greater than zero!';
-            return false;
-        }
-        if($s>100000)
-        {
-            $this->poruka='OC Working hours must be lower then one hundred thousand!';
-            return false;
-        }
+        $s = $this->e->radnisat;
         if(strlen(trim($s))===0)
         {
             $this->poruka='OC Working hour is mandatory!';
@@ -214,20 +234,17 @@ class PrikupController extends AutorizacijaController
 
         return true;
     }
+
     private function pocetniPodaci()
     {
-        //e kao element
         $e = new stdClass();
         $e->datumPrikupa='';
-        $e->serijskiKod='';
+        $e->serijskikod='';
         $e->imeprezime='';
-        $e->radniSat='';
+        $e->radnisat='';
         $e->adresa='';
-        $e->OCkomentar='';
+        $e->komentar='';
         $e->telefon='';
-        $e->pacijentKomentar='';
-        $e->datumRodenja='';
-        $e->oib='';
         return $e;
     }
 }

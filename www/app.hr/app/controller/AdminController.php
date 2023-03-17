@@ -9,7 +9,7 @@ abstract class AdminController extends AutorizacijaController
         if(!App::admin())
         {
             $this->view->render('privatno' . 
-            DIRECTORY_SEPARATOR . 'nadzornaPloca');
+            DIRECTORY_SEPARATOR . 'index');
         }
     }
 }
