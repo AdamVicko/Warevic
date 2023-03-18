@@ -223,7 +223,7 @@ class PrikupController extends AutorizacijaController
         $e->imeprezime='';
         $e->radniSat='';
         $e->adresa='';
-        $e->OCkomentar='';
+        $e->ocKomentar='';
         $e->telefon='';
         $e->pacijentKomentar='';
         $e->datumRodenja='';

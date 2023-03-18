@@ -1,7 +1,7 @@
 <?php
 
 
-class Pacijent 
+class KoncentratorKisika 
 {
     //CRUD OPERACIJE
 
@@ -11,8 +11,8 @@ class Pacijent
         $veza = DB::getInstance();
         $izraz = $veza->prepare('
         
-        select * from pacijent
-        order by imeprezime asc;
+        select * from koncentratorKisika
+        order by datumKupovine asc;
 
         ');
         $izraz->execute();
@@ -24,8 +24,8 @@ class Pacijent
         $veza = DB::getInstance();
         $izraz = $veza->prepare('
         
-        insert into pacijent(imeprezime,telefon,datumRodenja,adresa,oib,pacijentKomentar)
-        values(:imeprezime,:telefon,:datumRodenja,:adresa,:oib,:pacijentKomentar);
+        insert into koncentratorkisika (serijskiKod,radniSat ,proizvodac,model,ocKomentar,datumKupovine)
+        values(:serijskiKod,:radniSat,:proizvodac,:model,:ocKomentar,:datumKupovine);
 
         ');//dvotocke moraju odgovarat vrijednosti name od inputa
         $izraz->execute($parametri);

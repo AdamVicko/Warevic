@@ -11,10 +11,12 @@ class Prikup
         $veza = DB::getInstance();
         $izraz = $veza->prepare('
         
-        select a.datumPrikupa, b.imeprezime ,b.datumRodenja ,b.oib ,b.pacijentKomentar,b.telefon , c.serijskiKod,c.radniSat
+        select a.datumPrikupa, b.imeprezime ,b.datumRodenja ,b.oib 
+        ,b.telefon ,b.adresa,b.pacijentKomentar, 
+        c.serijskiKod,c.radniSat,c.ocKomentar
         from prikup a 
         inner join pacijent b on a.pacijent = b.sifra  
-        inner join koncentratorkisika c on a.koncentratorKisika = c.sifra  
+        inner join koncentratorKisika c on a.koncentratorKisika = c.sifra  
         order by datumPrikupa asc;
 
         ');
@@ -30,11 +32,11 @@ class Prikup
         insert into pacijent(imeprezime,telefon,datumRodenja,adresa,oib,pacijentKomentar)
         values(:imeprezime,:telefon,:datumRodenja,:adresa,:oib,:pacijentKomentar)
         
-        insert into koncentratorkisika (serijskiKod,radniSat ,ocKomentar)
-        values (:serijskikod,:radniSat,:ockomentar)
+        insert into koncentratorKisika (serijskiKod,radniSat ,ocKomentar)
+        values (:serijskiKod,:radniSat,:ocKomentar)
 
         insert into prikup(datumPrikupa)
-        values (:datumprikupa)
+        values (:datumPrikupa)
 
         ');//dvotocke moraju odgovarat vrijednosti name od inputa
         $izraz->execute($parametri);

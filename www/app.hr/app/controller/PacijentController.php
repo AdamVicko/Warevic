@@ -18,6 +18,7 @@ class PacijentController extends AutorizacijaController
             'podaci' => $pacijent,
             'css' => 'pacijent.css'
         ]);
+
     }
 
     public function novi()

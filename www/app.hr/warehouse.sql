@@ -43,7 +43,6 @@ create table koncentratorKisika(
     sifra int not null primary key auto_increment,
     serijskiKod varchar(50) not null,
     radniSat decimal(18,2),
-    naziv varchar(50),
     proizvodac varchar(50),
     model varchar(50),
     ocKomentar varchar(100),
@@ -84,41 +83,41 @@ alter table prikup add foreign key (koncentratorKisika) references koncentratorK
 
 
 
-insert into pacijent (sifra,imeprezime,telefon,datumRodenja,adresa,oib)
+insert into pacijent (sifra,imeprezime,telefon,datumRodenja,adresa,oib,pacijentKomentar)
 values
-(null,'Ivo Andrić','097 6444789','1985.03.26','Ivana Gundulica 658','59452136897'),
-(null,'Bubo Basić','097 6444789','1965.03.26','Ivaundulica 588','59452136197'),
-(null,'Ivan And','097 6444789','1955.03.26','IvGundulica 598','59452136847'),
-(null,'Ivana Andrić','097 6444789','1995.03.26','Ivana 588','59452136894'),
-(null,'Mario rić','097 6444789','1988.03.26','Ivana dulica 582','59452636897'),
-(null,'Muhammed ić','097 6444789','1981.03.26','Iva Gunica 583','59452936897'),
-(null,'Nahid Kulenovic','097 6444789','1975.03.26','ana dulica 2538','51452136897'),
-(null,'Nijaz Batlak','097 6444789','1973.03.26','Ia ndulica 583','59454136897'),
-(null,'Semso Poplava','097 6444789','1989.03.26','vana Guca 558','59457136897'),
-(null,'Ivo Mali','097 6444789','1990.03.26','Iva Guica 8','59452136896');
+(null,'Ivo Andrić','097 6444789','1985.03.26','Ivana Gundulica 658','59452136897',''),
+(null,'Bubo Basić','097 6444789','1965.03.26','Ivaundulica 588','59452136197',''),
+(null,'Ivan And','097 6444789','1955.03.26','IvGundulica 598','59452136847',''),
+(null,'Ivana Andrić','097 6444789','1995.03.26','Ivana 588','59452136894',''),
+(null,'Mario rić','097 6444789','1988.03.26','Ivana dulica 582','59452636897',''),
+(null,'Muhammed ić','097 6444789','1981.03.26','Iva Gunica 583','59452936897',''),
+(null,'Nahid Kulenovic','097 6444789','1975.03.26','ana dulica 2538','51452136897',''),
+(null,'Nijaz Batlak','097 6444789','1973.03.26','Ia ndulica 583','59454136897',''),
+(null,'Semso Poplava','097 6444789','1989.03.26','vana Guca 558','59457136897',''),
+(null,'Ivo Mali','097 6444789','1990.03.26','Iva Guica 8','59452136896','');
 
 
-insert into koncentratorKisika(sifra,serijskikod,radniSat,naziv,proizvodac,
-                                model,datumKupovine)
+insert into koncentratorKisika(sifra,serijskikod,radniSat,proizvodac,
+                                model,datumKupovine,ocKomentar)
 values
-(null,'BK533456343','124,5','Koncentrator_Kisika','Devilbiss','5L','2020.03.14'),
-(null,'BK345674343',null,'Koncentrator_Kisika','Devilbiss','5L','2020.02.19'),
-(null,'BK345746343','12','Koncentrator_Kisika','Devilbiss','5L','2020.01.29'),
-(null,'BK3464566343','925','Koncentrator_Kisika','Devilbiss','5L','2020.07.21'),
-(null,'BK3456343','5874','Koncentrator_Kisika','Devilbiss','5L','2020.04.10'),
-(null,'BK5353456343','0','Koncentrator_Kisika','Devilbiss','5L','2020.11.02'),
-(null,'BK30673456343','3655','Koncentrator_Kisika','Devilbiss','5L','2020.01.10'),
-(null,'BK3456304003','14526','Koncentrator_Kisika','Devilbiss','5L','2020.04.13'),
-(null,'BK34563943','124','Koncentrator_Kisika','Devilbiss','5L','2020.2.22'),
-(null,'BK53456343','124,5','Koncentrator_Kisika','Devilbiss','5L','2020.03.14'),
-(null,'BK674343','14,5','Koncentrator_Kisika','Devilbiss','5L','2020.02.19'),
-(null,'GK746343','12','Koncentrator_Kisika','Devilbiss','5L','2020.01.29'),
-(null,'GK64566343','925','Koncentrator_Kisika','Devilbiss','5L','2020.07.21'),
-(null,'GK3456343','5874','Koncentrator_Kisika','Devilbiss','5L','2020.04.10'),
-(null,'GK6343','0','Koncentrator_Kisika','Devilbiss','5L','2020.11.02'),
-(null,'GK3056343','3655','Koncentrator_Kisika','Devilbiss','5L','2020.01.10'),
-(null,'UZ56304003','14526','Koncentrator_Kisika','Devilbiss','5L','2020.04.13'),
-(null,'UZ363943','124','Koncentrator_Kisika','Devilbiss','5L','2020.2.22')
+(null,'BK533456343','124,5','Devilbiss','5L','2020.03.14',''),
+(null,'BK345674343',null,'Devilbiss','5L','2020.02.19',''),
+(null,'BK345746343','12','Devilbiss','5L','2020.01.29',''),
+(null,'BK3464566343','925','Devilbiss','5L','2020.07.21',''),
+(null,'BK3456343','5874','Devilbiss','5L','2020.04.10',''),
+(null,'BK5353456343','0','Devilbiss','5L','2020.11.02',''),
+(null,'BK30673456343','3655','Devilbiss','5L','2020.01.10',''),
+(null,'BK3456304003','14526','Devilbiss','5L','2020.04.13',''),
+(null,'BK34563943','124','Devilbiss','5L','2020.2.22',''),
+(null,'BK53456343','124,5','Devilbiss','5L','2020.03.14',''),
+(null,'BK674343','14,5','Devilbiss','5L','2020.02.19',''),
+(null,'GK746343','12','Devilbiss','5L','2020.01.29',''),
+(null,'GK64566343','925','Devilbiss','5L','2020.07.21',''),
+(null,'GK3456343','5874','Devilbiss','5L','2020.04.10',''),
+(null,'GK6343','0','Devilbiss','5L','2020.11.02',''),
+(null,'GK3056343','3655','Devilbiss','5L','2020.01.10',''),
+(null,'UZ56304003','14526','Devilbiss','5L','2020.04.13',''),
+(null,'UZ363943','124','Devilbiss','5L','2020.2.22','')
 ;
 
 insert into isporuka(sifra,datumIsporuke,pacijent,koncentratorKisika)

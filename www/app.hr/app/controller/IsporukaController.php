@@ -1,6 +1,6 @@
 <?php
 
-class PrikupController extends AutorizacijaController
+class IsporukaController extends AutorizacijaController
 {
 
     private $viewPutanja = 'privatno'. 
@@ -19,7 +19,7 @@ class PrikupController extends AutorizacijaController
 
     public function index()
     {
-       $prikup = Prikup::read();
+       $isporuka = Isporuka::read();
        /*foreach($prikup as $p)
         {
             if($p->radnisat==null)
@@ -35,8 +35,8 @@ class PrikupController extends AutorizacijaController
 
         $this->view->render($this->viewPutanja . 'index',
         [
-            'podaci' => $prikup,
-            'css' => 'prikup.css'
+            'podaci' => $isporuka,
+            'css' => 'isporuka.css'
         ]);
     }
 
@@ -60,7 +60,7 @@ class PrikupController extends AutorizacijaController
        //Log::info($this->poruka);
 
        //kontrola podataka
-        if(!$this->kontrolaDatumPrikupa())
+        if(!$this->kontrolaDatumIsporuke())
         {
             $this->view->render($this->viewPutanja .
             'novi',
@@ -122,7 +122,13 @@ class PrikupController extends AutorizacijaController
         }
         //sve ok spremi u bazu
         
-       
+        Isporuka::create((array)$this->e);
+
+        $this->view->render($this->viewPutanja . 'novi',
+        [
+            'e'=>$this->pocetniPodaci(),
+            'poruka'=>'Delivery added!'
+        ]);
         
 
        
@@ -182,19 +188,19 @@ class PrikupController extends AutorizacijaController
 
         return true;
     }
-    private function kontrolaDatumPrikupa()
+    private function kontrolaDatumIsporuke()
     {
 
-        $s = $this->e->datumPrikupa;
+        $s = $this->e->datumIsporuke;
         if(strlen(trim($s))===0)
         {
-            $this->poruka='Collection date is mandatory!';
+            $this->poruka='Delivery date is mandatory!';
             return false;
         }
 
         if(strlen(trim($s)) > 50)
         {
-            $this->poruka='Must not have more than 50 characters in Collection date!';
+            $this->poruka='Must not have more than 50 characters in Delivery date!';
             return false;
         }
 
@@ -238,7 +244,7 @@ class PrikupController extends AutorizacijaController
     private function pocetniPodaci()
     {
         $e = new stdClass();
-        $e->datumPrikupa='';
+        $e->datumIsporuke='';
         $e->serijskikod='';
         $e->imeprezime='';
         $e->radnisat='';
