@@ -76,9 +76,9 @@ class PacijentController extends AutorizacijaController
             return false;
         }
 
-        if(strlen(trim($s)) > 50)
+        if(strlen(trim($s)) > 20)
         {
-            $this->poruka='Must not have more than 50 characters in Patient adres!';
+            $this->poruka='Must not have more than 20 characters in Patient adress!';
             return false;
         }
 
@@ -94,9 +94,9 @@ class PacijentController extends AutorizacijaController
             return false;
         }
 
-        if(strlen(trim($s)) > 50)
+        if(strlen(trim($s)) > 15)
         {
-            $this->poruka='Must not have more than 50 characters in Collection date!';
+            $this->poruka='Must not have more than 15 characters in Collection date!';
             return false;
         }
 
@@ -111,9 +111,9 @@ class PacijentController extends AutorizacijaController
             return false;
         }
 
-        if(strlen(trim($s)) > 50)
+        if(strlen(trim($s)) > 20)
         {
-            $this->poruka='Must not have more than 50 characters in Patient Name and Surname!';
+            $this->poruka='Must not have more than 20 characters in Patient Name and Surname!';
             return false;
         }
 
@@ -129,9 +129,9 @@ class PacijentController extends AutorizacijaController
             return false;
         }
 
-        if(strlen(trim($s)) > 50)
+        if(strlen(trim($s)) > 30)
         {
-            $this->poruka='Must not have more than 50 characters in Patient telephone!';
+            $this->poruka='Must not have more than 30 characters in Patient telephone!';
             return false;
         }
 

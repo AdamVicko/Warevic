@@ -26,7 +26,11 @@
                     <td><?=$p->datumRodenja?></td>
                     <td><?=$p->adresa?></td>
                     <td><?=$p->oib?></td>
-                    <td><?=$p->pacijentKomentar?></td>
+                    <td>
+                        <div class="form-floating">
+                            <textarea class="form-control" id="floatingTextarea"><?=$p->pacijentKomentar?></textarea>
+                        </div>
+                    </td>
                     <td>
                         <a href="promjeni?id=<?=$p->sifra?>">
                             <i class="bi bi-pencil"></i>

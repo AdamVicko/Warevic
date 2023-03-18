@@ -46,6 +46,15 @@ class App
         }
         //Log::info($metoda);
 
+        $parametar='';
+        if(!isset($djelovi[3]) || $djelovi[2]==='')
+        {
+            $parametar='';
+        }
+        else
+        {
+            $parametar=$djelovi[2];
+        }
 
         if(!(class_exists($controller) && method_exists($controller,$metoda)))
         {
@@ -53,9 +62,17 @@ class App
             return;
         }
 
-        //izvodenje
+        //izvodenje akpo postoji treci parametar 
         $instanca = new $controller();
-        $instanca->$metoda(); //kao POINTERI U C-u !!!!!!!!!!
+        if(strlen($parametar)>0)
+        {
+            $instanca->$metoda($parametar);
+        }
+        else
+        {
+            $instanca->$metoda();//kao POINTERI U C-u !!!!!!!!!!
+        }
+       
     
     }
 

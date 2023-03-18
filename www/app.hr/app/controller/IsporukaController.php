@@ -243,14 +243,18 @@ class IsporukaController extends AutorizacijaController
 
     private function pocetniPodaci()
     {
+        //e kao element
         $e = new stdClass();
         $e->datumIsporuke='';
-        $e->serijskikod='';
+        $e->serijskiKod='';
         $e->imeprezime='';
-        $e->radnisat='';
+        $e->radniSat='';
         $e->adresa='';
-        $e->komentar='';
+        $e->ocKomentar='';
         $e->telefon='';
+        $e->pacijentKomentar='';
+        $e->datumRodenja='';
+        $e->oib='';
         return $e;
     }
 }

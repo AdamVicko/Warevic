@@ -7,60 +7,103 @@ class KoncentratorKisikaController extends AutorizacijaController
     DIRECTORY_SEPARATOR;
     private $e;
     private $poruka='';
-
+    private $nf; // number formater dostupan u svim metodama ove klase 
+    public function __construct()
+    {
+        parent::__construct(); // pozivam parent construct da ode provjerit u autorizacijacontroller dal ima ovlasti
+        $this->nf = new NumberFormatter('hr-HR',NumberFormatter::DECIMAL); // format za prikaz broja(radni sat)
+        $this->nf->setPattern('####,##0');
+    }
     public function index()
     {
         $koncentratorKisika = KoncentratorKisika::read();
+        foreach($koncentratorKisika as $p)
+        {
+            if($p->radniSat==null)
+            {
+                $p->radniSat = $this->nf->format(0);
+            }
+            else
+            {
+                $p->radniSat = $this->nf->format($p->radniSat);
+            }
+        }
         $this->view->render($this->viewPutanja.'index',
         [
             'podaci' => $koncentratorKisika,
             'css' => 'koncentratorKisika.css'
         ]);
     }
-
     public function novi()
     {
         if($_SERVER['REQUEST_METHOD']==='GET')
         {
-            $this->view->render($this->viewPutanja . 
-            'novi',
-            [
-                'e'=>$this->pocetniPodaci(),
-                'poruka'=>$this->poruka
-            ]);
+            $this->pozoviView(
+                [
+                    'e'=>$this->pocetniPodaci(),
+                    'poruka'=>$this->poruka
+                ]
+            );
+        }//ovdje sam siguran da nije GET,za nas je onda POST
+        $this->e = (object)$_POST; // prebacim post u objekt i posaljem na view koji prima taj objekt Log::info($this->e);
+        if(!$this->kontrola())//kontrola podataka
+            {
+                $this->pozoviView(//ako nesto nevalja vrati poruku
+                    [
+                        'e'=>$this->e, 
+                        'poruka'=>$this->poruka
+                    ]
+                );
+            }
+            $this->pripremiZaBazu();//priprema za bazu
+            KoncentratorKisika::create((array)$this->e); //ako je sve u redu spremaj u bazu
+            $this->pozoviView(
+                [
+                    'e'=>$this->pocetniPodaci(),
+                    'poruka'=>'Oxygen Concentrator added successfully!'
+                ]
+            );
+    }
+
+    public function promjena($sifra='')
+    {
+        if(strlen(trim($sifra))===0)
+        {
+            header('location: ' . App::config('url') . 'prijava/odjava' );
             return;
         }
-       
-        //ovdje sam siguran da nije GET,za nas je onda POST
-       
-        $this->e = (object)$_POST; // prebacim post u objekt i posaljem na view koji prima taj objekt
-       //Log::info($this->e);
-       //Log::info($this->poruka);
 
-       //kontrola podataka
-       if(!$this->kontrola())
+        $sifra=(int)$sifra;
+        if($sifra===0)
         {
-            $this->view->render($this->viewPutanja .
-            'novi',
-            [
-                'e'=>$this->e, 
-                'poruka'=>$this->poruka
-             ]);
-             return;
+            header('location: ' . App::config('url') . 'prijava/odjava' );
+            return;
         }
 
-        KoncentratorKisika::create((array)$this->e);
+        $this->e = KoncentratorKisika::readOne($sifra);
 
-        $this->view->render($this->viewPutanja . 'novi',
-        [
-            'e'=>$this->pocetniPodaci(),
-            'poruka'=>'Oxygen Concentrator added successfully!'
-        ]);
+        if($this->e==null)
+        {
+            header('location: ' . App::config('url') . 'prijava/odjava' );
+            return;
+        }
     }
+
+    private function pozoviView($parametri)
+    {
+        $this->view->render($this->viewPutanja . 
+        'novi',$parametri);
+    }
+
+    private function pripremiZaBazu()
+    {
+        $this->e->radniSat = $this->nf->parse($this->e->radniSat);
+    }
+
     private function kontrola()
     {
-        return $this->kontrolaModel() && $this->kontrolaDatumKupovine() && 
-        $this->kontrolaRadniSat() && $this->kontrolaSerijskiKod();
+        return $this->kontrolaSerijskiKod() && $this->kontrolaRadniSat() && 
+        $this->kontrolaDatumKupovine() && $this->kontrolaModel();
     }
 
     private function kontrolaSerijskiKod()
@@ -79,12 +122,22 @@ class KoncentratorKisikaController extends AutorizacijaController
             return false;
         }
 
+        if(KoncentratorKisika::postojiIstiUBazi($s))
+        {
+            $this->poruka='The same Serial number is already in database!';
+            return false;
+        }
+
         return true;
     }
     private function kontrolaRadniSat()
     {
-
-        $s = $this->e->radniSat;
+        $s = $this->nf->parse($this->e->radniSat); //provjera jel u floaatu(double)
+        if(!$s)
+        {
+            $this->poruka='OC Working hours are not in good format!';
+            return false;
+        }
         if(strlen(trim($s))===0)
         {
             $this->poruka='Working hours are mandatory!';
@@ -94,6 +147,16 @@ class KoncentratorKisikaController extends AutorizacijaController
         if(strlen(trim($s)) > 50)
         {
             $this->poruka='Must not have more than 50 characters in Working hours!';
+            return false;
+        }
+        if($s<=0)
+        {
+            $this->poruka='OC Working hours must be greater than zero!';
+            return false;
+        }
+        if($s>100000)
+        {
+            $this->poruka='OC Working hours must be lower then one hundred thousand!';
             return false;
         }
 
@@ -108,9 +171,9 @@ class KoncentratorKisikaController extends AutorizacijaController
             return false;
         }
 
-        if(strlen(trim($s)) > 50)
+        if(strlen(trim($s)) > 20)
         {
-            $this->poruka='Must not have more than 50 characters in Model!';
+            $this->poruka='Must not have more than 20 characters in Model!';
             return false;
         }
 
@@ -138,6 +201,7 @@ class KoncentratorKisikaController extends AutorizacijaController
     {
         //e kao element
         $e = new stdClass();
+        $e->sifra='';
         $e->serijskiKod='';
         $e->radniSat='';
         $e->proizvodac='';

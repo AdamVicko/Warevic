@@ -25,10 +25,14 @@
                     <td><?=$p->radniSat?></td>
                     <td><?=$p->proizvodac?></td>
                     <td><?=$p->model?></td>
-                    <td><?=$p->ocKomentar?></td>
+                    <td>
+                        <div class="form-floating">
+                            <textarea class="form-control" id="floatingTextarea"><?=$p->ocKomentar?></textarea>
+                        </div>
+                    </td>
                     <td><?=$p->datumKupovine?></td>
                     <td>
-                        <a href="promjeni?id=<?=$p->sifra?>">
+                        <a href="<?=APP::config('url')?>koncentratorKisika/promjena/<?=$p->sifra?>">
                             <i class="bi bi-pencil"></i>
                         </a>
                         <a href="izbrisi?id=<?=$p->sifra?>">
