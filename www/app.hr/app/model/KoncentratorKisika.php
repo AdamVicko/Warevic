@@ -8,11 +8,27 @@ class KoncentratorKisika
     public static function read()
     {
 
-        $veza = DB::getInstance();
+        $veza = DB::getInstance(); //read napravljen da nemogu brisati OC ako nije prikupljen
         $izraz = $veza->prepare('
         
-        select * from koncentratorKisika
-        order by datumKupovine asc;
+        select a.sifra,
+                a.serijskiKod,
+                a.radniSat,
+                a.proizvodac,
+                a.model,
+                a.ocKomentar,
+                a.datumKupovine,
+                count(b.sifra) as prikupljen
+        from koncentratorkisika a
+        left join prikup b on a.sifra = b.koncentratorKisika 
+        group by a.sifra,
+                a.serijskiKod,
+                a.radniSat,
+                a.proizvodac,
+                a.model,
+                a.ocKomentar,
+                a.datumKupovine
+        order by a.datumKupovine asc;
 
         ');
         $izraz->execute();
@@ -21,18 +37,17 @@ class KoncentratorKisika
 
     public static function readOne($sifra)
     {
-
+        
         $veza = DB::getInstance();
         $izraz = $veza->prepare('
         
-        select * from koncentratorKisika
-        where sifra=:sifra
-
+            select * from koncentratorKisika
+            where sifra=:sifra
+        
         ');
-        $izraz->execute(
-            [
-                'sifra' =>$sifra
-            ]);
+        $izraz->execute([
+            'sifra'=>$sifra
+        ]);
         return $izraz->fetch();
     }
 
@@ -41,16 +56,50 @@ class KoncentratorKisika
         $veza = DB::getInstance();
         $izraz = $veza->prepare('
         
-        insert into koncentratorkisika (serijskiKod,radniSat ,proizvodac,model,ocKomentar,datumKupovine)
+        insert into koncentratorKisika (serijskiKod,radniSat ,proizvodac,model,ocKomentar,datumKupovine)
         values(:serijskiKod,:radniSat,:proizvodac,:model,:ocKomentar,:datumKupovine);
 
         ');//dvotocke moraju odgovarat vrijednosti name od inputa
         $izraz->execute($parametri);
     }
 
+    public static function update($parametri)
+    {
+        $veza = DB::getInstance();
+        $izraz = $veza->prepare('
+        
+        update koncentratorKisika set
+            serijskiKod=:serijskiKod,
+            radniSat=:radniSat,
+            proizvodac=:proizvodac,
+            model=:model,
+            ocKomentar=:ocKomentar,
+            datumKupovine=:datumKupovine
+        where sifra=:sifra
+
+
+        ');//dvotocke moraju odgovarat vrijednosti name od inputa
+        $izraz->execute($parametri);
+    }
+
+    public static function delete($sifra)
+    {
+        
+        $veza = DB::getInstance();
+        $izraz = $veza->prepare('
+        
+            delete from koncentratorKisika
+            where sifra=:sifra
+        
+        ');
+        $izraz->execute([
+            'sifra'=>$sifra
+        ]);
+        $izraz->execute();
+    }
+
     public static function postojiIstiUBazi($s)
     {
-        echo $s;
         $veza = DB::getInstance();
         $izraz = $veza->prepare('
         

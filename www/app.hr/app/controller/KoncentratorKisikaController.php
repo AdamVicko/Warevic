@@ -46,7 +46,7 @@ class KoncentratorKisikaController extends AutorizacijaController
             );
         }//ovdje sam siguran da nije GET,za nas je onda POST
         $this->e = (object)$_POST; // prebacim post u objekt i posaljem na view koji prima taj objekt Log::info($this->e);
-        if(!$this->kontrola())//kontrola podataka
+        if(!$this->kontrolaNovi())//kontrola podataka
             {
                 $this->pozoviView(//ako nesto nevalja vrati poruku
                     [
@@ -54,6 +54,7 @@ class KoncentratorKisikaController extends AutorizacijaController
                         'poruka'=>$this->poruka
                     ]
                 );
+                return;
             }
             $this->pripremiZaBazu();//priprema za bazu
             KoncentratorKisika::create((array)$this->e); //ako je sve u redu spremaj u bazu
@@ -67,28 +68,68 @@ class KoncentratorKisikaController extends AutorizacijaController
 
     public function promjena($sifra='')
     {
-        if(strlen(trim($sifra))===0)
-        {
-            header('location: ' . App::config('url') . 'prijava/odjava' );
+        if($_SERVER['REQUEST_METHOD']==='GET')
+        { 
+            if(strlen(trim($sifra))===0)
+            {
+                header('location: ' . App::config('url') . 'prijava/odjava' );
+                return;
+            }
+            $sifra=(int)$sifra;
+            if($sifra===0)
+            {
+
+                header('location: ' . App::config('url') . 'prijava/odjava' );
+                return;
+            }
+            $this->e = KoncentratorKisika::readOne($sifra);
+            if($this->e==null)
+            {   
+                header('location: ' . App::config('url') . 'prijava/odjava' );
+                return;
+            }
+
+            $this->e->radniSat=$this->nf->format($this->e->radniSat);
+            $this->view->render($this->viewPutanja . 
+            'promjena',[
+                'e'=>$this->e,
+                'poruka'=>'Modify data of Oxygen Concentrator!'
+            ]);
             return;
         }
+        //ako je POST
+        $this->e = (object)$_POST; // prebacim post u objekt i posaljem na view koji prima taj objekt Log::info($this->e);
+        if(!$this->kontrolaPromjena())//kontrola podataka
+            {
+                $this->view->render($this->viewPutanja . 
+                'promjena',[
+                    'e'=>$this->e,
+                    'poruka'=>$this->poruka
+                ]);
+                return;
+            }
 
+        $this->e->sifra=$sifra;
+        $this->pripremiZaBazu();//priprema za bazu
+        KoncentratorKisika::update((array)$this->e);   
+        $this->view->render($this->viewPutanja . 
+        'promjena',[
+            'e'=>$this->e,
+            'poruka'=>'Update complete!'
+        ]);
+    }
+// ____________________________________________________NA INDEXU RIJESI DA JE VECI OD 0 SAO AKO JE PRIKUP NAPRAVLJEN____________________________
+    public function izbrisi($sifra=0)
+    {
         $sifra=(int)$sifra;
         if($sifra===0)
         {
             header('location: ' . App::config('url') . 'prijava/odjava' );
             return;
         }
-
-        $this->e = KoncentratorKisika::readOne($sifra);
-
-        if($this->e==null)
-        {
-            header('location: ' . App::config('url') . 'prijava/odjava' );
-            return;
-        }
+        KoncentratorKisika::delete($sifra);
+        header('location: ' . App::config('url') . 'koncentratorKisika/index' );
     }
-
     private function pozoviView($parametri)
     {
         $this->view->render($this->viewPutanja . 
@@ -100,7 +141,12 @@ class KoncentratorKisikaController extends AutorizacijaController
         $this->e->radniSat = $this->nf->parse($this->e->radniSat);
     }
 
-    private function kontrola()
+    private function kontrolaNovi() // razdavajome kontrole za noi i promjenu zbog mogucnosti da neke stvari ne zelimo provjeravat
+    {
+        return $this->kontrolaSerijskiKod() && $this->kontrolaRadniSat() && 
+        $this->kontrolaDatumKupovine() && $this->kontrolaModel();
+    }
+    private function kontrolaPromjena()
     {
         return $this->kontrolaSerijskiKod() && $this->kontrolaRadniSat() && 
         $this->kontrolaDatumKupovine() && $this->kontrolaModel();

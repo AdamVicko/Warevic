@@ -1,0 +1,54 @@
+<div class="customModal" style="margin-top: 50px;">
+
+    <div class="text-center" style="margin: 100px 0 0 0;">
+        <h1>Modification Oxygen Concentrator</h1>
+    </div>
+
+    <form class="row g-3" id="registrationForm" action="" method="post">
+        <div class="col-md-6">
+            <label for="serijskiKod" class="form-label">OC Serial number</label>
+            <input type="text" class="form-control" id="serijskiKod" 
+                name="serijskiKod" value="<?=$e->serijskiKod?>">
+        </div>
+
+        <div class="col-md-6">
+            <label for="radniSat" class="form-label">OC Working hours</label>
+            <input type="text" class="form-control" id="radniSat" 
+                name="radniSat" value="<?=$e->radniSat?>">
+        </div>
+        <div class="col-md-6">
+            <label for="proizvodac" class="form-label">Manufacturer</label>
+            <input type="text" class="form-control" id="proizvodac" 
+                name="proizvodac" value="<?=$e->proizvodac?>">
+        </div>
+        <div class="col-md-6">
+            <label for="model" class="form-label">Model</label>
+            <input type="text" class="form-control" id="model" 
+                name="model" value="<?=$e->model?>">
+        </div>
+        <div class="col-md-6">
+            <label for="ocKomentar" class="form-label">Comment</label>
+            <input type="text" class="form-control" id="ocKomentar" 
+                name="ocKomentar" value="<?=$e->ocKomentar?>">
+        </div>
+        <div class="col-md-6">
+            <label for="datumKupovine" class="form-label">Date of buying</label>
+            <input type="text" class="form-control" id="datumKupovine" 
+                name="datumKupovine" value="<?=$e->datumKupovine?>">
+        </div>
+        <hr>
+        <?=$poruka?>
+        <div class="row" style="margin-top: 50px;">
+            <div class="d-grid col">
+                <button type="submit" class="btn btn-success" 
+                value="promjena">Modify</button>
+            </div>
+            <div class="d-grid col">
+                <a href="<?=App::config('url')?>koncentratorkisika/index"
+                    class="btn btn-danger">Cancel</a> 
+            </div>
+        </div>
+        
+    </form>
+
+</div>

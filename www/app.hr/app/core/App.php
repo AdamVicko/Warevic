@@ -47,7 +47,7 @@ class App
         //Log::info($metoda);
 
         $parametar='';
-        if(!isset($djelovi[3]) || $djelovi[2]==='')
+        if(!isset($djelovi[2]) || $djelovi[2]==='')
         {
             $parametar='';
         }
@@ -58,10 +58,14 @@ class App
 
         if(!(class_exists($controller) && method_exists($controller,$metoda)))
         {
-            echo 'Ne postoji ' . $controller . '-&gt;' . $metoda;
+            $v = new View();
+            $v->render('notFoundController',
+            [
+                'poruka'=>'Ne postoji ' . $controller . '-&gt;' . $metoda
+            ]);
+            //echo 'Ne postoji ' . $controller . '-&gt;' . $metoda;
             return;
         }
-
         //izvodenje akpo postoji treci parametar 
         $instanca = new $controller();
         if(strlen($parametar)>0)

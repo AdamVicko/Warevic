@@ -22,12 +22,25 @@
                     <td><?=$p->imeprezime?></td>
                     <td><?=$p->serijskiKod?></td>
                     <td>
+                    <?php if(App::admin()): //ako je auth admin?>
                         <a href="promjeni?id=<?=$p->sifra?>">
                             <i class="bi bi-pencil"></i>
                         </a>
-                        <a href="izbrisi?id=<?=$p->sifra?>">
+                        <a 
+                            onclick="return confirm('Deleting Collection <?=$p->imeprezime?> on <?=$p->datumPrikupa?> ? ')"
+                            href="<?=APP::config('url')?>prikup/izbrisi/<?=$p->sifra?>">
                             <i class="bi bi-trash3" style="color: tomato;"></i>
                         </a>
+                        <?php else: ?>
+                        <a 
+                            href="promjeni?id=<?=$p->sifra?>">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a href="promjeni?id=<?=$p->sifra?>">
+                            <i class="bi bi-trash3" style="color: grey;"></i>
+                        </a>
+                    <?php endif; ?> 
+
                     </td>
                 </tr>
             <?php endforeach; ?>

@@ -35,9 +35,15 @@
                         <a href="<?=APP::config('url')?>koncentratorKisika/promjena/<?=$p->sifra?>">
                             <i class="bi bi-pencil"></i>
                         </a>
-                        <a href="izbrisi?id=<?=$p->sifra?>">
+                        <?php if($p->prikupljen>0): ?>
+                        <a 
+                            onclick="return confirm('Deleting Oxygen Concentrator <?=$p->serijskiKod?> ? ')"
+                            href="<?=APP::config('url')?>koncentratorKisika/izbrisi/<?=$p->sifra?>">
                             <i class="bi bi-trash3" style="color: tomato;"></i>
                         </a>
+                        <?php else: ?>
+                            <i title="OC is not collected from patient!" class="bi bi-trash3" style="color: grey;"></i>
+                        <?php endif; ?>
                     </td>
                 </tr>
             <?php endforeach; ?>
