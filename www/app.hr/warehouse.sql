@@ -63,14 +63,14 @@ create table prikup(
     koncentratorKisika int not null
 );
 
-create table stanje(
+/*create table stanje(
     sifra int not null primary key auto_increment,
-    kolicinaKom int,
-    koncentratorKisika int
-);
+  kolicinaKom int,
+  koncentratorKisika int
+);*/
 
 #PROIZVOD
-alter table stanje add foreign key (koncentratorKisika) references koncentratorKisika (sifra);
+--alter table stanje add foreign key (koncentratorKisika) references koncentratorKisika (sifra);
 alter table isporuka add foreign key (koncentratorKisika) references koncentratorKisika (sifra);
 alter table isporuka add foreign key (pacijent) references pacijent (sifra);
 alter table prikup add foreign key (pacijent) references pacijent (sifra);
@@ -136,7 +136,7 @@ values
 (null,'2022.08.22',6,6);
 
 
-
+/*
 insert into stanje (sifra,koncentratorKisika,kolicinaKom)
 values
 (null,1,null),
@@ -158,7 +158,7 @@ values
 (null,17,null),
 (null,18,null)
 ;
-
+*/
 
 
 

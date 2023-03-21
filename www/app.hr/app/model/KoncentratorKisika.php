@@ -18,9 +18,11 @@ class KoncentratorKisika
                 a.model,
                 a.ocKomentar,
                 a.datumKupovine,
-                count(b.sifra) as prikupljen
-        from koncentratorkisika a
-        left join prikup b on a.sifra = b.koncentratorKisika 
+                count(b.sifra) as prikupljen,
+                count(c.sifra) as isporucen
+        from koncentratorKisika a
+        left join prikup b on a.sifra = b.koncentratorKisika
+        left join isporuka c on a.sifra = c.koncentratorKisika 
         group by a.sifra,
                 a.serijskiKod,
                 a.radniSat,
@@ -84,18 +86,64 @@ class KoncentratorKisika
 
     public static function delete($sifra)
     {
-        
         $veza = DB::getInstance();
+
         $izraz = $veza->prepare('
-        
-            delete from koncentratorKisika
-            where sifra=:sifra
+
+            select koncentratorKisika 
+            from isporuka 
+            where sifra=:sifra;
         
         ');
         $izraz->execute([
             'sifra'=>$sifra
         ]);
-        $izraz->execute();
+        $sifraKoncentratorKisika = $izraz->fetchColumn();
+        
+        $izraz = $veza->prepare('
+        
+        delete from koncentratorKisika
+        where sifra=:sifra
+    
+        ');
+        $izraz->execute([
+            'sifra'=>$sifra
+        ]);
+
+        $izraz = $veza->prepare('
+        
+        delete from isporuka
+        where sifra=:sifra
+    
+        ');
+        $izraz->execute([
+            'sifra'=>$sifraKoncentratorKisika
+        ]);
+
+        
+        $izraz = $veza->prepare('
+
+            select koncentratorKisika 
+            from prikup 
+            where sifra=:sifra;
+        
+        ');
+        $izraz->execute([
+            'sifra'=>$sifra
+        ]);
+        $sifraKoncentratorKisika2 = $izraz->fetchColumn();
+
+        $izraz = $veza->prepare('
+        
+        delete from prikup
+        where sifra=:sifra
+    
+        ');
+        $izraz->execute([
+            'sifra'=>$sifraKoncentratorKisika2
+        ]);
+
+
     }
 
     public static function postojiIstiUBazi($s)

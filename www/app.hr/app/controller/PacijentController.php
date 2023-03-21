@@ -52,7 +52,7 @@ class PacijentController extends AutorizacijaController
              return;
         }
 
-        Pacijent::create((array)$this->e);
+        Pacijent::create((array)$this->e); //spremi u bazu
 
         $this->view->render($this->viewPutanja . 'novi',
         [
@@ -60,10 +60,77 @@ class PacijentController extends AutorizacijaController
             'poruka'=>'Patient added successfully!'
         ]);
     }
+
+    public function promjena($sifra='')
+    {
+        if($_SERVER['REQUEST_METHOD']==='GET')
+        { 
+            if(strlen(trim($sifra))===0)
+            {
+                header('location: ' . App::config('url') . 'prijava/odjava' );
+                return;
+            }
+            $sifra=(int)$sifra;
+            if($sifra===0)
+            {
+
+                header('location: ' . App::config('url') . 'prijava/odjava' );
+                return;
+            }
+            $this->e = Pacijent::readOne($sifra);
+            if($this->e==null)
+            {   
+                header('location: ' . App::config('url') . 'prijava/odjava' );
+                return;
+            }
+            $this->view->render($this->viewPutanja . 
+            'promjena',[
+                'e'=>$this->e,
+                'poruka'=>'Modify data of Patient!'
+            ]);
+            return;
+        }
+        //ako je POST
+        $this->e = (object)$_POST; // prebacim post u objekt i posaljem na view koji prima taj objekt Log::info($this->e);
+        if(!$this->kontrolaPromjena())//kontrola podataka
+            {
+                $this->view->render($this->viewPutanja . 
+                'promjena',[
+                    'e'=>$this->e,
+                    'poruka'=>$this->poruka
+                ]);
+                return;
+            }
+
+        $this->e->sifra=$sifra;
+        Pacijent::update((array)$this->e);   
+        $this->view->render($this->viewPutanja . 
+        'promjena',[
+            'e'=>$this->e,
+            'poruka'=>'Update complete!'
+        ]);
+    }
+
+    public function izbrisi($sifra=0)
+    {
+        $sifra=(int)$sifra;
+        if($sifra===0)
+        {
+            header('location: ' . App::config('url') . 'prijava/odjava' );
+            return;
+        }
+        Pacijent::delete($sifra);
+        header('location: ' . App::config('url') . 'pacijent/index' );
+    }
+
+    private function kontrolaPromjena()
+    {
+        return $this->kontrolaImeprezime() && $this->kontrolaTelefon() && $this->kontrolaAdresa();
+    }
+
     private function kontrola()
     {
-        return $this->kontrolaImeprezime() && $this->kontrolaTelefon() && 
-        $this->kontrolaDatumrodenja() && $this->kontrolaAdresa();
+        return $this->kontrolaImeprezime() && $this->kontrolaTelefon() && $this->kontrolaAdresa();
     }
 
     private function kontrolaAdresa()
@@ -84,24 +151,7 @@ class PacijentController extends AutorizacijaController
 
         return true;
     }
-    private function kontrolaDatumRodenja()
-    {
-
-        $s = $this->e->datumRodenja;
-        if(strlen(trim($s))===0)
-        {
-            $this->poruka='Collection date is mandatory!';
-            return false;
-        }
-
-        if(strlen(trim($s)) > 15)
-        {
-            $this->poruka='Must not have more than 15 characters in Collection date!';
-            return false;
-        }
-
-        return true;
-    }
+   
     private function kontrolaImeprezime()
     {
         $s = $this->e->imeprezime;

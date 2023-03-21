@@ -11,8 +11,9 @@ class Isporuka
         $veza = DB::getInstance();
         $izraz = $veza->prepare('
         
-        select a.datumIsporuke , b.imeprezime ,b.datumRodenja ,b.oib 
-        ,b.telefon ,b.adresa,b.pacijentKomentar, 
+        select 
+        a.datumIsporuke , b.imeprezime ,b.datumRodenja ,b.oib ,
+        b.telefon ,b.adresa,b.pacijentKomentar, 
         c.serijskiKod,c.radniSat,c.ocKomentar
         from isporuka a 
         inner join pacijent b on a.pacijent = b.sifra  
@@ -42,3 +43,5 @@ class Isporuka
         $izraz->execute($parametri);
     }
 }
+
+//napravi za isporuku ko za koncentrator kisika!!!!!!!!!!!!!!!!!!!!!!
