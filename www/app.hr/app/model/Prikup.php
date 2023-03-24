@@ -12,7 +12,7 @@ class Prikup
         $izraz = $veza->prepare('
         
         select 
-            a.datumPrikupa, b.imeprezime ,b.datumRodenja,
+            a.sifra,a.datumPrikupa, b.imeprezime ,b.datumRodenja,
             b.oib ,b.telefon ,b.adresa,b.pacijentKomentar, 
             c.serijskiKod,c.radniSat,c.ocKomentar
         from prikup a 
@@ -31,7 +31,7 @@ class Prikup
         $izraz = $veza->prepare('
         
         select 
-            a.datumPrikupa, b.imeprezime ,b.datumRodenja,
+            a.sifra, a.datumPrikupa, b.imeprezime ,b.datumRodenja,
             b.oib ,b.telefon ,b.adresa,b.pacijentKomentar, 
             c.serijskiKod,c.radniSat,c.ocKomentar
         from prikup a 
@@ -163,71 +163,19 @@ class Prikup
             $veza->commit();
     }
 
-    public static function delete($parametri)
+    public static function delete($sifra)
     {
+        
         $veza = DB::getInstance();
-        $veza->beginTransaction();
-
         $izraz = $veza->prepare('
-            select pacijent from prikup where sifra=:sifa; 
-        ');//dvotocke moraju odgovarat vrijednosti name od inputa
-        $izraz->execute([
-            'sifra'=>$parametri['sifra']
-        ]);
-        $sifraPacijent = $izraz->fetchColumn();
-        $izraz = $veza->prepare('
-            update pacijent set
-                    imeprezime=:imeprezime,
-                    telefon=:telefon,
-                    datumRodenja=:datumRodenja,
-                    adresa=:adresa,
-                    oib=:oib,
-                    pacijentKomentar=:pacijentKomentar
+        
+            delete from prikup
             where sifra=:sifra
+        
         ');
         $izraz->execute([
-            'sifra'=>$sifraPacijent,
-            'imeprezime'=>$parametri['imeprezime'],
-            'telefon'=>$parametri['telefon'],
-            'datumRodenja'=>$parametri['datumRodenja'],
-            'adresa'=>$parametri['adresa'],
-            'oib'=>$parametri['oib'],
-            'pacijentKomentar'=>$parametri['pacijentKomentar']
+            'sifra'=>$sifra
         ]);
-
-
-        $izraz = $veza->prepare('
-            select koncentratoKisika from prikup where sifra=:sifa; 
-        ');//dvotocke moraju odgovarat vrijednosti name od inputa
-        $izraz->execute([
-            'sifra'=>$parametri['sifra']
-        ]);
-        $sifraKoncentratorKisika = $izraz->fetchColumn();
-        $izraz = $veza->prepare('
-        update koncentratoKisika set
-            serijskiKod=:serijskiKod,
-            radniSat=:radniSat,
-            ocKomentar=:ocKomentar
-        where sifra=:sifra
-        ');
-        $izraz->execute([
-            'sifra'=>$sifraKoncentratorKisika,
-            'serijskiKod'=>$parametri['serijskiKod'],
-            'radniSat'=>$parametri['radniSat'],
-            'ocKomentar'=>$parametri['ocKomentar']
-        ]);
-
-
-        $izraz = $veza->prepare('
-        update prikup set
-            datumPrikupa=:datumPrikupa
-        where sifra=:sifra
-        ');
-        $izraz->execute([
-            'sifra'=>$parametri['sifra'],
-            'datumPrikupa'=>$parametri['datumPrikupa']
-        ]);
-            
-            $veza->commit();
+        $izraz->execute();
     }
 }

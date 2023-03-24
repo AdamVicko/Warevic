@@ -1,0 +1,71 @@
+
+    <div class="text-center" style="margin: 100px 0 0 0;">
+        <h1><?=$legend?></h1>
+    </div>
+    <form class="row g-3" id="registrationForm" action="" method="post">
+        <div class="col-md-6">
+            <label for="datumPrikupa" class="form-label">Date of Collection</label>
+            <input type="text" class="form-control" id="datumPrikupa" 
+                name="datumPrikupa" value="<?=$e->datumPrikupa?>">
+
+        </div>
+        <div class="col-md-6">
+            <label for="serijskiKod" class="form-label">OC serial number</label>
+            <input type="text" class="form-control" id="serijskiKod" 
+                name="serijskiKod" value="<?=$e->serijskiKod?>">
+        </div>
+        <div class="col-md-6">
+            <label for="imeprezime" class="form-label">Patient Name and Surname</label>
+            <input type="text" class="form-control" id="imeprezime" 
+                name="imeprezime" value="<?=$e->imeprezime?>">
+        </div>
+        <div class="col-md-6">
+            <label for="radniSat" class="form-label">OC working hours</label>
+            <input type="text" class="form-control" id="radniSat" 
+                name="radniSat" value="<?=$e->radniSat?>">
+        </div>
+        <div class="col-md-6">
+            <label for="adresa" class="form-label">Patient Address</label>
+            <input type="text" class="form-control" id="adresa" 
+                name="adresa" value="<?=$e->adresa?>">
+        </div>
+        <div class="col-md-6">
+            <label for="ocKomentar" class="form-label">OC comment</label>
+            <input type="text" class="form-control" id="ocKomentar" 
+                name="ocKomentar" value="<?=$e->ocKomentar?>">
+        </div>
+        <div class="col-md-6">
+            <label for="datumRodenja" class="form-label">Patient Birth date</label>
+            <input type="text" class="form-control" id="datumRodenja" 
+                name="datumRodenja" value="<?=$e->datumRodenja?>">
+        </div>
+        <div class="col-md-6">
+            <label for="oib" class="form-label">Patient OIB</label>
+            <input type="text" class="form-control" id="oib" 
+                name="oib" value="<?=$e->oib?>">
+        </div>
+        <div class="col-md-6">
+            <label for="telefon" class="form-label">Patient Telephone</label>
+            <input type="text" class="form-control" id="telefon" 
+                name="telefon" value="<?=$e->telefon?>">
+        </div>
+        <div class="col-md-6">
+            <label for="pacijentKomentar" class="form-label">Patient comment</label>
+            <input type="text" class="form-control" id="pacijentKomentar" 
+                name="pacijentKomentar" value="<?=$e->pacijentKomentar?>">
+        </div>
+        <hr>
+        <?=$poruka?>
+        <div class="row" style="margin-top: 50px;">
+            <div class="d-grid col">
+                <button type="submit" class="btn btn-success" 
+                value="<?=$akcija?>">Create</button>
+            </div>
+            <div class="d-grid col">
+                <a href="<?=App::config('url')?>prikup/index"
+                    class="btn btn-danger">Cancel</a>
+            </div>
+        </div>
+        
+    </form>
+

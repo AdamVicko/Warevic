@@ -1,18 +1,15 @@
-<?php if(App::admin()): //ako je auth admin?>
-    <a href="promjeni?id=<?=$p->sifra?>">
+
+    <a href="<?=APP::config('url')?><?=$entitet?>/promjeni/<?=$p->sifra?>">
         <i class="bi bi-pencil"></i>
     </a>
+    <?php if(App::admin()): //ako je auth admin?>
     <a 
-        onclick="return confirm('Deleting Collection <?=$p->imeprezime?> on <?=$p->datumPrikupa?> ? ')"
-        href="<?=APP::config('url')?>prikup/izbrisi/<?=$p->sifra?>">
+        onclick="return confirm('Deleting <?=$p->imeprezime?> on <?=$p->datumPrikupa?> ? ')"
+        href="<?=APP::config('url')?><?=$entitet?>/izbrisi/<?=$p->sifra?>">
         <i class="bi bi-trash3" style="color: tomato;"></i>
     </a>
     <?php else: ?>
-    <a 
-        href="promjeni?id=<?=$p->sifra?>">
-        <i class="bi bi-pencil"></i>
-    </a>
-    <a href="promjeni?id=<?=$p->sifra?>">
-        <i class="bi bi-trash3" style="color: grey;"></i>
-    </a>
+
+        <i title="Only Admin can delete <?=$entitet?>" class="bi bi-trash3"  style="color: grey;"></i>
+
 <?php endif; ?> 

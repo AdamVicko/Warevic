@@ -130,6 +130,7 @@ class KoncentratorKisikaController extends AutorizacijaController
         KoncentratorKisika::delete($sifra);
         header('location: ' . App::config('url') . 'koncentratorKisika/index' );
     }
+    
     private function pozoviView($parametri)
     {
         $this->view->render($this->viewPutanja . 

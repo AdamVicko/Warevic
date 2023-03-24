@@ -35,7 +35,7 @@
                         <a href="<?=APP::config('url')?>koncentratorKisika/promjena/<?=$p->sifra?>">
                             <i class="bi bi-pencil"></i>
                         </a>
-                        <?php if($p->prikupljen==0): ?>
+                        <?php if($p->prikupljen>0): ?>
                         <a 
                             onclick="return confirm('Deleting Oxygen Concentrator <?=$p->serijskiKod?> ? ')"
                             href="<?=APP::config('url')?>koncentratorKisika/izbrisi/<?=$p->sifra?>">

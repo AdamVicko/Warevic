@@ -98,8 +98,39 @@ class KoncentratorKisika
         $izraz->execute([
             'sifra'=>$sifra
         ]);
-        $sifraKoncentratorKisika = $izraz->fetchColumn();
+
+        $izraz = $veza->prepare('
         
+        delete from isporuka
+        where sifra=:sifra
+    
+        ');
+        $izraz->execute([
+            'sifra'=>$sifra
+        ]);
+        
+        $izraz = $veza->prepare('
+
+        select koncentratorKisika 
+        from prikup 
+        where sifra=:sifra;
+    
+        ');
+        $izraz->execute([
+            'sifra'=>$sifra
+        ]);
+
+        $izraz = $veza->prepare('
+        
+        delete from prikup
+        where sifra=:sifra
+
+        ');
+        $izraz->execute([
+            'sifra'=>$sifra
+        ]);
+
+
         $izraz = $veza->prepare('
         
         delete from koncentratorKisika
@@ -109,40 +140,6 @@ class KoncentratorKisika
         $izraz->execute([
             'sifra'=>$sifra
         ]);
-
-        $izraz = $veza->prepare('
-        
-        delete from isporuka
-        where sifra=:sifra
-    
-        ');
-        $izraz->execute([
-            'sifra'=>$sifraKoncentratorKisika
-        ]);
-
-        
-        $izraz = $veza->prepare('
-
-            select koncentratorKisika 
-            from prikup 
-            where sifra=:sifra;
-        
-        ');
-        $izraz->execute([
-            'sifra'=>$sifra
-        ]);
-        $sifraKoncentratorKisika2 = $izraz->fetchColumn();
-
-        $izraz = $veza->prepare('
-        
-        delete from prikup
-        where sifra=:sifra
-    
-        ');
-        $izraz->execute([
-            'sifra'=>$sifraKoncentratorKisika2
-        ]);
-
 
     }
 

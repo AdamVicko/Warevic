@@ -1,6 +1,8 @@
 <?php
 
-class PrikupController extends AutorizacijaController
+class PrikupController 
+extends AutorizacijaController
+implements ViewSucelje
 {
 
     private $viewPutanja = 'privatno'. 
@@ -44,18 +46,19 @@ class PrikupController extends AutorizacijaController
     {
         if($_SERVER['REQUEST_METHOD']==='GET')
         {
-            $this->view->render($this->viewPutanja . 
-            'novi',
+
+            $this->view->render($this->viewPutanja . 'detalji' , 
             [
-                'e'=>$this->pocetniPodaci(),
-                'poruka'=>$this->poruka
+                'legend'=>'New Collection',
+                'akcija'=>'Dodaj',
+                'poruka'=>'Popunite trazene podatke',
+                'e'=>$this->pocetniPodaci()
             ]);
             return;
         }
-       
+        $this->pripremiZaView();
         //ovdje sam siguran da nije GET,za nas je onda POST
        
-        $this->e = (object)$_POST; // prebacim post u objekt i posaljem na view koji prima taj objekt
        //Log::info($this->e);
        //Log::info($this->poruka);
 
@@ -63,10 +66,12 @@ class PrikupController extends AutorizacijaController
        if(!$this->kontrola())
         {
             $this->view->render($this->viewPutanja .
-            'novi',
+            'detalji',
             [
-                'e'=>$this->e, 
-                'poruka'=>$this->poruka
+                'legend'=>'New Collection',
+                'akcija'=>'Dodaj',
+                'poruka'=>'Popunite trazene podatke',
+                'e'=>$this->e
              ]);
              return;
         }
@@ -81,10 +86,26 @@ class PrikupController extends AutorizacijaController
             'e'=>$this->pocetniPodaci(),
             'poruka'=>'Collection added!'
         ]);
-        
-
-       
     }
+
+    public function promjena($sifra=0)
+    {
+
+    }
+
+    public function izbrisi($sifra=0)
+    {
+        $sifra=(int)$sifra;
+        if($sifra===0)
+        {
+            header('location: ' . App::config('url') . 'prijava/odjava' );
+            return;
+        }
+        Prikup::delete($sifra);
+        header('location: ' . App::config('url') . 'prikup/index' );
+    }
+
+
     //ako nesto ne valja vratiti na view s odgovorom
     private function kontrola()
     {
@@ -92,6 +113,7 @@ class PrikupController extends AutorizacijaController
         $this->kontrolaadresa() && $this->kontrolaradnisat() && $this->kontrolaSerijskiKod()
         && $this->kontrolatelefon();
     }
+
     private function kontrolaimeprezime()
     {
 
@@ -214,7 +236,18 @@ class PrikupController extends AutorizacijaController
 
         return true;
     }
-    private function pocetniPodaci()
+
+    public function pripremiZaBazu()
+    {
+
+    }
+
+    public function pripremiZaView()
+    {
+        $this->e = (object)$_POST; // prebacim post u objekt i posaljem na view koji prima taj objekt
+    }
+
+    public function pocetniPodaci()
     {
         //e kao element
         $e = new stdClass();
@@ -230,4 +263,6 @@ class PrikupController extends AutorizacijaController
         $e->oib='';
         return $e;
     }
+
+    
 }
