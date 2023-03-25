@@ -118,4 +118,13 @@ class App
     {
         return App::config('dev');
     }
+
+    public static function inputText($naziv,$vrijednost)
+    {
+        return '
+        <label for="' . $naziv . '">' . ucfirst($naziv) . '</label>
+        <input class="form-control" type="text" id="' . $naziv . '" name="' . $naziv . '"
+        value="' . $vrijednost . '">
+        ';
+    }
 }

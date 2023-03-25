@@ -46,24 +46,39 @@ implements ViewSucelje
     {
         if($_SERVER['REQUEST_METHOD']==='GET')
         {
-
-            $this->view->render($this->viewPutanja . 'detalji' , 
+            $this->view->render($this->viewPutanja . 'detalji', 
             [
                 'legend'=>'New Collection',
                 'akcija'=>'Dodaj',
-                'poruka'=>'Popunite trazene podatke',
+                'poruka'=>'Fullfil needed data!',
                 'e'=>$this->pocetniPodaci()
             ]);
             return;
         }
-        $this->pripremiZaView();
+        $this->pripremiZaView();//i da je metoda prazna slobodno ju mogu pozvat!!
         //ovdje sam siguran da nije GET,za nas je onda POST
+        
+
+        try {
+            $this->kontrola();
+            $this->pripremiZaBazu();
+            Prikup::create((array)$this->e);//sve ok spremi u bazu
+            header('location:' . App::config('url') . 'prikup/index');
+        } catch (\Exception $th) {
+                $this->view->render($this->viewPutanja . 'detalji' , 
+            [
+                'legend'=>'New Collection',
+                'akcija'=>'Dodaj',
+                'poruka'=>$this->poruka,
+                'e'=>$this->e
+            ]);
+        }
        
        //Log::info($this->e);
        //Log::info($this->poruka);
 
        //kontrola podataka
-       if(!$this->kontrola())
+       /*if(!$this->kontrola())
         {
             $this->view->render($this->viewPutanja .
             'detalji',
@@ -74,18 +89,18 @@ implements ViewSucelje
                 'e'=>$this->e
              ]);
              return;
-        }
-        //priprema za bazu
-        $this->e->radniSat = $this->nf->parse($this->e->radniSat);
+        }*/
+      
+       
 
-        //sve ok spremi u bazu
-        Prikup::create((array)$this->e);
+        
+       
 
-        $this->view->render($this->viewPutanja . 'novi',
+      /*  $this->view->render($this->viewPutanja . 'novi',
         [
             'e'=>$this->pocetniPodaci(),
             'poruka'=>'Collection added!'
-        ]);
+        ]);*/
     }
 
     public function promjena($sifra=0)
@@ -109,9 +124,13 @@ implements ViewSucelje
     //ako nesto ne valja vratiti na view s odgovorom
     private function kontrola()
     {
-        return $this->kontrolaimeprezime() && $this->kontrolaDatumPrikupa() && 
-        $this->kontrolaadresa() && $this->kontrolaradnisat() && $this->kontrolaSerijskiKod()
-        && $this->kontrolatelefon();
+        $this->kontrolaimeprezime();
+        $this->kontrolaDatumPrikupa();
+        $this->kontrolaadresa();
+        $this->kontrolaradnisat();
+        $this->kontrolaSerijskiKod();
+        $this->kontrolatelefon();
+        $this->kontrolaoib();
     }
 
     private function kontrolaimeprezime()
@@ -121,16 +140,14 @@ implements ViewSucelje
         if(strlen(trim($s))===0)
         {
             $this->poruka='Patient Name and Surname are mandatory!';
-            return false;
+            throw new Exception();
         }
 
         if(strlen(trim($s)) > 50)
         {
             $this->poruka='Must not have more than 50 characters in Patient Name and Surname!';
-            return false;
+            throw new Exception();
         }
-
-        return true;
     }
     private function kontrolatelefon()
     {
@@ -139,16 +156,14 @@ implements ViewSucelje
         if(strlen(trim($s))===0)
         {
             $this->poruka='Patient telephone is mandatory!';
-            return false;
+            throw new Exception();
         }
 
         if(strlen(trim($s)) > 50)
         {
             $this->poruka='Must not have more than 50 characters in Patient telephone!';
-            return false;
+            throw new Exception();
         }
-
-        return true;
     }
     private function kontrolaadresa()
     {
@@ -157,16 +172,14 @@ implements ViewSucelje
         if(strlen(trim($s))===0)
         {
             $this->poruka='Patient adres is mandatory!';
-            return false;
+            throw new Exception();
         }
 
         if(strlen(trim($s)) > 50)
         {
             $this->poruka='Must not have more than 50 characters in Patient adres!';
-            return false;
+            throw new Exception();
         }
-
-        return true;
     }
     private function kontrolaDatumPrikupa()
     {
@@ -175,33 +188,62 @@ implements ViewSucelje
         if(strlen(trim($s))===0)
         {
             $this->poruka='Collection date is mandatory!';
-            return false;
+            throw new Exception();
         }
 
         if(strlen(trim($s)) > 50)
         {
             $this->poruka='Must not have more than 50 characters in Collection date!';
-            return false;
+            throw new Exception();
         }
-
-        return true;
     }
+    private function kontrolaoib()
+    {
+        $oib=$this->e->oib;
+        if (strlen($oib) != 11 || !is_numeric($oib)) {
+            $this->poruka='OIB needs to have 11 numbers!';
+            throw new Exception();
+        }
+    
+        $a = 10;
+    
+        for ($i = 0; $i < 10; $i++) {
+    
+            $a += (int)$oib[$i];
+            $a %= 10;
+    
+            if ( $a == 0 ) { $a = 10; }
+    
+            $a *= 2;
+            $a %= 11;
+    
+        }
+    
+        $kontrolni = 11 - $a;
+    
+        if ( $kontrolni == 10 ) { $kontrolni = 0; }
+    
+        if($kontrolni != intval(substr($oib, 10, 1), 10))
+        {
+            $this->poruka='OIB is not mathematically correct!';
+            throw new Exception();
+        }
+    }
+
     private function kontrolaSerijskiKod()
     {
         $s = $this->e->serijskiKod;
         if(strlen(trim($s))===0)
         {
             $this->poruka='OC Serial number is mandatory!';
-            return false;
+            throw new Exception();
         }
 
         if(strlen(trim($s)) > 50)
         {
             $this->poruka='Must not have more than 50 characters in Serial number!';
-            return false;
+            throw new Exception();
         }
-
-        return true;
     }
     private function kontrolaradnisat()
     {
@@ -210,36 +252,34 @@ implements ViewSucelje
         if(!$s)
         {
             $this->poruka='OC Working hours are not in good format!';
-            return false;
+            throw new Exception();
         }
         if($s<=0)
         {
             $this->poruka='OC Working hours must be greater than zero!';
-            return false;
+            throw new Exception();
         }
         if($s>100000)
         {
             $this->poruka='OC Working hours must be lower then one hundred thousand!';
-            return false;
+            throw new Exception();
         }
         if(strlen(trim($s))===0)
         {
             $this->poruka='OC Working hour is mandatory!';
-            return false;
+            throw new Exception();
         }
 
         if(strlen(trim($s)) > 50)
         {
             $this->poruka='Must not have more than 50 characters in Working hour!';
-            return false;
+            throw new Exception();
         }
-
-        return true;
     }
 
     public function pripremiZaBazu()
     {
-
+        $this->e->radniSat = $this->nf->parse($this->e->radniSat);  //priprema za bazu
     }
 
     public function pripremiZaView()
