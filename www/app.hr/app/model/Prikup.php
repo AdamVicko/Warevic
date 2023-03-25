@@ -31,9 +31,9 @@ class Prikup
         $izraz = $veza->prepare('
         
         select 
-            a.sifra, a.datumPrikupa, b.imeprezime ,b.datumRodenja,
+            a.sifra, a.datumPrikupa, b.sifra, b.imeprezime ,b.datumRodenja,
             b.oib ,b.telefon ,b.adresa,b.pacijentKomentar, 
-            c.serijskiKod,c.radniSat,c.ocKomentar
+            c.serijskiKod,c.radniSat,c.ocKomentar,c.sifra
         from prikup a 
             inner join pacijent b on a.pacijent = b.sifra  
             inner join koncentratorKisika c on a.koncentratorKisika = c.sifra
@@ -177,5 +177,35 @@ class Prikup
             'sifra'=>$sifra
         ]);
         $izraz->execute();
+    }
+
+    public static function postojiIstiOIB($oib,$sifra=0)
+    {
+        if($sifra>0){
+            $sql = ' select count(b.sifra) 
+            from prikup a inner join osoba b
+            on a.pacijent=b.sifra where b.oib=:oib ';
+        }else{
+            $sql = ' select count(a.sifra) 
+            from pacijent a where a.oib=:oib ';
+        }
+
+        if($sifra>0){
+            $sql.=' and a.sifra!=:sifra';
+        }
+
+        $veza = DB::getInstance();
+        $izraz = $veza->prepare($sql);
+
+        $parametri=[];
+        $parametri['oib']=$oib;
+
+        if($sifra>0){
+            $parametri['sifra']=$sifra;
+        }
+
+        $izraz->execute($parametri);
+        $sifra=$izraz->fetchColumn();
+        return $sifra==0;
     }
 }

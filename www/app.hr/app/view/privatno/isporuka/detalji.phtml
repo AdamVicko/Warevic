@@ -5,7 +5,7 @@
         <div class="d-grid col">
             <div class="col-md-11">
                 <?php   
-                echo App::inputText('datumPrikupa',$e->datumPrikupa);
+                echo App::inputText('datumIsporuke',$e->datumIsporuke);
                 ?>
             </div>
             <div class="col-md-11">
@@ -64,7 +64,7 @@
                             value="<?=$akcija?>"><?=$akcija?></button>
                 </div>
                 <div class="d-grid col">
-                    <a href="<?=App::config('url')?>prikup/index"
+                    <a href="<?=App::config('url')?>isporuka/index"
                         class="btn btn-danger">Cancel</a>
                 </div>
             </div>

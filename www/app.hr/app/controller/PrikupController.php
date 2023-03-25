@@ -49,7 +49,7 @@ implements ViewSucelje
             $this->view->render($this->viewPutanja . 'detalji', 
             [
                 'legend'=>'New Collection',
-                'akcija'=>'Dodaj',
+                'akcija'=>'Create',
                 'poruka'=>'Fullfil needed data!',
                 'e'=>$this->pocetniPodaci()
             ]);
@@ -68,7 +68,7 @@ implements ViewSucelje
                 $this->view->render($this->viewPutanja . 'detalji' , 
             [
                 'legend'=>'New Collection',
-                'akcija'=>'Dodaj',
+                'akcija'=>'Create',
                 'poruka'=>$this->poruka,
                 'e'=>$this->e
             ]);
@@ -105,7 +105,42 @@ implements ViewSucelje
 
     public function promjena($sifra=0)
     {
-
+        if($_SERVER['REQUEST_METHOD']==='GET'){
+             $this->e = Prikup::readOne($sifra);
+             $this->provjeraIntParametra($sifra);
+             if($this->e==null){
+                 header('location: ' . App::config('url') . 'prijava/odjava');
+                 return;
+             }
+ 
+             $this->view->render($this->viewPutanja .
+             'detalji',[
+                 'legend'=>'Modify collection',
+                 'akcija'=>'Modify',
+                 'poruka'=>'Modify data',
+                 'e'=>$this->e
+             ]);
+             return;
+         }
+         //sada ide POST
+ 
+         $this->pripremiZaView();
+            
+            try {
+             $this->e->sifra=$sifra; // POSTO NISAM NA POCETNIM PARAMETRIMA STAVIO SIFRU OVDJE JU DEKLARIRAM
+             $this->kontrola();
+             $this->pripremiZaBazu();
+             Prikup::update((array)$this->e);
+             header('location:' . App::config('url') . 'prikup');
+            } catch (\Exception $th) {
+             $this->view->render($this->viewPutanja .
+             'detalji',[
+                 'legend'=>'Collection modify error!',
+                 'akcija'=>'Modify',
+                 'poruka'=>$this->poruka . ' ' . $th->getMessage(),
+                 'e'=>$this->e
+             ]);
+            }
     }
 
     public function izbrisi($sifra=0)
@@ -229,7 +264,7 @@ implements ViewSucelje
             throw new Exception();
         }
     }
-
+    
     private function kontrolaSerijskiKod()
     {
         $s = $this->e->serijskiKod;
@@ -291,6 +326,7 @@ implements ViewSucelje
     {
         //e kao element
         $e = new stdClass();
+        $e->sifra='';
         $e->datumPrikupa='';
         $e->serijskiKod='';
         $e->imeprezime='';

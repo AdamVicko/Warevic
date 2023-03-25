@@ -1,7 +1,9 @@
 <?php
 
 
-class PacijentController extends AutorizacijaController 
+class PacijentController 
+extends AutorizacijaController 
+implements ViewSucelje
 {
     private $viewPutanja = 'privatno'. 
     DIRECTORY_SEPARATOR . 'pacijent' . 
@@ -113,7 +115,9 @@ class PacijentController extends AutorizacijaController
 
     public function izbrisi($sifra=0)
     {
+        
         $sifra=(int)$sifra;
+        //Log::info($sifra);
         if($sifra===0)
         {
             header('location: ' . App::config('url') . 'prijava/odjava' );
@@ -122,15 +126,51 @@ class PacijentController extends AutorizacijaController
         Pacijent::delete($sifra);
         header('location: ' . App::config('url') . 'pacijent/index' );
     }
-
+    
     private function kontrolaPromjena()
     {
-        return $this->kontrolaImeprezime() && $this->kontrolaTelefon() && $this->kontrolaAdresa();
+        return $this->kontrolaImeprezime() && $this->kontrolaTelefon() && $this->kontrolaAdresa()
+        && $this->kontrolaoib();
     }
 
     private function kontrola()
     {
-        return $this->kontrolaImeprezime() && $this->kontrolaTelefon() && $this->kontrolaAdresa();
+        return $this->kontrolaImeprezime() && $this->kontrolaTelefon() && $this->kontrolaAdresa()
+        && $this->kontrolaoib();
+    }
+
+    private function kontrolaoib() // ovo radi
+    {
+        $oib=$this->e->oib;
+        if (strlen($oib) != 11 || !is_numeric($oib)) {
+            $this->poruka='OIB needs to have 11 numbers!';
+            return false;
+        }
+    
+        $a = 10;
+    
+        for ($i = 0; $i < 10; $i++) {
+    
+            $a += (int)$oib[$i];
+            $a %= 10;
+    
+            if ( $a == 0 ) { $a = 10; }
+    
+            $a *= 2;
+            $a %= 11;
+    
+        }
+    
+        $kontrolni = 11 - $a;
+    
+        if ( $kontrolni == 10 ) { $kontrolni = 0; }
+    
+        if($kontrolni != intval(substr($oib, 10, 1), 10))
+        {
+            $this->poruka='OIB is not mathematically correct!';
+            return false;
+        }
+        return true;
     }
 
     private function kontrolaAdresa()
@@ -187,10 +227,11 @@ class PacijentController extends AutorizacijaController
 
         return true;
     }
-    private function pocetniPodaci()
+    public function pocetniPodaci()
     {
         //e kao element
         $e = new stdClass();
+        $e->sifra='';
         $e->imeprezime='';
         $e->telefon='';
         $e->datumRodenja='';
@@ -198,6 +239,15 @@ class PacijentController extends AutorizacijaController
         $e->oib='';
         $e->pacijentKomentar='';
         return $e;
+    }
+
+    public function pripremiZaBazu()
+    {
+
+    }
+    public function pripremiZaView()
+    {
+
     }
 
 }

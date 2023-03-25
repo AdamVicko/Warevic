@@ -18,9 +18,11 @@ class Pacijent
                 a.adresa ,
                 a.oib ,
                 a.pacijentKomentar ,
-                count(b.sifra) as prikupljen
+                count(b.sifra) as prikupljen,
+                count(c.sifra) as isporucen
         from pacijent a
-        left join prikup b on a.sifra = b.pacijent 
+        left join prikup b on a.sifra = b.pacijent
+        left join isporuka c on a.sifra = c.pacijent
         group by a.imeprezime ,
                 a.telefon ,
                 a.datumRodenja ,
@@ -96,4 +98,5 @@ class Pacijent
         ]);
         $izraz->execute();
     }
+
 }
