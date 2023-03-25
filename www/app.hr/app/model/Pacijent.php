@@ -99,4 +99,5 @@ class Pacijent
         $izraz->execute();
     }
 
+
 }

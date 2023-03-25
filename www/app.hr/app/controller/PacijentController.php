@@ -139,6 +139,8 @@ implements ViewSucelje
         && $this->kontrolaoib();
     }
 
+
+
     private function kontrolaoib() // ovo radi
     {
         $oib=$this->e->oib;

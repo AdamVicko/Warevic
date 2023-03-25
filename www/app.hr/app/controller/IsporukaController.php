@@ -16,7 +16,7 @@ implements ViewSucelje
     {
         parent::__construct(); // pozivam parent construct da ode provjerit u autorizacijacontroller dal ima ovlasti
         $this->nf = new NumberFormatter('hr-HR',NumberFormatter::DECIMAL); // format za prikaz broja(radni sat)
-        $this->nf->setPattern('###,##0.00');
+        $this->nf->setPattern('###.##0.00');
     }
 
     public function index()
@@ -160,7 +160,7 @@ implements ViewSucelje
     private function kontrola()
     {
         $this->kontrolaimeprezime();
-        $this->kontrolaDatumPrikupa();
+        $this->kontroladatumIsporuke();
         $this->kontrolaadresa();
         $this->kontrolaradnisat();
         $this->kontrolaSerijskiKod();
@@ -216,10 +216,10 @@ implements ViewSucelje
             throw new Exception();
         }
     }
-    private function kontrolaDatumPrikupa()
+    private function kontroladatumIsporuke()
     {
 
-        $s = $this->e->datumPrikupa;
+        $s = $this->e->datumIsporuke;
         if(strlen(trim($s))===0)
         {
             $this->poruka='Collection date is mandatory!';

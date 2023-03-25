@@ -81,13 +81,13 @@ class Isporuka
 
         $sifraKoncentratorKisika = $veza->lastInsertId();//sifra za koncentrator kisika
         $izraz=$veza->prepare('
-        insert into isporuka(datumPrikupa,pacijent,koncentratorKisika)
-        values (:datumPrikupa,:pacijent,:koncentratorKisika)
+        insert into isporuka(datumIsporuke,pacijent,koncentratorKisika)
+        values (:datumIsporuke,:pacijent,:koncentratorKisika)
         ');
 
         $izraz->execute(
             [
-                'datumPrikupa'=>$parametri['datumPrikupa'],
+                'datumIsporuke'=>$parametri['datumIsporuke'],
                 'pacijent'=>$sifraPacijent,
                 'koncentratorKisika'=>$sifraKoncentratorKisika
             ]);
@@ -129,7 +129,7 @@ class Isporuka
 
 
         $izraz = $veza->prepare('
-            select koncentratoKisika from prikup where sifra=:sifa; 
+            select koncentratoKisika from isporuka where sifra=:sifa; 
         ');//dvotocke moraju odgovarat vrijednosti name od inputa
         $izraz->execute([
             'sifra'=>$parametri['sifra']

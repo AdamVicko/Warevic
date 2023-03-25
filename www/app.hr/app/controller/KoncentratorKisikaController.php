@@ -12,7 +12,7 @@ class KoncentratorKisikaController extends AutorizacijaController
     {
         parent::__construct(); // pozivam parent construct da ode provjerit u autorizacijacontroller dal ima ovlasti
         $this->nf = new NumberFormatter('hr-HR',NumberFormatter::DECIMAL); // format za prikaz broja(radni sat)
-        $this->nf->setPattern('####,##0');
+        $this->nf->setPattern('####.##0');
     }
     public function index()
     {
