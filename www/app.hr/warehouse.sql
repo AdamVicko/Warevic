@@ -79,7 +79,8 @@ alter table prikup add foreign key (koncentratorKisika) references koncentratorK
 insert into pacijent (sifra,imeprezime,telefon,datumRodenja,adresa,oib,pacijentKomentar)
 values
 (null,'Bubo Basić','097 6444789','1965.03.26','Ivaundulica 588','83500348060',''),
-(null,'Ivo Mali','097 6444789','1990.03.26','Iva Guica 8','59452136896','');
+(null,'Ivo Mali','097 6444789','1990.03.26','Iva Guica 8','59452136896','')
+;
 
 
 insert into koncentratorKisika(sifra,serijskikod,radniSat,proizvodac,

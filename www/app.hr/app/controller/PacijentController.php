@@ -11,14 +11,38 @@ implements ViewSucelje
     private $e;
     private $poruka='';
 
+    public function dodajpolaznike()
+    {
+        for($i=0;$i<300;$i++){
+            Pacijent::create([
+                'imeprezime'=>'Prezime Pacijent' . $i,
+                'telefon' =>'',
+                'adresa' => '',
+                'oib'=>'',
+                'pacijentKomentar' => '',
+                'datumRodenja' => ''
+            ]);
+            echo $i . '<br>';
+        }
+
+        
+    }
 
     public function index() 
     {
-        $pacijent = Pacijent::read();
+        if(isset($_GET['uvjet']))
+        {
+            $uvjet = trim($_GET['uvjet']);
+        }else
+        {
+            $uvjet=''; // uvjet za search
+        }
+
         $this->view->render($this->viewPutanja . 'index',
         [
-            'podaci' => $pacijent,
-            'css' => 'pacijent.css'
+            'podaci' => Pacijent::read($uvjet),
+            'css' => 'pacijent.css',
+            'uvjet' => $uvjet // ucitavam uvjet
         ]);
 
     }

@@ -1,18 +1,28 @@
 
-<!--KORISTIM SAMO ZA PRIKUP KORSITIO BI I VISE DA IMAM ISTA POSTAVKE-->
+<!--KORISTIM SAMO ZA PRIKUP i isporuku KORSITIO BI I VISE DA IMAM ISTA POSTAVKE-->
     <a href="<?=APP::config('url')?><?=$entitet?>/promjena/<?=$p->sifra?>">
         <i class="bi bi-pencil"></i>
     </a>
     <?php if(App::admin()): //ako je auth admin?>
-    <a 
-            <?php if($entitet='prikup'): ?>
-                onclick="return confirm('Deleting <?=$p->imeprezime?> on <?=$p->datumPrikupa?> ? ')"
-            <?php else: ?>
-                onclick="return confirm('Deleting <?=$p->imeprezime?> on <?=$p->datumIsporuke?> ? ')"
+    
+            <?php if($entitet='isporuka'): ?>
+                <a
+                    onclick="return confirm('Deleting <?=$p->imeprezime?> on <?=$p->datumIsporuke?> ? ')"
+                    href="<?=APP::config('url')?><?=$entitet?>/izbrisi/<?=$p->sifra?>"
+                >
+                    <i class="bi bi-trash3" style="color: tomato;"></i>
+                </a>
+            <?php elseif($entitet='prikup'): ?>
+                <a
+                    onclick="return confirm('Deleting <?=$p->imeprezime?> on <?=$p->datumPrikupa?> ? ')"
+                    href="<?=APP::config('url')?><?=$entitet?>/izbrisi/<?=$p->sifra?>"
+                >
+                    <i class="bi bi-trash3" style="color: tomato;"></i>
+                </a>
+                
             <?php endif; ?>
-            href="<?=APP::config('url')?><?=$entitet?>/izbrisi/<?=$p->sifra?>">
-        <i class="bi bi-trash3" style="color: tomato;"></i>
-    </a>
+            
+       
     <?php else: ?>
         <i title="Only Admin can delete <?=$entitet?>" class="bi bi-trash3"  style="color: grey;"></i>
 <?php endif; ?>

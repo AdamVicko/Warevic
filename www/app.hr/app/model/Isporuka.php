@@ -31,9 +31,9 @@ class Isporuka
         $izraz = $veza->prepare('
         
         select 
-            a.sifra, a.datumIsporuke, b.sifra, b.imeprezime ,b.datumRodenja,
+            a.sifra, a.datumIsporuke, b.imeprezime ,b.datumRodenja,
             b.oib ,b.telefon ,b.adresa,b.pacijentKomentar, 
-            c.serijskiKod,c.radniSat,c.ocKomentar,c.sifra
+            c.serijskiKod,c.radniSat,c.ocKomentar
         from isporuka a 
             inner join pacijent b on a.pacijent = b.sifra  
             inner join koncentratorKisika c on a.koncentratorKisika = c.sifra

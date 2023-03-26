@@ -5,10 +5,12 @@ class Pacijent
 {
     //CRUD OPERACIJE
 
-    public static function read()
+    public static function read($uvjet='')
     {
 
-        $veza = DB::getInstance(); //read napravljen da nemogu brisati OC ako nije prikupljen
+        $uvjet = '%' . $uvjet . '%';
+
+        $veza = DB::getInstance(); //read napravljen da nemogu brisati OC ako nije prikupljen 
         $izraz = $veza->prepare('
         
         select a.sifra,
@@ -23,16 +25,22 @@ class Pacijent
         from pacijent a
         left join prikup b on a.sifra = b.pacijent
         left join isporuka c on a.sifra = c.pacijent
+        where concat(a.imeprezime, \' \', ifnull(a.oib,\'\'))
+        like :uvjet
         group by a.imeprezime ,
                 a.telefon ,
                 a.datumRodenja ,
                 a.adresa ,
                 a.oib ,
                 a.pacijentKomentar
-        order by a.imeprezime  asc;
+        order by a.imeprezime asc limit 20;
 
         ');
-        $izraz->execute();
+        $izraz->execute(
+            [
+                'uvjet' =>$uvjet
+            ]
+        );
         return $izraz->fetchAll();
     }
 
@@ -78,25 +86,67 @@ class Pacijent
             pacijentKomentar =:pacijentKomentar
         where sifra=:sifra
 
-
         ');//dvotocke moraju odgovarat vrijednosti name od inputa
         $izraz->execute($parametri);
     }
 
     public static function delete($sifra)
     {
-        
         $veza = DB::getInstance();
+
         $izraz = $veza->prepare('
-        
-            delete from pacijent
-            where sifra=:sifra
+
+            select pacijent 
+            from isporuka 
+            where sifra=:sifra;
         
         ');
         $izraz->execute([
             'sifra'=>$sifra
         ]);
-        $izraz->execute();
+
+        $izraz = $veza->prepare('
+        
+        delete from isporuka
+        where sifra=:sifra
+    
+        ');
+        $izraz->execute([
+            'sifra'=>$sifra
+        ]);
+        
+        $izraz = $veza->prepare('
+
+        select pacijent 
+        from prikup 
+        where sifra=:sifra;
+    
+        ');
+        $izraz->execute([
+            'sifra'=>$sifra
+        ]);
+
+        $izraz = $veza->prepare('
+        
+        delete from prikup
+        where sifra=:sifra
+
+        ');
+        $izraz->execute([
+            'sifra'=>$sifra
+        ]);
+
+
+        $izraz = $veza->prepare('
+        
+        delete from pacijent
+        where sifra=:sifra
+    
+        ');
+        $izraz->execute([
+            'sifra'=>$sifra
+        ]);
+
     }
 
 
