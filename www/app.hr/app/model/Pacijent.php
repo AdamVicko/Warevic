@@ -5,10 +5,12 @@ class Pacijent
 {
     //CRUD OPERACIJE
 
-    public static function read($uvjet='')
+    public static function read($uvjet='',$stranica)
     {
 
         $uvjet = '%' . $uvjet . '%';
+        $brps = App::config('brps');
+        $pocetak = ($stranica * $brps) - $brps;
 
         $veza = DB::getInstance(); //read napravljen da nemogu brisati OC ako nije prikupljen 
         $izraz = $veza->prepare('
@@ -33,14 +35,10 @@ class Pacijent
                 a.adresa ,
                 a.oib ,
                 a.pacijentKomentar
-        order by a.imeprezime asc limit 20;
+        order by a.imeprezime asc limit :pocetak, :brps;
 
-        ');
-        $izraz->execute(
-            [
-                'uvjet' =>$uvjet
-            ]
-        );
+        '); // ne radi se execute zbog toga sto su mi pocetak i brps vrijednosti a ne parametri te ih execute nece odradit kao sto bi uvjet
+        $izraz->bindValue('pocetak',$pocetak, PDO::PARAM_INT);
         return $izraz->fetchAll();
     }
 
@@ -135,7 +133,6 @@ class Pacijent
         $izraz->execute([
             'sifra'=>$sifra
         ]);
-
 
         $izraz = $veza->prepare('
         

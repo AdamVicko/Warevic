@@ -38,10 +38,19 @@ implements ViewSucelje
             $uvjet=''; // uvjet za search
         }
 
+        if(isset($_GET['stranica']))
+        {
+            $stranica = $_GET['stranica'];
+        }else
+        {
+            $stranica=1; // uvjet za search
+        }
+
         $this->view->render($this->viewPutanja . 'index',
         [
-            'podaci' => Pacijent::read($uvjet),
+            'podaci' => Pacijent::read($uvjet,$stranica),
             'css' => 'pacijent.css',
+            'stranica' => $stranica,
             'uvjet' => $uvjet // ucitavam uvjet
         ]);
 
