@@ -1,70 +1,31 @@
 
+
 <fieldset class="border p-2">
-  <legend class="float-none w-auto"><h1><?=$legend?></h1></legend>
-    <form class="row g-3" id="registrationForm" action="" method="post">
+  <legend class="float-none w-auto"><h1>New Delivery</h1></legend>
+    <form class="row g-3" id="registrationForm" action="<?php echo App::config('url') ?>isporuka/promjena/<?=$e->sifra?>" method="post">
+        <div class="d-grid col">
+            <div class="col-md-11">
+                <?php 
+                echo App::inputText('datumIsporuke',$e->datumIsporuke);
+                ?>
+            </div>
+        </div>
         <div class="d-grid col">
             <div class="col-md-11">
                 <?php   
                 echo App::inputText('datumIsporuke',$e->datumIsporuke);
                 ?>
             </div>
-            <div class="col-md-11">
-                <?php   
-                echo App::inputText('serijskiKod',$e->serijskiKod);
-                ?>
-            </div>
-            <div class="col-md-11">
-                <?php   
-                echo App::inputText('radniSat',$e->radniSat);
-                ?>
-            </div>
-            <div class="col-md-11"> 
-                <?php   
-                echo App::inputText('ocKomentar',$e->ocKomentar);
-                ?>
-            </div>
-        </div>
-        <div class="d-grid col">
-            <div class="col-md-11">
-                <?php   
-                echo App::inputText('imeprezime',$e->imeprezime);
-                ?>
-            </div>
-            <div class="col-md-11">
-                <?php   
-                echo App::inputText('adresa',$e->adresa);
-                ?>
-            </div>
-            <div class="col-md-11">
-                <?php   
-                echo App::inputText('datumRodenja',$e->datumRodenja);
-                ?>
-            </div>
-            <div class="col-md-11">
-                <?php   
-                echo App::inputText('oib',$e->oib);
-                ?>
-            </div>
-            <div class="col-md-11">
-                <?php   
-                echo App::inputText('telefon',$e->telefon);
-                ?>
-            </div>
-            <div class="col-md-11">
-                <?php   
-                echo App::inputText('pacijentKomentar',$e->pacijentKomentar);
-                ?>
-            </div>
         </div>
         <hr>
-          <?=$poruka?>
+
             <div class="row" style="margin-top: 50px;">
                 <div class="d-grid col">
                     <button type="submit" class="btn btn-success" 
-                            value="<?=$akcija?>"><?=$akcija?></button>
+                            value="Spremi">Spremi</button>
                 </div>
                 <div class="d-grid col">
-                    <a href="<?=App::config('url')?>isporuka/index"
+                    <a href="<?=App::config('url')?>prikup/index"
                         class="btn btn-danger">Cancel</a>
                 </div>
             </div>

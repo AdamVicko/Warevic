@@ -30,6 +30,19 @@ implements ViewSucelje
 
     public function index() 
     {
+        $poruka='';
+        if(isset($_GET['p']))
+        {
+            switch ((int)$_GET['p']) {
+                case 1:
+                    $poruka=' To add delivery first you need to create Patient!';
+                    break;
+                
+                default:
+                    $poruka='';
+                    break;
+            }
+        }
         if(isset($_GET['uvjet']))
         {
             $uvjet = trim($_GET['uvjet']);
@@ -40,18 +53,26 @@ implements ViewSucelje
 
         if(isset($_GET['stranica']))
         {
-            $stranica = $_GET['stranica'];
+            $stranica = (int)$_GET['stranica'];
+            if($stranica < 1)
+            { 
+                $stranica =1;
+            }
         }else
         {
             $stranica=1; // uvjet za search
         }
 
+        $up = Pacijent::ukupnoPacijenata($uvjet);
+        $zadnja = (int)ceil($up/App::config('brps')); // ceil= zaokruzi na prvi veci cijeli broj ako je decimalno
         $this->view->render($this->viewPutanja . 'index',
         [
             'podaci' => Pacijent::read($uvjet,$stranica),
             'css' => 'pacijent.css',
             'stranica' => $stranica,
-            'uvjet' => $uvjet // ucitavam uvjet
+            'uvjet' => $uvjet, // ucitavam uvjet
+            'zadnja' => $zadnja,
+            'poruka' => $poruka
         ]);
 
     }

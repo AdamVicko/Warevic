@@ -5,340 +5,110 @@ extends AutorizacijaController
 implements ViewSucelje
 {
 
-    private $viewPutanja = 'privatno'. 
+    private $viewPutanja = 'privatno' . 
     DIRECTORY_SEPARATOR . 'isporuka' . 
     DIRECTORY_SEPARATOR;
     private $e;
-    private $poruka='';
-    private $nf; // number formater dostupan u svim metodama ove klase 
-    
+    private $poruke=[];
+
+
+
     public function __construct()
     {
-        parent::__construct(); // pozivam parent construct da ode provjerit u autorizacijacontroller dal ima ovlasti
-        $this->nf = new NumberFormatter('hr-HR',NumberFormatter::DECIMAL); // format za prikaz broja(radni sat)
-        $this->nf->setPattern('###.##0.00');
-    }
+        parent::__construct();
+   }
+
 
     public function index()
     {
-       $isporuka = Isporuka::read();
-       foreach($isporuka as $p)
-        {
-            if($p->radniSat==null)
-            {
-                $p->radniSat = $this->nf->format(0);
-            }
-            else
-            {
-                $p->radniSat = $this->nf->format($p->radniSat);
-            }
-        }
 
-
-        $this->view->render($this->viewPutanja . 'index',
-        [
-            'podaci' => $isporuka,
-            'css' => 'isporuka.css'
-        ]);
+     $this->view->render($this->viewPutanja . 
+            'index',[
+                'podaci'=>Isporuka::read(),
+            ]);   
     }
+
+
 
     public function novi()
     {
-        if($_SERVER['REQUEST_METHOD']==='GET')
+        $pacijentSifra = Pacijent::prviPacijent();
+        if($pacijentSifra==0)
         {
-            $this->view->render($this->viewPutanja . 'detalji', 
-            [
-                'legend'=>'New Delivery',
-                'akcija'=>'Create',
-                'poruka'=>'Fullfil needed data!',
-                'e'=>$this->pocetniPodaci()
-            ]);
-            return;
+            header('location: ' . App::config('url') . 'pacijent/index?p=1');
         }
-        $this->pripremiZaView();//i da je metoda prazna slobodno ju mogu pozvat!!
-        //ovdje sam siguran da nije GET,za nas je onda POST
-        
-
-        try {
-            $this->kontrola();
-            $this->pripremiZaBazu();
-            Isporuka::create((array)$this->e);//sve ok spremi u bazu
-            header('location:' . App::config('url') . 'isporuka/index');
-        } catch (\Exception $th) {
-                $this->view->render($this->viewPutanja . 'detalji' , 
-            [
-                'legend'=>'New Collection',
-                'akcija'=>'Create',
-                'poruka'=>$this->poruka,
-                'e'=>$this->e
-            ]);
-        }
-       
-       //Log::info($this->e);
-       //Log::info($this->poruka);
-
-       //kontrola podataka
-       /*if(!$this->kontrola())
+        $koncentratorKisikaSifra = KoncentratorKisika::prviKoncentrator();
+        if($koncentratorKisikaSifra==0)
         {
-            $this->view->render($this->viewPutanja .
-            'detalji',
+            header('location: ' . App::config('url') . 'koncentratorKisika/index');
+        }
+        /* RADI I NA OVAJ NACIN
+        header('location: ' . App::config('url') . 'isporuka/promjena' .
+        Isporuka::create(
             [
-                'legend'=>'New Collection',
-                'akcija'=>'Dodaj',
-                'poruka'=>'Popunite trazene podatke',
-                'e'=>$this->e
-             ]);
-             return;
-        }*/
-      
+                'datumIsporuke' => '',
+                'pacijent' => $pacijentSifra,
+                'koncentratorKisika' => $koncentratorKisikaSifra
+            ]
+        ));*/
+        $this->promjena(Isporuka::create(
+            [
+                'datumIsporuke' => '',
+                'pacijent' => $pacijentSifra,
+                'koncentratorKisika' => $koncentratorKisikaSifra
+            ]
+        ));
        
-
-        
-       
-
-      /*  $this->view->render($this->viewPutanja . 'novi',
-        [
-            'e'=>$this->pocetniPodaci(),
-            'poruka'=>'Collection added!'
-        ]);*/
     }
 
-    public function promjena($sifra=0)
+   
+
+    public function promjena($sifra='')
     {
-        if($_SERVER['REQUEST_METHOD']==='GET'){
-             $this->e = Isporuka::readOne($sifra);
-             $this->provjeraIntParametra($sifra);
-             if($this->e==null){
-                 header('location: ' . App::config('url') . 'prijava/odjava');
-                 return;
-             }
- 
-             $this->view->render($this->viewPutanja .
-             'detalji',[
-                 'legend'=>'Modify delivery',
-                 'akcija'=>'Modify',
-                 'poruka'=>'Modify data',
-                 'e'=>$this->e
-             ]);
-             return;
-         }
-         //sada ide POST
- 
-         $this->pripremiZaView();
-            
-            try {
-             $this->e->sifra=$sifra; // POSTO NISAM NA POCETNIM PARAMETRIMA STAVIO SIFRU OVDJE JU DEKLARIRAM
-             $this->kontrola();
-             $this->pripremiZaBazu();
-             Isporuka::update((array)$this->e);
-             header('location:' . App::config('url') . 'isporuka');
-            } catch (\Exception $th) {
-             $this->view->render($this->viewPutanja .
-             'detalji',[
-                 'legend'=>'Delivery modify error!',
-                 'akcija'=>'Modify',
-                 'poruka'=>$this->poruka . ' ' . $th->getMessage(),
-                 'e'=>$this->e
-             ]);
-            }
+
+        $this->e = Isporuka::readOne($sifra);
+        $this->view->render($this->viewPutanja . 
+        'detalji',[
+            'e'=> $this->e,
+        ]);   
+
+
     }
 
-    public function izbrisi($sifra=0)
-    {
+    public function izbrisi($sifra=0){
         $sifra=(int)$sifra;
-        if($sifra==0)
-        {
-            header('location: ' . App::config('url') . 'prijava/odjava' );
+        if($sifra===0){
+            header('location: ' . App::config('url') . 'prijava/odjava');
             return;
         }
         Isporuka::delete($sifra);
-        header('location: ' . App::config('url') . 'isporuka/index' );
+        header('location: ' . App::config('url') . 'isporuka/index');
     }
 
-
-    //ako nesto ne valja vratiti na view s odgovorom
-    private function kontrola()
-    {
-        $this->kontrolaimeprezime();
-        $this->kontroladatumIsporuke();
-        $this->kontrolaadresa();
-        $this->kontrolaradnisat();
-        $this->kontrolaSerijskiKod();
-        $this->kontrolatelefon();
-        $this->kontrolaoib();
-    }
-
-    private function kontrolaimeprezime()
+   
+    public function pripremiZaView()
     {
 
-        $s = $this->e->imeprezime;
-        if(strlen(trim($s))===0)
-        {
-            $this->poruka='Patient Name and Surname are mandatory!';
-            throw new Exception();
-        }
-
-        if(strlen(trim($s)) > 50)
-        {
-            $this->poruka='Must not have more than 50 characters in Patient Name and Surname!';
-            throw new Exception();
-        }
-    }
-    private function kontrolatelefon()
-    {
-
-        $s = $this->e->telefon;
-        if(strlen(trim($s))===0)
-        {
-            $this->poruka='Patient telephone is mandatory!';
-            throw new Exception();
-        }
-
-        if(strlen(trim($s)) > 50)
-        {
-            $this->poruka='Must not have more than 50 characters in Patient telephone!';
-            throw new Exception();
-        }
-    }
-    private function kontrolaadresa()
-    {
-
-        $s = $this->e->adresa;
-        if(strlen(trim($s))===0)
-        {
-            $this->poruka='Patient adres is mandatory!';
-            throw new Exception();
-        }
-
-        if(strlen(trim($s)) > 50)
-        {
-            $this->poruka='Must not have more than 50 characters in Patient adres!';
-            throw new Exception();
-        }
-    }
-    private function kontroladatumIsporuke()
-    {
-
-        $s = $this->e->datumIsporuke;
-        if(strlen(trim($s))===0)
-        {
-            $this->poruka='Collection date is mandatory!';
-            throw new Exception();
-        }
-
-        if(strlen(trim($s)) > 50)
-        {
-            $this->poruka='Must not have more than 50 characters in Collection date!';
-            throw new Exception();
-        }
-    }
-    private function kontrolaoib()
-    {
-        $oib=$this->e->oib;
-        if (strlen($oib) != 11 || !is_numeric($oib)) {
-            $this->poruka='OIB needs to have 11 numbers!';
-            throw new Exception();
-        }
-    
-        $a = 10;
-    
-        for ($i = 0; $i < 10; $i++) {
-    
-            $a += (int)$oib[$i];
-            $a %= 10;
-    
-            if ( $a == 0 ) { $a = 10; }
-    
-            $a *= 2;
-            $a %= 11;
-    
-        }
-    
-        $kontrolni = 11 - $a;
-    
-        if ( $kontrolni == 10 ) { $kontrolni = 0; }
-    
-        if($kontrolni != intval(substr($oib, 10, 1), 10))
-        {
-            $this->poruka='OIB is not mathematically correct!';
-            throw new Exception();
-        }
-    }
-    
-    private function kontrolaSerijskiKod()
-    {
-        $s = $this->e->serijskiKod;
-        if(strlen(trim($s))===0)
-        {
-            $this->poruka='OC Serial number is mandatory!';
-            throw new Exception();
-        }
-
-        if(strlen(trim($s)) > 50)
-        {
-            $this->poruka='Must not have more than 50 characters in Serial number!';
-            throw new Exception();
-        }
-    }
-    private function kontrolaradnisat()
-    {
-        $s = $this->nf->parse($this->e->radniSat); //provjera jel u floaatu(double)
-        //Log::info($s);
-        if(!$s)
-        {
-            $this->poruka='OC Working hours are not in good format!';
-            throw new Exception();
-        }
-        if($s<=0)
-        {
-            $this->poruka='OC Working hours must be greater than zero!';
-            throw new Exception();
-        }
-        if($s>100000)
-        {
-            $this->poruka='OC Working hours must be lower then one hundred thousand!';
-            throw new Exception();
-        }
-        if(strlen(trim($s))===0)
-        {
-            $this->poruka='OC Working hour is mandatory!';
-            throw new Exception();
-        }
-
-        if(strlen(trim($s)) > 50)
-        {
-            $this->poruka='Must not have more than 50 characters in Working hour!';
-            throw new Exception();
-        }
     }
 
     public function pripremiZaBazu()
     {
-        $this->e->radniSat = $this->nf->parse($this->e->radniSat);  //priprema za bazu
+  
     }
 
-    public function pripremiZaView()
+    public function kontrolaNovi()
     {
-        $this->e = (object)$_POST; // prebacim post u objekt i posaljem na view koji prima taj objekt
+        return true;
     }
+   
 
     public function pocetniPodaci()
     {
-        //e kao element
         $e = new stdClass();
-        $e->sifra='';
         $e->datumIsporuke='';
-        $e->serijskiKod='';
-        $e->imeprezime='';
-        $e->radniSat='';
-        $e->adresa='';
-        $e->ocKomentar='';
-        $e->telefon='';
-        $e->pacijentKomentar='';
-        $e->datumRodenja='';
-        $e->oib='';
+        $e->imeprezime=0;
+        $e->serijskiKod=0;
         return $e;
     }
 
-    
 }

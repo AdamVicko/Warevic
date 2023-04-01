@@ -159,5 +159,18 @@ class KoncentratorKisika
         return $sifra>0;
     }
 
+    public static function prviKoncentrator()
+    {
+        $veza = DB::getInstance();
+        $izraz = $veza->prepare('
+        
+        select sifra from koncentratorKisika
+        order by sifra limit 1;
+
+        ');//dvotocke moraju odgovarat vrijednosti name od inputa
+        $izraz->execute();
+        $sifra=$izraz->fetchColumn();
+        return $sifra;
+    }
 
 }

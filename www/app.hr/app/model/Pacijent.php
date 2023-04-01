@@ -38,7 +38,12 @@ class Pacijent
         order by a.imeprezime asc limit :pocetak, :brps;
 
         '); // ne radi se execute zbog toga sto su mi pocetak i brps vrijednosti a ne parametri te ih execute nece odradit kao sto bi uvjet
-        $izraz->bindValue('pocetak',$pocetak, PDO::PARAM_INT);
+        $izraz->bindValue('pocetak',$pocetak, PDO::PARAM_INT); // param int tako da mi salje int a ne string
+        $izraz->bindValue('brps',$brps, PDO::PARAM_INT); // param int tako da mi salje int a ne string
+        $izraz->bindParam('uvjet', $uvjet);
+
+        $izraz->execute();
+
         return $izraz->fetchAll();
     }
 
@@ -57,6 +62,27 @@ class Pacijent
         ]);
         return $izraz->fetch();
     }
+
+    public static function ukupnoPacijenata($uvjet='')
+    {
+        $uvjet = '%' . $uvjet . '%';
+        $veza = DB::getInstance();
+        $izraz = $veza->prepare('
+        
+        select count(*)
+        from 
+        pacijent a
+        where concat(a.imeprezime, \' \', 
+        ifnull(a.oib,\' \'))
+        like :uvjet;
+        
+        ');
+        $izraz->execute([
+            'uvjet'=>$uvjet
+        ]);
+        return $izraz->fetchColumn();
+    }
+
 
     public static function create($parametri)
     {
@@ -144,6 +170,20 @@ class Pacijent
             'sifra'=>$sifra
         ]);
 
+    }
+
+    public static function prviPacijent()
+    {
+        $veza = DB::getInstance();
+        $izraz = $veza->prepare('
+        
+        select sifra from pacijent
+        order by sifra limit 1;
+
+        ');//dvotocke moraju odgovarat vrijednosti name od inputa
+        $izraz->execute();
+        $sifra=$izraz->fetchColumn();
+        return (int)$sifra;
     }
 
 
