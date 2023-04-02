@@ -1,28 +1,30 @@
 
-
 <fieldset class="border p-2">
-  <legend class="float-none w-auto"><h1>New Delivery</h1></legend>
-    <form class="row g-3" id="registrationForm" action="<?php echo App::config('url') ?>isporuka/promjena/<?=$e->sifra?>" method="post">
-        <div class="d-grid col">
-            <div class="col-md-11">
-                <?php 
-                echo App::inputText('datumIsporuke',$e->datumIsporuke);
-                ?>
-            </div>
-        </div>
+  <legend class="float-none w-auto"><h1><?=$legend?></h1></legend>
+    <form class="row g-3" id="registrationForm" action="" method="post">
         <div class="d-grid col">
             <div class="col-md-11">
                 <?php   
-                echo App::inputText('datumIsporuke',$e->datumIsporuke);
+                echo App::inputText('datumPrikupa',$e->datumPrikupa);
+                ?>
+            </div>
+            <div class="col-md-11">
+                <?php   
+                echo App::inputText('serijskiKod',$e->serijskiKod);
+                ?>
+            </div>
+            <div class="col-md-11">
+                <?php   
+                echo App::inputText('imeprezime',$e->imeprezime);
                 ?>
             </div>
         </div>
         <hr>
-
+          <?=$poruka?>
             <div class="row" style="margin-top: 50px;">
                 <div class="d-grid col">
                     <button type="submit" class="btn btn-success" 
-                            value="Spremi">Spremi</button>
+                            value="<?=$akcija?>"><?=$akcija?></button>
                 </div>
                 <div class="d-grid col">
                     <a href="<?=App::config('url')?>prikup/index"

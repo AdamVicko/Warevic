@@ -5,7 +5,7 @@ class Pacijent
 {
     //CRUD OPERACIJE
 
-    public static function read($uvjet='',$stranica)
+    public static function read($uvjet='',$stranica=1)
     {
 
         $uvjet = '%' . $uvjet . '%';
@@ -15,7 +15,7 @@ class Pacijent
         $veza = DB::getInstance(); //read napravljen da nemogu brisati OC ako nije prikupljen 
         $izraz = $veza->prepare('
         
-        select a.sifra,
+        select  a.sifra,
                 a.imeprezime ,
                 a.telefon ,
                 a.datumRodenja ,
@@ -29,7 +29,8 @@ class Pacijent
         left join isporuka c on a.sifra = c.pacijent
         where concat(a.imeprezime, \' \', ifnull(a.oib,\'\'))
         like :uvjet
-        group by a.imeprezime ,
+        group by a.sifra, 
+                a.imeprezime ,
                 a.telefon ,
                 a.datumRodenja ,
                 a.adresa ,
