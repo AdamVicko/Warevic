@@ -13,7 +13,11 @@ class Isporuka
             a.sifra, a.datumIsporuke, b.imeprezime, c.serijskiKod
         from isporuka a 
             inner join pacijent b on a.pacijent = b.sifra  
-            inner join koncentratorKisika c on a.koncentratorKisika = c.sifra  
+            inner join koncentratorKisika c on a.koncentratorKisika = c.sifra
+            group by 	a.sifra, 
+                        a.datumIsporuke,
+                        b.imeprezime,
+                        c.serijskiKod
         order by datumIsporuke asc;
         
         ');
@@ -21,6 +25,38 @@ class Isporuka
         return $izraz->fetchAll();
     }
 
+    public static function  koncentratorKisikaNaIsporuki($sifra)
+    {
+        $veza = DB::getInstance();
+        $izraz = $veza->prepare('
+        
+        select b.serijskiKod 
+        from isporuka a inner join 
+        koncentratorKisika b on a.koncentratorKisika =b.sifra 
+        where koncentratorKisika=:sifra;
+        
+        ');
+        $izraz->execute([
+            'sifra'=>$sifra
+        ]);
+        return $izraz->fetchAll();
+    }
+    public static function pacijentNaIsporuki($sifra)
+    {
+        $veza = DB::getInstance();
+        $izraz = $veza->prepare('
+        
+        select b.imeprezime 
+        from isporuka a inner join 
+        pacijent b on a.pacijent =b.sifra 
+        where pacijent=:sifra;
+        
+        ');
+        $izraz->execute([
+            'sifra'=>$sifra
+        ]);
+        return $izraz->fetchAll();
+    }
 
     public static function readOne($sifra)
     {
@@ -43,18 +79,19 @@ class Isporuka
         $izraz = $veza->prepare('
         
         insert into isporuka
-        (datumIsporuke,imeprezime,serijskiKod)
+        (datumIsporuke,pacijent,koncentratorKisika)
         values
-        (:datumIsporuke,:imeprezime,:serijskiKod);
+        (:datumIsporuke,:pacijent,:koncentratorKisika);
         
         ');
         $izraz->execute($parametri);
+        return $veza->lastInsertId();
     }
 
     public static function update($parametri)
     {
         Log::info($parametri);
-        unset($parametri['polaznici']);
+        unset($parametri['pacijent']);
         $veza = DB::getInstance();
         $izraz = $veza->prepare('
         
@@ -79,6 +116,88 @@ class Isporuka
         ');
         $izraz->execute([
             'sifra'=>$sifra
+        ]);
+    }
+
+
+    public static function postojiPacijentIsporuka($isporuka, $pacijent)
+    {   
+        $veza = DB::getInstance();
+        $izraz = $veza->prepare('
+        
+        select count(*) as ukupno 
+        from isporuka where pacijent=:pacijent 
+        
+        ');
+        $izraz->execute([
+            'isporuka'=>$isporuka,
+            'pacijent'=>$pacijent
+        ]);
+        $rez = (int)$izraz->fetchColumn();
+        return $rez>0;
+    }
+
+    public static function postojiKoncentratorKisikaIsporuka($isporuka, $koncentrator)
+    {   
+        $veza = DB::getInstance();
+        $izraz = $veza->prepare('
+        
+        select count(*) as ukupno 
+        from isporuka where koncentrator=:koncentrator
+        
+        ');
+        $izraz->execute([
+            'isporuka'=>$isporuka,
+            'koncentrator'=>$koncentrator
+        ]);
+        $rez = (int)$izraz->fetchColumn();
+        return $rez>0;
+
+    }
+
+    public static function dodajPacijentIsporuka($isporuka, $pacijent)
+    {   
+        $veza = DB::getInstance();
+        $izraz = $veza->prepare('
+        
+           insert into isporuka (grupa,polaznik)
+           values (:grupa, :polaznik)
+        
+        ');
+        $izraz->execute([
+            'isporuka'=>$isporuka,
+            'polaznik'=>$pacijent
+        ]);
+    }
+
+    public static function dodajKoncentratorKisikaIsporuka($isporuka, $koncentratorKisika)
+    {   
+        $veza = DB::getInstance();
+        $izraz = $veza->prepare('
+        
+           insert into clan (grupa,polaznik)
+           values (:grupa, :polaznik)
+        
+        ');
+        $izraz->execute([
+            'isporuka'=>$isporuka,
+            'polaznik'=>$koncentratorKisika
+        ]);
+    }
+
+
+    public static function obrisiPacijentIsporuka($isporuka, $pacijent)
+    {   
+        $veza = DB::getInstance();
+        $izraz = $veza->prepare('
+        
+           delete from clan where grupa=:grupa
+           and polaznik=:polaznik
+        
+        ');
+        $izraz->execute([
+            'isporuka'=>$isporuka,
+            'polaznik'=>$pacijent
         ]);
     }
 }

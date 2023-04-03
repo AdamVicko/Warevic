@@ -183,8 +183,8 @@ class Pacijent
 
         ');//dvotocke moraju odgovarat vrijednosti name od inputa
         $izraz->execute();
-        $sifra=$izraz->fetchColumn();
-        return (int)$sifra;
+        $imeprezime=$izraz->fetchColumn();
+        return (int)$imeprezime;
     }
 
 

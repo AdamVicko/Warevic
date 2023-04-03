@@ -2,7 +2,7 @@
 <h1>Deliveries</h1>
 
 <div class="d-grid gap-2 col-6 mx-auto" style="margin: 50px 0 0 0;">
-    <a href="novi" class="btn btn-primary">New delivery</a>
+    <a href="<?=App::config('url')?>isporuka/novi" class="btn btn-primary">New delivery</a>
 </div>
 
 <div class="table-responsive">
@@ -18,7 +18,7 @@
         <tbody>
             <?php foreach($podaci as $p): ?>
                 <tr>
-                    <td><?=$p->datumPrikupa?></td>
+                    <td><?=$p->datumIsporuke?></td>
                     <td><?=$p->imeprezime?></td>
                     <td><?=$p->serijskiKod?></td>
                     <td>

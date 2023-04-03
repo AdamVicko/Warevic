@@ -52,8 +52,8 @@ create table koncentratorKisika(
 create table isporuka(
     sifra int not null primary key auto_increment,
     datumIsporuke date not null,
-    pacijent int not null,
-    koncentratorKisika int not null
+    pacijent int,
+    koncentratorKisika int
 );
 
 create table prikup(

@@ -169,8 +169,8 @@ class KoncentratorKisika
 
         ');//dvotocke moraju odgovarat vrijednosti name od inputa
         $izraz->execute();
-        $sifra=$izraz->fetchColumn();
-        return $sifra;
+        $serijskiKod=$izraz->fetchColumn();
+        return $serijskiKod;
     }
 
 }

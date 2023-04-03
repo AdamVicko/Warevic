@@ -1,22 +1,42 @@
 
 <fieldset class="border p-2">
-  <legend class="float-none w-auto"><h1><?=$legend?></h1></legend>
-    <form class="row g-3" id="registrationForm" action="" method="post">
+  <legend class="float-none w-auto"><h1>Isporuka</h1></legend>
+    <form class="row g-3" id="registrationForm" action="<?php echo App::config('url') ?>isporuka/promjena/<?=$e->sifra?>" method="post">
         <div class="d-grid col">
             <div class="col-md-11">
                 <?php   
-                echo App::inputText('datumPrikupa',$e->datumPrikupa);
+                echo App::inputText('datumPrikupa',$e->datumIsporuke);
                 ?>
             </div>
             <div class="col-md-11">
-                <?php   
-                echo App::inputText('serijskiKod',$e->serijskiKod);
-                ?>
-            </div>
-            <div class="col-md-11">
-                <?php   
-                echo App::inputText('imeprezime',$e->imeprezime);
-                ?>
+                <div class="popispolaznika">
+                    <input type="text" id="uvjet" placeholder="Traži polaznika">    
+                    <div style="min-height: 20px;">
+                        <div style="font-size: 0.6rem;" id="poruka"></div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Ime i prezime</th>
+                                <th>Akcija</th>
+                            </tr>
+                        </thead>
+                        <tbody id="podaci">
+                            <?php foreach($e->pacijent as $p): ?>
+                            <tr>
+                                <td>
+                                    <?=$p->imeprezime?>
+                                </td>
+                                <td>
+                                    <a href="#" class="odabraniPolaznik" id="p_<?=$p->sifra?>">
+                                    <i class="bi bi-trash3"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
         <hr>
@@ -24,10 +44,10 @@
             <div class="row" style="margin-top: 50px;">
                 <div class="d-grid col">
                     <button type="submit" class="btn btn-success" 
-                            value="<?=$akcija?>"><?=$akcija?></button>
+                            value="Submit">Submit</button>
                 </div>
                 <div class="d-grid col">
-                    <a href="<?=App::config('url')?>prikup/index"
+                    <a href="<?=App::config('url')?>isporuka/odustani/<?=$e->sifra?>"
                         class="btn btn-danger">Cancel</a>
                 </div>
             </div>

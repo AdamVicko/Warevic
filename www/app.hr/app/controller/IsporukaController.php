@@ -25,52 +25,36 @@ implements ViewSucelje
 
      $this->view->render($this->viewPutanja . 
             'index',[
-                'podaci'=>$this->prilagodiPodatke(Isporuka::read()),
+                'podaci'=>Isporuka::read()
             ]);   
     }
 
-    private function prilagodiPodatke($isporuke)
-    {
-        foreach($isporuke as $g){
-         
-            if($g->datumIsporuke==null){
-                $g->datumIsporuke = 'Not defined';
-            }else{
-                $g->datumIsporuke=date('d. m. Y.',strtotime($g->datumpocetka));
-            }
-
-        }
-        return $isporuke;
-    }
-
-
     public function novi()
     {
+        $pacijentSifra = Pacijent::prviPacijent();
+        if($pacijentSifra==0){
+         header('location: ' . App::config('url') . 'pacijent/index');
+        }
+
+        $koncentratorSifra = KoncentratorKisika::prviKoncentrator();
+        if($koncentratorSifra==0){
+         header('location: ' . App::config('url') . 'koncentratorKisika/index');
+        }
         
-       $pacijentSifra = Pacijent::prviPacijent();
-       if($pacijentSifra==0){
-        header('location: ' . App::config('url') . 'pacijent?p=1');
-       }
-       $koncentratorKisikaSifra = KoncentratorKisika::prviKoncentrator();
-       if($koncentratorKisikaSifra==0){
-        header('location: ' . App::config('url') . 'koncentratorKisika?p=1');
-       }
        /*
         header('location: ' . 
-        App::config('url') . 'grupa/promjena/' .
-        Grupa::create([
-            'naziv'=>'',
-            'smjer'=>$smjerSifra,
-            'predavac'=>null,
-            'datumpocetka'=>null,
-            'maksimalnopolaznika'=>20
+        App::config('url') . 'Isporuka/promjena/' .
+        Isporuka::create([
+            'datumIsporuke'=>'',
+            'pacijent'=>null,
+            'koncentratorKisika'=>null
         ]));
         */
         $this->promjena(Isporuka::create([
             'datumIsporuke'=>'',
             'pacijent'=>$pacijentSifra,
-            'koncentratorKisika'=>$koncentratorKisikaSifra
-        ]));
+            'koncentratorKisika'=>$koncentratorSifra
+        ])); ///////////////////////////// tru si stao provjeri jel ti to radi bar da ucita kao i njegovo na videu zatim ide promjena!!!!!!!
     }
 
     public function odustani($sifra='')
@@ -78,106 +62,101 @@ implements ViewSucelje
         $e=Isporuka::readOne($sifra);
         
 
-        if($e->naziv=='' && 
-        $e->predavac==null && 
-        $e->datumpocetka==null &&
-        count($e->polaznici)==0){
+        if($e->datumpocetka=='' &&
+        $e->pacijent==null && 
+        $e->koncentratorKisika==null)
+        {
             Isporuka::delete($e->sifra);
-            
         }
-        header('location: ' . App::config('url') . 'grupa');
+        header('location: ' . App::config('url') . 'isporuka/index');
 
     }
 
     public function promjena($sifra='')
     {
 
-        parent::setCSSdependency([
-            '<link rel="stylesheet" href="' . App::config('url') . 'public/css/dependency/jquery-ui.css">'
-        ]);
-        parent::setJSdependency([
-            '<script src="' . App::config('url') . 'public/js/dependency/jquery-ui.js"></script>',
-            '<script>
-                let url=\'' . App::config('url') . '\';
-                let grupasifra=' . $sifra . ';
-            </script>'
-        ]);
-
         if($_SERVER['REQUEST_METHOD']==='GET'){
             $this->promjena_GET($sifra);
             return;
         }
 
-
         $this->e = (object)$_POST;
-        $this->e->polaznici=Grupa::polazniciNaGrupi($sifra);
+        $this->e->pacijent=Isporuka::pacijentNaIsporuki($sifra);
+        $this->e->koncentratorKisika=Isporuka::koncentratorKisikaNaIsporuki($sifra);
         try {
-            $odabraniSmjer = Smjer::readOne($this->e->smjer);
             $this->e->sifra=$sifra;
             $this->kontrola();
             $this->pripremiZaBazu();
-            Grupa::update((array)$this->e);
-            header('location:' . App::config('url') . 'grupa');
+            Isporuka::update((array)$this->e);
+            header('location:' . App::config('url') . 'isporuka/index');
            } catch (\Exception $th) {
             $this->view->render($this->viewPutanja .
             'detalji',[
                 'poruke'=>$this->poruke,
-                'smjer'=>$odabraniSmjer,
-                'predavaci'=>$this->definirajPredavace(),
+                'pacijent'=>$this->definirajPacijenta(),
+                'koncentratorKisika'=>$this->definirajKoncentratorKisika(),
                 'e'=>$this->e
             ]);
            }        
-
     }
 
     private function kontrola()
     {
-        $s = $this->e->naziv;
+        $s = $this->e->datumIsporuke;
         if(strlen(trim($s))===0){
-            $this->poruke['naziv']='Naziv obavezno';
+            $this->poruke['datumIsporuke']='Delivery date is mandatory!';
             throw new Exception();
         }
     }
-
     private function promjena_GET($sifra)
     {
-        $this->e = Grupa::readOne($sifra);
+        $this->e = Isporuka::readOne($sifra);
       
-
-       if($this->e->datumpocetka!=null){
-        $this->e->datumpocetka = date('Y-m-d',strtotime($this->e->datumpocetka));
+       if($this->e->datumIsporuke!=null){
+        $this->e->datumIsporuke = date('Y-m-d',strtotime($this->e->datumIsporuke));
        }
        $this->view->render($this->viewPutanja . 
        'detalji',[
            'e'=>$this->e,
-           'smjer'=>Smjer::readOne($this->e->smjer),
-           'predavaci'=>$this->definirajPredavace()
+           'pacijent'=>Pacijent::readOne($this->e->pacijent),
+           'koncentratorKisika'=>KoncentratorKisika::readOne($this->e->koncentratorKisika)
        ]); 
     }
 
-   private function definirajPredavace()
-   {
-    $predavaci = [];
-    $p = new stdClass();
-    $p->sifra=0;
-    $p->ime='Nije';
-    $p->prezime='Odabrano';
-    $predavaci[]=$p;
-    foreach(Predavac::read() as $predavac){
-     $predavaci[]=$predavac;
+    private function definirajKoncentratorKisika()
+    {
+     $koncentratori = [];
+     $p = new stdClass();
+     $p->sifra=0;
+     $p->serijskiKod='Not defined!';
+     $koncentratori[]=$p;
+     foreach(KoncentratorKisika::read() as $koncentrator){
+      $koncentratori[]=$koncentrator;
+     }
+     return $koncentratori;
     }
-    return $predavaci;
-   }
 
+    private function definirajPacijenta()
+    {
+     $pacijenti = [];
+     $p = new stdClass();
+     $p->sifra=0;
+     $p->imeprezime='Not defined!';
+     $pacijenti[]=$p;
+     foreach(Pacijent::read() as $pacijent){
+      $pacijenti[]=$pacijent;
+     }
+     return $pacijenti;
+    }
 
-    public function brisanje($sifra=0){
+    public function izbrisi($sifra=0){
         $sifra=(int)$sifra;
         if($sifra===0){
-            header('location: ' . App::config('url') . 'index/odjava');
+            header('location: ' . App::config('url') . 'prijava/odjava');
             return;
         }
-        Grupa::delete($sifra);
-        header('location: ' . App::config('url') . 'grupa/index');
+        Isporuka::delete($sifra);
+        header('location: ' . App::config('url') . 'isporuka/index');
     }
 
    
@@ -187,11 +166,15 @@ implements ViewSucelje
 
     public function pripremiZaBazu()
     {
-        if($this->e->predavac==0){
-            $this->e->predavac=null;
+
+        if($this->e->imeprezime==''){
+            $this->e->imeprezime=null;
         }
-        if($this->e->datumpocetka==''){
-            $this->e->datumpocetka=null;
+        if($this->e->serijskiKod==0){
+            $this->e->serijskiKod=null;
+        }
+        if($this->e->datumIsporuke==''){
+            $this->e->datumIsporuke=null;
         }
    
     }
@@ -201,41 +184,70 @@ implements ViewSucelje
     public function pocetniPodaci()
     {
         $e = new stdClass();
-        $e->naziv='';
-        $e->smjer=0;
-        $e->predavac=0;
-        $e->datumpocetka='';
-        $e->maksimalnopolaznika=20;
+        $e->datumIsporuke='';
+        $e->imeprezime=0;
+        $e->serijskiKod=0;
         return $e;
     }
 
-    public function dodajpolaznik()
+    public function dodajKoncentratorKisika()
     {
         //prvo se trebala pozabaciti postoji li u $_GET
         // traženi parametri
         $res = new stdClass();
-        if(!Grupa::postojiPolaznikGrupa($_GET['grupa'],
-                    $_GET['polaznik'])){
-            Grupa::dodajPolaznikGrupa($_GET['grupa'],
-                    $_GET['polaznik']);
+        if(!Isporuka::postojiKoncentratorKisikaIsporuka($_GET['Isporuka'],
+                    $_GET['koncentratorKisika'])){
+                        Isporuka::postojiKoncentratorKisikaIsporuka($_GET['Isporuka'],
+                    $_GET['koncentratorKisika']);
             $res->error=false;
-            $res->description='Uspješno dodano';
+            $res->description='Added succesfully!';
                     }else{
                         $res->error=true;
-                        $res->description='Polaznik već postoji na grupi';
+                        $res->description='That is already selected Oxygen Concentrator!';
                     }
 
                     header('Content-Type: application/json; charset=utf-8');
                     echo json_encode($res,JSON_NUMERIC_CHECK);
     }
 
-    public function obrisipolaznik()
+    public function dodajPacijenta()
+    {
+        //prvo se trebala pozabaciti postoji li u $_GET
+        // traženi parametri
+        $res = new stdClass();
+        if(!Isporuka::postojiPacijentIsporuka($_GET['Isporuka'],
+                    $_GET['pacijent'])){
+                        Isporuka::postojiPacijentIsporuka($_GET['Isporuka'],
+                    $_GET['pacijent']);
+            $res->error=false;
+            $res->description='Added succesfully!';
+                    }else{
+                        $res->error=true;
+                        $res->description='That is already selected patient!';
+                    }
+
+                    header('Content-Type: application/json; charset=utf-8');
+                    echo json_encode($res,JSON_NUMERIC_CHECK);
+    }
+
+    public function obrisipacijent()
     {
         //prvo se trebala pozabaciti postoji li u $_GET
         // traženi parametri
 
-        Grupa::obrisiPolaznikGrupa($_GET['grupa'],
-                    $_GET['polaznik']);
+        Isporuka::obrisiPacijentIsporuka($_GET['isporuka'],
+                    $_GET['pacijent']);
                
     }
+
+    public function obrisiKoncentratorKisika()
+    {
+        //prvo se trebala pozabaciti postoji li u $_GET
+        // traženi parametri
+
+        Isporuka::obrisiPacijentIsporuka($_GET['isporuka'],
+                    $_GET['koncentratorKisika']);
+               
+    }
+    
 }
