@@ -16,6 +16,20 @@ class KoncentratorKisikaController extends AutorizacijaController
     }
     public function index()
     {
+        $poruka='';
+        if(isset($_GET['p']))
+        {
+            switch ((int)$_GET['p']) {//stavljamo int ispred jer podatak dolazi sa http-a kao string!
+                case 2:
+                    $poruka=' To add delivery first you need to create Oxygen Concentrator!';
+                    break;
+                
+                default:
+                    $poruka='';
+                    break;
+            }
+        }
+
         $koncentratorKisika = KoncentratorKisika::read();
         foreach($koncentratorKisika as $p)
         {
@@ -31,7 +45,8 @@ class KoncentratorKisikaController extends AutorizacijaController
         $this->view->render($this->viewPutanja.'index',
         [
             'podaci' => $koncentratorKisika,
-            'css' => 'koncentratorKisika.css'
+            'css' => 'koncentratorKisika.css',
+            'poruka' => $poruka
         ]);
     }
     public function novi()

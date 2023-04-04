@@ -33,15 +33,15 @@ implements ViewSucelje
     {
         $pacijentSifra = Pacijent::prviPacijent();
         if($pacijentSifra==0){
-         header('location: ' . App::config('url') . 'pacijent/index');
+         header('location: ' . App::config('url') . 'pacijent/index?p=1');// saljjem poruke ovim putem
         }
 
         $koncentratorSifra = KoncentratorKisika::prviKoncentrator();
         if($koncentratorSifra==0){
-         header('location: ' . App::config('url') . 'koncentratorKisika/index');
+         header('location: ' . App::config('url') . 'koncentratorKisika/index?p=2');// saljjem poruke ovim putem
         }
         
-       /*
+       /*Moze i ovako
         header('location: ' . 
         App::config('url') . 'Isporuka/promjena/' .
         Isporuka::create([
@@ -52,7 +52,7 @@ implements ViewSucelje
         */
         $this->promjena(Isporuka::create([
             'datumIsporuke'=>'',
-            'pacijent'=>$pacijentSifra,
+            'pacijent'=>$pacijentSifra,// najbolje je tako a ne fiksno stavljat 1 jel se moze desit da se 1 izbrise!!
             'koncentratorKisika'=>$koncentratorSifra
         ])); ///////////////////////////// tru si stao provjeri jel ti to radi bar da ucita kao i njegovo na videu zatim ide promjena!!!!!!!
     }
@@ -62,7 +62,7 @@ implements ViewSucelje
         $e=Isporuka::readOne($sifra);
         
 
-        if($e->datumpocetka=='' &&
+        if(
         $e->pacijent==null && 
         $e->koncentratorKisika==null)
         {
@@ -75,7 +75,26 @@ implements ViewSucelje
     public function promjena($sifra='')
     {
 
-        if($_SERVER['REQUEST_METHOD']==='GET'){
+        $this->e = Isporuka::readOne($sifra);
+        $pacijenti = [];
+        $p = new stdClass();
+        $p->sifra=0;
+        $p->imeprezime='Not selected!';
+        $pacijenti[]=$p;
+        foreach(Pacijent::read() as $pacijent){
+        $pacijenti[]=$pacijent;
+    }
+
+        $this->view->render($this->viewPutanja .
+            'detalji',[
+                'e'=>$this->e,
+                'poruke'=>$this->poruke,
+                'pacijenti' => $pacijenti,
+                'pacijent'=>$this->definirajPacijenta(),
+                'koncentratorKisika'=>$this->definirajKoncentratorKisika()
+            ]);
+
+       /* if($_SERVER['REQUEST_METHOD']==='GET'){
             $this->promjena_GET($sifra);
             return;
         }
@@ -88,7 +107,7 @@ implements ViewSucelje
             $this->kontrola();
             $this->pripremiZaBazu();
             Isporuka::update((array)$this->e);
-            header('location:' . App::config('url') . 'isporuka/index');
+            header('location:' . App::config('url') . 'isporuka');
            } catch (\Exception $th) {
             $this->view->render($this->viewPutanja .
             'detalji',[
@@ -97,7 +116,7 @@ implements ViewSucelje
                 'koncentratorKisika'=>$this->definirajKoncentratorKisika(),
                 'e'=>$this->e
             ]);
-           }        
+           }     */   
     }
 
     private function kontrola()

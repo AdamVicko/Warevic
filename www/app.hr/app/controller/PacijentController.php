@@ -33,7 +33,7 @@ implements ViewSucelje
         $poruka='';
         if(isset($_GET['p']))
         {
-            switch ((int)$_GET['p']) {
+            switch ((int)$_GET['p']) {//stavljamo int ispred jer podatak dolazi sa http-a kao string!
                 case 1:
                     $poruka=' To add delivery first you need to create Patient!';
                     break;

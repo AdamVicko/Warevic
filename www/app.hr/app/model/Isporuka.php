@@ -67,10 +67,29 @@ class Isporuka
         where sifra=:sifra;
         
         ');
-        $izraz->execute([
+        $izraz->execute([ //dovuko sam osnovne podatke
             'sifra'=>$sifra
         ]);
-        return $izraz->fetch();
+
+        $isporuka = $izraz->fetch();// isporuka je std objekt
+
+        $izraz = $veza->prepare('
+        
+        select  a.sifra, b.imeprezime as pacijent , c.serijskiKod as koncentratorKisika 
+        from isporuka a 
+        inner join pacijent b on a.pacijent = b.sifra 
+        inner join koncentratorKisika c on a.koncentratorKisika = c.sifra  
+        where a.sifra=:sifra;
+        
+        ');
+        $izraz->execute([//tu sam dovuko sve o pacijentu da ga mogu prikazat na viewu
+            'sifra'=>$sifra
+        ]);
+
+        $isporuka->pacijenti = $izraz->fetchAll();//fetchAll vraca array std objekta!!!!! meni ce vratit samo jedan 0
+       
+        return $isporuka;
+
     }
 
     public static function create($parametri)
