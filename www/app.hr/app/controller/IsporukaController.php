@@ -66,16 +66,35 @@ implements ViewSucelje
         $e->pacijent==null && 
         $e->koncentratorKisika==null)
         {
-            Isporuka::delete($e->sifra);
+            Isporuka::delete($e->sifra);  
         }
         header('location: ' . App::config('url') . 'isporuka/index');
-
     }
 
     public function promjena($sifra='')
     {
-
-        $this->e = Isporuka::readOne($sifra);
+        if($_SERVER['REQUEST_METHOD']==='GET'){
+            $this->promjena_GET($sifra);
+            return;
+        }
+        $this->e = (object)$_POST;
+        try {
+            $this->e->sifra=$sifra;
+            $this->kontrola();
+            $this->pripremiZaBazu();
+            Isporuka::update((array)$this->e);
+            header('location:' . App::config('url') . 'isporuka');
+           } catch (\Exception $th) {
+            $this->view->render($this->viewPutanja .
+            'detalji',[
+                'poruke'=>$this->poruke,
+                'pacijent'=>$this->definirajPacijenta(),
+                'koncentratorKisika'=>$this->definirajKoncentratorKisika(),
+                'e'=>$this->e
+            ]);
+           }
+        
+        /*$this->e = Isporuka::readOne($sifra);
         $pacijenti = [];
         $p = new stdClass();
         $p->sifra=0;
@@ -92,7 +111,7 @@ implements ViewSucelje
                 'pacijenti' => $pacijenti,
                 'pacijent'=>$this->definirajPacijenta(),
                 'koncentratorKisika'=>$this->definirajKoncentratorKisika()
-            ]);
+            ]);*/
 
        /* if($_SERVER['REQUEST_METHOD']==='GET'){
             $this->promjena_GET($sifra);
@@ -144,15 +163,15 @@ implements ViewSucelje
 
     private function definirajKoncentratorKisika()
     {
-     $koncentratori = [];
+     $koncentratoriKisika = [];
      $p = new stdClass();
      $p->sifra=0;
      $p->serijskiKod='Not defined!';
-     $koncentratori[]=$p;
-     foreach(KoncentratorKisika::read() as $koncentrator){
-      $koncentratori[]=$koncentrator;
+     $koncentratoriKisika[]=$p;
+     foreach(KoncentratorKisika::read() as $koncentratorKisika){
+      $koncentratoriKisika[]=$koncentratorKisika;
      }
-     return $koncentratori;
+     return $koncentratoriKisika;
     }
 
     private function definirajPacijenta()
@@ -181,6 +200,7 @@ implements ViewSucelje
    
     public function pripremiZaView()
     {
+        $this->e = (object)$_POST;
     }
 
     public function pripremiZaBazu()

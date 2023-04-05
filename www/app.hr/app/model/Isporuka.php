@@ -82,14 +82,15 @@ class Isporuka
         where a.sifra=:sifra;
         
         ');
-        $izraz->execute([//tu sam dovuko sve o pacijentu da ga mogu prikazat na viewu
+        $izraz->execute([//tu sam dovuko sve o pacijentu i koncentratoru da ga mogu prikazat na viewu
             'sifra'=>$sifra
         ]);
-
+        
+        $isporuka->koncentratoriKisika = $izraz->fetchAll();
         $isporuka->pacijenti = $izraz->fetchAll();//fetchAll vraca array std objekta!!!!! meni ce vratit samo jedan 0
-       
+       //moram skuzit kako da mi vraca za ob DVA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         return $isporuka;
-
+        
     }
 
     public static function create($parametri)
@@ -179,13 +180,13 @@ class Isporuka
         $veza = DB::getInstance();
         $izraz = $veza->prepare('
         
-           insert into isporuka (grupa,polaznik)
-           values (:grupa, :polaznik)
+           insert into isporuka (isporuka,pacijent)
+           values (:isporuka, :pacijent)
         
         ');
         $izraz->execute([
             'isporuka'=>$isporuka,
-            'polaznik'=>$pacijent
+            'pacijent'=>$pacijent
         ]);
     }
 
@@ -194,13 +195,13 @@ class Isporuka
         $veza = DB::getInstance();
         $izraz = $veza->prepare('
         
-           insert into clan (grupa,polaznik)
-           values (:grupa, :polaznik)
+           insert into isporuka (isporuka,koncentratorKisika)
+           values (:isporuka, :koncentratorKisika)
         
         ');
         $izraz->execute([
             'isporuka'=>$isporuka,
-            'polaznik'=>$koncentratorKisika
+            'koncentratorKisika'=>$koncentratorKisika
         ]);
     }
 
@@ -210,13 +211,28 @@ class Isporuka
         $veza = DB::getInstance();
         $izraz = $veza->prepare('
         
-           delete from clan where grupa=:grupa
-           and polaznik=:polaznik
+           delete from clan where isporuka=:isporuka
+           and pacijent=:pacijent
         
         ');
         $izraz->execute([
             'isporuka'=>$isporuka,
-            'polaznik'=>$pacijent
+            'pacijent'=>$pacijent
+        ]);
+    }
+
+    public static function obrisiKoncentratorKisikaIsporuka($isporuka, $koncentratorKisika)
+    {   
+        $veza = DB::getInstance();
+        $izraz = $veza->prepare('
+        
+           delete from clan where isporuka=:isporuka
+           and koncentratorKisika=:koncentratorKisika
+        
+        ');
+        $izraz->execute([
+            'isporuka'=>$isporuka,
+            'koncentratorKisika'=>$koncentratorKisika
         ]);
     }
 }
