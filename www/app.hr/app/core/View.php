@@ -4,6 +4,8 @@ class View //ubacivanje sadrzaja u predlozak odnosno slanje sarzaja za svaki dru
 {
 
     private $predlozak;
+    private $CSSdependency=null;
+    private $JSdependency=null;
 
     public function __construct($predlozak='predlozak')
     {
@@ -12,6 +14,28 @@ class View //ubacivanje sadrzaja u predlozak odnosno slanje sarzaja za svaki dru
 
     public function render($phtmlStranica,$parametri=[])
     {
+        $cssDatoteka = BP . 'public' .
+        DIRECTORY_SEPARATOR . 'css' .
+        DIRECTORY_SEPARATOR . $phtmlStranica . '.css';
+        if(file_exists($cssDatoteka)){
+            $css=str_replace('\\','/',$phtmlStranica) . '.css';
+        }
+
+        $jsDatoteka = BP . 'public' .
+        DIRECTORY_SEPARATOR . 'js' .
+        DIRECTORY_SEPARATOR . $phtmlStranica . '.js';
+        if(file_exists($jsDatoteka)){
+            $js=str_replace('\\','/',$phtmlStranica) . '.js';
+        }
+
+        if($this->CSSdependency!=null){
+            $cssdependency = $this->CSSdependency;
+        }
+
+        if($this->JSdependency!=null){
+            $jsdependency = $this->JSdependency;
+        }
+
         $viewDatoteka = BP_APP . 'view' . 
         DIRECTORY_SEPARATOR . $phtmlStranica . '.phtml'; // provjerava dal se nalazi ta datoteka u view direktoriju
         ob_start(); // nemoj to slat klijentu (cache)
@@ -20,7 +44,6 @@ class View //ubacivanje sadrzaja u predlozak odnosno slanje sarzaja za svaki dru
         if(file_exists($viewDatoteka))
         {
             include_once $viewDatoteka; // ne radimo autolload sa ovim datotekama jer nam treba extrakt parametara odnosno varijable(slijed)
-            
         }
         else
         {
@@ -30,6 +53,16 @@ class View //ubacivanje sadrzaja u predlozak odnosno slanje sarzaja za svaki dru
         $sadrzaj=ob_get_clean(); // vrijednost unutar datoteke index.phtml,prijava.phtml... dodjeljuje varijabli sadrzaj
         include_once BP_APP . 'view' . DIRECTORY_SEPARATOR . 
         $this->predlozak . '.phtml'; // pozivam view datoteko predlozak.phtml u kojem ispisujem sadrzaj dostupan samo u predlozku!
+    }
+
+    public function setJSdependency($dependency)
+    {
+        $this->JSdependency=$dependency;
+    }
+
+    public function setCSSdependency($dependency)
+    {
+        $this->CSSdependency=$dependency;
     }
 
 }

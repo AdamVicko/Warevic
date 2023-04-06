@@ -22,7 +22,11 @@ class Isporuka
         
         ');
         $izraz->execute();
-        return $izraz->fetchAll();
+        $rez = $izraz->fetchAll(); 
+        foreach($rez as $r){
+            $r->pacijenti=Isporuka::pacijentNaIsporuki($r->sifra);
+        }
+        return $rez;
     }
 
     public static function  koncentratorKisikaNaIsporuki($sifra)
@@ -47,8 +51,8 @@ class Isporuka
         $izraz = $veza->prepare('
         
         select b.imeprezime 
-        from isporuka a inner join 
-        pacijent b on a.pacijent =b.sifra 
+            from isporuka a inner join 
+            pacijent b on a.pacijent =b.sifra 
         where pacijent=:sifra;
         
         ');
@@ -86,8 +90,7 @@ class Isporuka
             'sifra'=>$sifra
         ]);
         
-        $isporuka->koncentratoriKisika = $izraz->fetchAll();
-        $isporuka->pacijenti = $izraz->fetchAll();//fetchAll vraca array std objekta!!!!! meni ce vratit samo jedan 0
+        $isporuka->koncentratoriKisikaIPacijenti = $izraz->fetchAll();//fetchAll vraca array std objekta!!!!! meni ce vratit samo jedan 0
        //moram skuzit kako da mi vraca za ob DVA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         return $isporuka;
         

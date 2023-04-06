@@ -4,6 +4,15 @@
     <link rel="stylesheet" href="<?=App::config('url')?>public/css/bootstrap.min.css">
     <link rel="stylesheet" href="<?=App::config('url')?>public/css/app.css">
     <link rel="stylesheet" href="<?=App::config('url')?>public/css/bootstrap-icons-1.10.3/bootstrap-icons.css">
+    
+    <?php if(isset($cssdependency))
+        {
+            foreach($cssdependency as $p){
+                echo $p;
+            }
+        }
+    ?>
+
     <?php if(isset($css)): ?>
         <link rel="stylesheet" href="<?=App::config('url')?>public/css/<?=$css?>">
     <?php endif; ?>

@@ -16,9 +16,7 @@ implements ViewSucelje
     public function __construct()
     {
         parent::__construct();
-       
-   }
-
+    }
 
     public function index()
     {
@@ -73,6 +71,14 @@ implements ViewSucelje
 
     public function promjena($sifra='')
     {
+        //prvo cemo ucitat sve zeljene dependencye
+        parent::setCSSdependency([
+            '    <link rel="stylesheet" href="' . App::config('url') . 'public/css/dependency/jquery-ui.css">'
+        ]);
+        parent::setJSdependency([
+            '   <script src="' . App::config('url') . 'public/js/dependency/jquery-ui.js"></script>'
+        ]);
+
         if($_SERVER['REQUEST_METHOD']==='GET'){
             $this->promjena_GET($sifra);
             return;

@@ -1,2 +1,15 @@
 <script src="<?=App::config('url')?>public/js/bootstrap.min.js"></script>
 <script src="<?=App::config('url')?>public/js/app.js"></script>
+
+<?php if(isset($jsdependency))
+    {
+        foreach($jsdependency as $p){
+            echo $p;
+        }
+    }
+?>
+
+<?php if(isset($js)):
+    ?>
+    <script src="<?php echo App::config('url') . 'public/js/' . $js?>"></script>
+<?php endif; ?>
