@@ -306,4 +306,23 @@ implements ViewSucelje
 
     }
 
+    public function ajaxSearch($uvjet){
+
+       /* $pacijenti=Pacijent::read($uvjet);
+
+
+        foreach($pacijenti as $p){
+            if(file_exists(BP . 'public' . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR
+            . 'polaznici' . DIRECTORY_SEPARATOR . $p->sifra . '.png' )){
+                $p->slika= App::config('url') . 'public/img/polaznici/' . $p->sifra . '.png';
+            }else{
+                $p->slika= App::config('url') . 'public/img/nepoznato.png';
+            }
+        }
+        $this->view->api($pacijenti)
+*/
+
+        $this->view->api(Pacijent::read($uvjet));
+    }
+
 }

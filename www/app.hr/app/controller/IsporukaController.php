@@ -76,7 +76,11 @@ implements ViewSucelje
             '    <link rel="stylesheet" href="' . App::config('url') . 'public/css/dependency/jquery-ui.css">'
         ]);
         parent::setJSdependency([
-            '   <script src="' . App::config('url') . 'public/js/dependency/jquery-ui.js"></script>'
+            '<script src="' . App::config('url') . 'public/js/dependency/jquery-ui.js"></script>',
+            '<script>
+                let url=\'' . App::config('url') . '\';
+                let isporukasifra=' . $sifra . ';
+            </script>' // app config ima zapisano na kojem smo url-u, iz php proslijedujem controlleru da postoji varijabla URL nakon koje dolazi JS
         ]);
 
         if($_SERVER['REQUEST_METHOD']==='GET'){

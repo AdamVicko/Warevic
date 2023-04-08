@@ -55,6 +55,11 @@ class View //ubacivanje sadrzaja u predlozak odnosno slanje sarzaja za svaki dru
         $this->predlozak . '.phtml'; // pozivam view datoteko predlozak.phtml u kojem ispisujem sadrzaj dostupan samo u predlozku!
     }
 
+    public function api($parametri){
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode($parametri,JSON_NUMERIC_CHECK);
+    }
+
     public function setJSdependency($dependency)
     {
         $this->JSdependency=$dependency;
