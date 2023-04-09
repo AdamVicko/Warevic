@@ -8,6 +8,7 @@ class KoncentratorKisikaController extends AutorizacijaController
     private $e;
     private $poruka='';
     private $nf; // number formater dostupan u svim metodama ove klase 
+    
     public function __construct()
     {
         parent::__construct(); // pozivam parent construct da ode provjerit u autorizacijacontroller dal ima ovlasti

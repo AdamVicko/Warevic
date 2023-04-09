@@ -17,7 +17,7 @@ $( '#uvjetKisik' ).autocomplete(
         select:function(dogadaj,ui)
         {
             //console.log(ui.item);
-            spremi(ui.item);
+            spremiKisik(ui.item);
         }
     })
     .autocomplete( 'instance' )._renderItem = function( ul, item )
@@ -27,7 +27,7 @@ $( '#uvjetKisik' ).autocomplete(
     .appendTo( ul );
 };
 
-function spremi(koncentratorKisika)
+function spremiKisik(koncentratorKisika)
 {
     $.ajax({
         url: url + 'isporuka/dodajKoncentratorKisika?isporuka=' + isporukasifra + 
@@ -51,7 +51,7 @@ function spremi(koncentratorKisika)
                     $('#poruka').fadeOut();
                 }, 1500);
                 //debugger;
-           $('#podaciKisik').append( // podaci za pacijenta html id
+           $('#podaciKisik').append( // podaci za kisik html id
             '<tr>' + 
                 '<td>' +
                     koncentratorKisika.serijskiKod +
@@ -65,11 +65,35 @@ function spremi(koncentratorKisika)
                 '</td>' + 
             '</tr>'
            );
-           definirajBrisanje();
+           definirajBrisanjeKisik();
 
      }
     }); 
 }
+
+function definirajBrisanjeKisik(){ // stavljamo u funkciju radi optimizranja rad znaci da odma povuce sifru da mozemo obrisat bez potrebe za refresh
+    $('.odabraniKoncentratorKisika').click(function(){
+
+        //console.log(grupasifra);
+        //console.log($(this).attr('id').split('_')[1]);
+        let element = $(this);
+        $.ajax({
+            url: url + 'isporuka/obrisiKoncentratorKisika?isporuka=' + isporukasifra + 
+                 '&koncentratorKisika=' + element.attr('id').split('_')[1],
+            success:function(odgovor){
+               element.parent().parent().remove();
+         }
+        }); 
+    
+        return false;
+    });
+}
+definirajBrisanjeKisik();
+$('#poruka').fadeOut();
+
+$('#uvjet').focus();
+
+
 
 //Pacijent
 $( '#uvjetPacijent' ).autocomplete(
@@ -90,7 +114,7 @@ $( '#uvjetPacijent' ).autocomplete(
         select:function(dogadaj,ui)
         {
             //console.log(ui.item);
-            spremi(ui.item);
+            spremiPacijent(ui.item);
         }
     })
     .autocomplete( 'instance' )._renderItem = function( ul, item )
@@ -100,7 +124,7 @@ $( '#uvjetPacijent' ).autocomplete(
     .appendTo( ul );
 };
 
-function spremi(pacijent)
+function spremiPacijent(pacijent)
 {
     $.ajax({
         url: url + 'isporuka/dodajPacijenta?isporuka=' + isporukasifra + 
@@ -138,10 +162,31 @@ function spremi(pacijent)
                 '</td>' + 
             '</tr>'
            );
-           definirajBrisanje();
+           definirajBrisanjePacijent();
 
      }
     }); 
 }
 
+function definirajBrisanjePacijent(){ // stavljamo u funkciju radi optimizranja rad znaci da odma povuce sifru da mozemo obrisat bez potrebe za refresh
+    $('.odabraniPacijent').click(function(){
+
+        //console.log(grupasifra);
+        //console.log($(this).attr('id').split('_')[1]);
+        let element = $(this);
+        $.ajax({
+            url: url + 'isporuka/obrisipacijent?isporuka=' + isporukasifra + 
+                 '&pacijent=' + element.attr('id').split('_')[1],
+            success:function(odgovor){
+               element.parent().parent().remove();
+         }
+        }); 
+    
+        return false;
+    });
+}
+definirajBrisanjePacijent();
+$('#poruka').fadeOut();
+
+$('#uvjet').focus();
 
