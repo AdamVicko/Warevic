@@ -244,9 +244,9 @@ implements ViewSucelje
         //prvo se trebala pozabaciti postoji li u $_GET
         // traženi parametri
         $res = new stdClass();
-        if(!Isporuka::postojiKoncentratorKisikaIsporuka($_GET['Isporuka'],
+        if(!Isporuka::postojiKoncentratorKisikaIsporuka($_GET['isporuka'],
                     $_GET['koncentratorKisika'])){
-                        Isporuka::postojiKoncentratorKisikaIsporuka($_GET['Isporuka'],
+                        Isporuka::postojiKoncentratorKisikaIsporuka($_GET['isporuka'],
                     $_GET['koncentratorKisika']);
             $res->error=false;
             $res->description='Added succesfully!';
@@ -261,15 +261,15 @@ implements ViewSucelje
 
     public function dodajPacijenta()
     {
-        //prvo se trebala pozabaciti postoji li u $_GET
-        // traženi parametri
+        //prvo se trebala pozabaviti postoji li u $_GET traženi parametri
+
         $res = new stdClass();
-        if(!Isporuka::postojiPacijentIsporuka($_GET['Isporuka'],
+        if(!Isporuka::postojiPacijentIsporuka($_GET['isporuka'],
                     $_GET['pacijent'])){
-                        Isporuka::postojiPacijentIsporuka($_GET['Isporuka'],
-                    $_GET['pacijent']);
-            $res->error=false;
-            $res->description='Added succesfully!';
+                        Isporuka::postojiPacijentIsporuka($_GET['isporuka'],
+                        $_GET['pacijent']);
+                    $res->error=false;
+                    $res->description='Added succesfully!';
                     }else{
                         $res->error=true;
                         $res->description='That is already selected patient!';

@@ -91,7 +91,6 @@ class Isporuka
         ]);
         
         $isporuka->koncentratoriKisikaIPacijenti = $izraz->fetchAll();//fetchAll vraca array std objekta!!!!! meni ce vratit samo jedan 0
-       //moram skuzit kako da mi vraca za ob DVA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         return $isporuka;
         
     }
@@ -156,7 +155,7 @@ class Isporuka
             'isporuka'=>$isporuka,
             'pacijent'=>$pacijent
         ]);
-        $rez = (int)$izraz->fetchColumn();
+        $rez = (int)$izraz->fetchColumn(); // zbog problematike vraanja podatka moguce da bude u stringu mi cemo ga odma bacat u int!
         return $rez>0;
     }
 
