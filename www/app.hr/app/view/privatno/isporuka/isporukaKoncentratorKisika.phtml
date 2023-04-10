@@ -1,23 +1,23 @@
-<div class="popisPacijenata">
-    <input type="text" id="uvjetPacijent" placeholder="Patient search">    
+<div class="popisKoncentratoraKisika">
+    <input type="text" id="uvjetKisik" placeholder="Oxygen search">    
     <div style="min-height: 20px;">
         <div style="font-size: 0.6rem;" id="poruka"></div>
     </div>
     <table>
         <thead>
             <tr>
-                <th>Patient </th>
+                <th>Oxygen Concentrator </th>
                 <th>Akcija</th>
             </tr>
         </thead>
-        <tbody id="podaciPacijent">
-            <?php foreach($e->koncentratoriKisikaIPacijenti as $p): ?>
+        <tbody id="podaciKisik">
+            <?php foreach($e->koncentratorKisika as $p): ?>
             <tr>
                 <td>
-                    <?=$p->pacijent//pazi da ti je i za koncentrator kisika?> 
+                    <?=$p->serijskiKod//pazi da ti je i za pacijent?> 
                 </td>
                 <td>
-                    <a href="#" class="odabraniPacijent" id="p_<?=$p->sifra?>">
+                    <a href="#" class="odabraniKoncentratorKisika" id="p_<?=$p->sifra?>">
                     <i class="bi bi-trash3"></i>
                     </a>
                 </td>

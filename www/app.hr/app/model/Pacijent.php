@@ -23,10 +23,10 @@ class Pacijent
                 a.oib ,
                 a.pacijentKomentar ,
                 count(b.sifra) as prikupljen,
-                count(c.sifra) as isporucen
+                count(c.isporuka) as isporucen
         from pacijent a
         left join prikup b on a.sifra = b.pacijent
-        left join isporuka c on a.sifra = c.pacijent
+        left join isporukapacijent c on a.sifra = c.pacijent
         where concat(a.imeprezime, \' \', ifnull(a.oib,\'\'))
         like :uvjet
         group by a.sifra, 
@@ -122,8 +122,8 @@ class Pacijent
         $izraz = $veza->prepare('
 
             select pacijent 
-            from isporuka 
-            where sifra=:sifra;
+            from isporukaPacijent 
+            where pacijent=:sifra;
         
         ');
         $izraz->execute([
@@ -132,8 +132,8 @@ class Pacijent
 
         $izraz = $veza->prepare('
         
-        delete from isporuka
-        where sifra=:sifra
+        delete from isporukaPacijent
+        where pacijent=:sifra
     
         ');
         $izraz->execute([

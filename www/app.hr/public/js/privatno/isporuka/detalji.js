@@ -41,7 +41,7 @@ function spremiKisik(koncentratorKisika)
                     $('#poruka').css('border','0px');
                     $('#poruka').fadeOut();
                 }, 1500);
-                //alert(odgovor.description);
+                alert(odgovor.description);
                 return;
             }
             $('#poruka').html(odgovor.description);
@@ -74,7 +74,7 @@ function spremiKisik(koncentratorKisika)
 function definirajBrisanjeKisik(){ // stavljamo u funkciju radi optimizranja rad znaci da odma povuce sifru da mozemo obrisat bez potrebe za refresh
     $('.odabraniKoncentratorKisika').click(function(){
 
-        //console.log(grupasifra);
+        //console.log(isporukasifra);
         //console.log($(this).attr('id').split('_')[1]);
         let element = $(this);
         $.ajax({
@@ -113,7 +113,7 @@ $( '#uvjetPacijent' ).autocomplete(
         minLength: 2,
         select:function(dogadaj,ui)
         {
-            //console.log(ui.item);
+            console.log(ui.item);
             spremiPacijent(ui.item);
         }
     })
@@ -171,7 +171,7 @@ function spremiPacijent(pacijent)
 function definirajBrisanjePacijent(){ // stavljamo u funkciju radi optimizranja rad znaci da odma povuce sifru da mozemo obrisat bez potrebe za refresh
     $('.odabraniPacijent').click(function(){
 
-        //console.log(grupasifra);
+        console.log(isporukasifra);
         //console.log($(this).attr('id').split('_')[1]);
         let element = $(this);
         $.ajax({
@@ -188,5 +188,4 @@ function definirajBrisanjePacijent(){ // stavljamo u funkciju radi optimizranja 
 definirajBrisanjePacijent();
 $('#poruka').fadeOut();
 
-$('#uvjet').focus();
 

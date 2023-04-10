@@ -19,8 +19,6 @@
             <?php foreach($podaci as $p): ?>
                 <tr>
                     <td><?=$p->datumIsporuke?></td>
-                    <td><?=$p->imeprezime?></td>
-                    <td><?=$p->serijskiKod?></td>
                     <td>
                     <a href="<?=App::config('url')?>isporuka/promjena/<?=$p->sifra?>"><i class="bi bi-pencil"></i></a>    
                     <?php if(App::admin()): //ako je auth admin?>

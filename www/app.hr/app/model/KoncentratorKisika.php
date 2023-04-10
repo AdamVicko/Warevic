@@ -19,10 +19,10 @@ class KoncentratorKisika
                 a.ocKomentar,
                 a.datumKupovine,
                 count(b.sifra) as prikupljen,
-                count(c.sifra) as isporucen
+                count(c.isporuka) as isporucen
         from koncentratorKisika a
         left join prikup b on a.sifra = b.koncentratorKisika
-        left join isporuka c on a.sifra = c.koncentratorKisika 
+        left join isporukaKoncentratorKisika c on a.sifra = c.koncentratorKisika 
         group by a.sifra,
                 a.serijskiKod,
                 a.radniSat,
@@ -87,12 +87,14 @@ class KoncentratorKisika
     public static function delete($sifra)
     {
         $veza = DB::getInstance();
+        $veza->beginTransaction();
 
+        
         $izraz = $veza->prepare('
 
             select koncentratorKisika 
-            from isporuka 
-            where sifra=:sifra;
+            from isporukaKoncentratorKisika
+            where koncentratorKisika=:sifra;
         
         ');
         $izraz->execute([
@@ -101,8 +103,8 @@ class KoncentratorKisika
 
         $izraz = $veza->prepare('
         
-        delete from isporuka
-        where sifra=:sifra
+        delete from isporukaKoncentratorKisika
+        where koncentratorKisika=:sifra
     
         ');
         $izraz->execute([
@@ -165,7 +167,7 @@ class KoncentratorKisika
         $izraz = $veza->prepare('
         
         select sifra from koncentratorKisika
-        order by sifra limit 1;
+        order by serijskiKod limit 1;
 
         ');//dvotocke moraju odgovarat vrijednosti name od inputa
         $izraz->execute();

@@ -28,8 +28,8 @@ implements ViewSucelje
     }
 
     public function novi()
-    {
-        $pacijentSifra = Pacijent::prviPacijent();
+    {   // pacijent sifra sluzi da ako nema niti jednog pacijenta da te automatski baci na kreaciju pacijente ili kisika!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        /*$pacijentSifra = Pacijent::prviPacijent();
         if($pacijentSifra==0){
          header('location: ' . App::config('url') . 'pacijent/index?p=1');// saljjem poruke ovim putem
         }
@@ -38,39 +38,49 @@ implements ViewSucelje
         if($koncentratorSifra==0){
          header('location: ' . App::config('url') . 'koncentratorKisika/index?p=2');// saljjem poruke ovim putem
         }
-        
-       /*Moze i ovako
+        */
+        //Moze i ovako
         header('location: ' . 
         App::config('url') . 'Isporuka/promjena/' .
         Isporuka::create([
-            'datumIsporuke'=>'',
-            'pacijent'=>null,
-            'koncentratorKisika'=>null
+            'datumIsporuke'=>''
         ]));
-        */
-        $this->promjena(Isporuka::create([
-            'datumIsporuke'=>'',
-            'pacijent'=>$pacijentSifra,// najbolje je tako a ne fiksno stavljat 1 jel se moze desit da se 1 izbrise!!
-            'koncentratorKisika'=>$koncentratorSifra
-        ])); ///////////////////////////// tru si stao provjeri jel ti to radi bar da ucita kao i njegovo na videu zatim ide promjena!!!!!!!
+        
+        //$this->promjena(Isporuka::create([
+          //  'datumIsporuke'=>''
+            //'pacijent'=>$pacijentSifra,// najbolje je tako a ne fiksno stavljat 1 jel se moze desit da se 1 izbrise!!
+            //'koncentratorKisika'=>$koncentratorSifra
+        //])); ///////////////////////////// tru si stao provjeri jel ti to radi bar da ucita kao i njegovo na videu zatim ide promjena!!!!!!!
+        
     }
 
     public function odustani($sifra='')
     {
         $e=Isporuka::readOne($sifra);
         
-
-        if(
-        $e->pacijent==null && 
-        $e->koncentratorKisika==null)
+        if(count($e->pacijent)==null)
         {
             Isporuka::delete($e->sifra);  
         }
         header('location: ' . App::config('url') . 'isporuka/index');
+    
     }
 
     public function promjena($sifra='')
     {
+        
+        $this->e = Isporuka::readOne($sifra);
+        log::info($this->e);
+
+        $this->view->render
+        (
+            $this->viewPutanja . 'detalji',
+            [
+                'e' =>$this->e,
+            ]
+        );
+        
+        /*
         //prvo cemo ucitat sve zeljene dependencye
         parent::setCSSdependency([
             '    <link rel="stylesheet" href="' . App::config('url') . 'public/css/dependency/jquery-ui.css">'
@@ -150,15 +160,17 @@ implements ViewSucelje
 
     private function kontrola()
     {
+        return true;
+        /*
         $s = $this->e->datumIsporuke;
         if(strlen(trim($s))===0){
             $this->poruke['datumIsporuke']='Delivery date is mandatory!';
             throw new Exception();
-        }
+        }*/
     }
     private function promjena_GET($sifra)
     {
-        $this->e = Isporuka::readOne($sifra);
+        /*$this->e = Isporuka::readOne($sifra);
       
        if($this->e->datumIsporuke!=null){
         $this->e->datumIsporuke = date('Y-m-d',strtotime($this->e->datumIsporuke));
@@ -168,7 +180,7 @@ implements ViewSucelje
            'e'=>$this->e,
            'pacijent'=>Pacijent::readOne($this->e->pacijent),
            'koncentratorKisika'=>KoncentratorKisika::readOne($this->e->koncentratorKisika)
-       ]); 
+       ]); */
     }
 
     private function definirajKoncentratorKisika()
@@ -210,21 +222,15 @@ implements ViewSucelje
    
     public function pripremiZaView()
     {
-        $this->e = (object)$_POST;
+       // $this->e = (object)$_POST;
     }
 
     public function pripremiZaBazu()
     {
 
-        if($this->e->imeprezime==''){
-            $this->e->imeprezime=null;
-        }
-        if($this->e->serijskiKod==0){
-            $this->e->serijskiKod=null;
-        }
-        if($this->e->datumIsporuke==''){
-            $this->e->datumIsporuke=null;
-        }
+       // if($this->e->datumIsporuke==''){
+       //     $this->e->datumIsporuke=null;
+       // }
    
     }
 
@@ -234,13 +240,11 @@ implements ViewSucelje
     {
         $e = new stdClass();
         $e->datumIsporuke='';
-        $e->imeprezime=0;
-        $e->serijskiKod=0;
         return $e;
     }
 
     public function dodajKoncentratorKisika()
-    {
+    {/*
         //prvo se trebala pozabaciti postoji li u $_GET
         // traženi parametri
         $res = new stdClass();
@@ -257,15 +261,16 @@ implements ViewSucelje
 
                     header('Content-Type: application/json; charset=utf-8');
                     echo json_encode($res,JSON_NUMERIC_CHECK);
+    */
     }
 
     public function dodajPacijenta()
-    {
+    {/*
         //prvo se trebala pozabaviti postoji li u $_GET traženi parametri
 
         $res = new stdClass();
-        if(!Isporuka::postojiPacijentIsporuka($_GET['isporuka'],
-                    $_GET['pacijent'])){
+        if(!Isporuka::postojiPacijentIsporuka(var_dump($_GET['isporuka']),
+                    var_dump($_GET['pacijent']))){
                         Isporuka::postojiPacijentIsporuka($_GET['isporuka'],
                         $_GET['pacijent']);
                     $res->error=false;
@@ -277,10 +282,11 @@ implements ViewSucelje
 
                     header('Content-Type: application/json; charset=utf-8');
                     echo json_encode($res,JSON_NUMERIC_CHECK);
+    */
     }
 
     public function obrisipacijent()
-    {
+    {/*
         //prvo se trebala pozabaciti postoji li u $_GET
         // traženi parametri
 
@@ -294,9 +300,9 @@ implements ViewSucelje
         //prvo se trebala pozabaciti postoji li u $_GET
         // traženi parametri
 
-        Isporuka::obrisiPacijentIsporuka($_GET['isporuka'],
+        Isporuka::obrisiKoncentratorKisikaIsporuka($_GET['isporuka'],
                     $_GET['koncentratorKisika']);
-               
+         */      
     }
     
 }

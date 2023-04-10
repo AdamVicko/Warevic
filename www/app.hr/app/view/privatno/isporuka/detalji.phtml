@@ -13,23 +13,22 @@
             <div class="row" style="margin-top: 50px;">
                 <div class="d-grid col">
 
-                    <?php include_once 'popisPacijenata.phtml' ?>
+                    <?php include_once 'isporukaPacijent.phtml' ?>
         
                 </div>
                 <div class="d-grid col">
 
-                <?php include_once 'popisKoncentratoraKisika.phtml' ?>
+                <?php include_once 'isporukaKoncentratorKisika.phtml' ?>
                 
                 </div>
             </div>
 
         </div>
         <hr>
-          <?=$poruka?>
             <div class="row" style="margin-top: 50px;">
                 <div class="d-grid col">
                     <button type="submit" class="btn btn-success" 
-                            value="Submit">Submit</button>
+                            value="submit">Submit</button>
                 </div>
                 <div class="d-grid col">
                     <a href="<?=App::config('url')?>isporuka/odustani/<?=$e->sifra?>"
