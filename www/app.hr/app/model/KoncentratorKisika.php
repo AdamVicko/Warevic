@@ -5,8 +5,12 @@ class KoncentratorKisika
 {
     //CRUD OPERACIJE
 
-    public static function read()
+    public static function read($uvjet='',$stranica=1)
     {
+
+        $uvjet = '%' . $uvjet . '%';
+        $brps = App::config('brps');
+        $pocetak = ($stranica * $brps) - $brps;
 
         $veza = DB::getInstance(); //read napravljen da nemogu brisati OC ako nije prikupljen
         $izraz = $veza->prepare('
@@ -19,10 +23,12 @@ class KoncentratorKisika
                 a.ocKomentar,
                 a.datumKupovine,
                 count(b.sifra) as prikupljen,
-                count(c.isporuka) as isporucen
+                count(c.sifra) as isporucen
         from koncentratorKisika a
         left join prikup b on a.sifra = b.koncentratorKisika
-        left join isporukaKoncentratorKisika c on a.sifra = c.koncentratorKisika 
+        left join isporuka c on a.sifra = c.koncentratorKisika
+        where a.serijskiKod
+        like :uvjet
         group by a.sifra,
                 a.serijskiKod,
                 a.radniSat,
@@ -30,9 +36,13 @@ class KoncentratorKisika
                 a.model,
                 a.ocKomentar,
                 a.datumKupovine
-        order by a.datumKupovine asc;
+        order by a.datumKupovine asc limit :pocetak, :brps;
 
         ');
+        $izraz->bindValue('pocetak',$pocetak, PDO::PARAM_INT); // param int tako da mi salje int a ne string
+        $izraz->bindValue('brps',$brps, PDO::PARAM_INT); // param int tako da mi salje int a ne string
+        $izraz->bindParam('uvjet', $uvjet);
+
         $izraz->execute();
         return $izraz->fetchAll();
     }
@@ -87,13 +97,11 @@ class KoncentratorKisika
     public static function delete($sifra)
     {
         $veza = DB::getInstance();
-        $veza->beginTransaction();
-
         
         $izraz = $veza->prepare('
 
             select koncentratorKisika 
-            from isporukaKoncentratorKisika
+            from isporuka
             where koncentratorKisika=:sifra;
         
         ');
@@ -103,7 +111,7 @@ class KoncentratorKisika
 
         $izraz = $veza->prepare('
         
-        delete from isporukaKoncentratorKisika
+        delete from isporuka
         where koncentratorKisika=:sifra
     
         ');
@@ -115,7 +123,7 @@ class KoncentratorKisika
 
         select koncentratorKisika 
         from prikup 
-        where sifra=:sifra;
+        where koncentratorKisika=:sifra;
     
         ');
         $izraz->execute([
@@ -125,7 +133,7 @@ class KoncentratorKisika
         $izraz = $veza->prepare('
         
         delete from prikup
-        where sifra=:sifra
+        where koncentratorKisika=:sifra
 
         ');
         $izraz->execute([
@@ -161,18 +169,37 @@ class KoncentratorKisika
         return $sifra>0;
     }
 
+    public static function ukupnoKisika($uvjet='')
+    {
+        $uvjet = '%' . $uvjet . '%';
+        $veza = DB::getInstance();
+        $izraz = $veza->prepare('
+        
+        select count(*)
+        from 
+        koncentratorKisika
+        where serijskiKod
+        like :uvjet;
+        
+        ');
+        $izraz->execute([
+            'uvjet'=>$uvjet
+        ]);
+        return $izraz->fetchColumn();
+    }
+
     public static function prviKoncentrator()
     {
         $veza = DB::getInstance();
         $izraz = $veza->prepare('
         
         select sifra from koncentratorKisika
-        order by serijskiKod limit 1;
+        order by sifra limit 1;
 
         ');//dvotocke moraju odgovarat vrijednosti name od inputa
         $izraz->execute();
-        $serijskiKod=$izraz->fetchColumn();
-        return $serijskiKod;
+        $sifra=$izraz->fetchColumn();
+        return (int)$sifra;
     }
 
 }

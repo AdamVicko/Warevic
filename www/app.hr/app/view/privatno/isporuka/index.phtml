@@ -5,8 +5,13 @@
     <a href="<?=App::config('url')?>isporuka/novi" class="btn btn-primary">New delivery</a>
 </div>
 
-<div class="table-responsive">
-    <table class="table table-dark table-hover" style="margin: 50px 0 50px 0;">
+<div class="table-responsive" style="margin: 50px 0 0px 0;">
+    <form action="" method="get">
+        <input type="text" name="uvjet"
+        placeholder="Part of Delivery Date, Serial Number, Name" value="<?=$uvjet?>" >
+    </form>
+    <?php include 'stranicenje.phtml' ?>
+    <table class="table table-dark table-hover" style="margin: 20px 0 20px 0;">
         <thead>
             <tr>
                 <th scope="col">Date</th>
@@ -19,6 +24,8 @@
             <?php foreach($podaci as $p): ?>
                 <tr>
                     <td><?=$p->datumIsporuke?></td>
+                    <td><?=$p->imeprezime?></td>
+                    <td><?=$p->serijskiKod?></td> 
                     <td>
                     <a href="<?=App::config('url')?>isporuka/promjena/<?=$p->sifra?>"><i class="bi bi-pencil"></i></a>    
                     <?php if(App::admin()): //ako je auth admin?>
@@ -37,3 +44,4 @@
         </tbody>
     </table>
 </div>
+<?php include 'stranicenje.phtml' ?>

@@ -4,31 +4,60 @@ class Isporuka
 {
     // CRUD operacije
 
-    public static function read()
+    public static function read($uvjet='',$stranica=1)
     {
+
+        $uvjet = '%' . $uvjet . '%';
+        $brps = App::config('brps');
+        $pocetak = ($stranica * $brps) - $brps;
+        
         $veza = DB::getInstance();
         $izraz = $veza->prepare('
         
         select
-            sifra,datumIsporuke 
-        from isporuka
+            a.sifra,a.datumIsporuke,d.imeprezime,e.serijskiKod 
+        from isporuka a
+            left join pacijent d on d.sifra = a.pacijent
+            left join koncentratorkisika e on e.sifra = a.koncentratorKisika 
+            where concat(a.datumIsporuke, \' \', d.imeprezime, \' \', e.serijskiKod,\'\')
+            like :uvjet
         group by 
-            sifra,datumIsporuke 
-        order by datumIsporuke asc;
+            a.sifra,a.datumIsporuke,d.imeprezime, e.serijskiKod  
+        order by datumIsporuke asc
+        limit :pocetak, :brps;
         
         ');
+        $izraz->bindValue('pocetak',$pocetak, PDO::PARAM_INT); // param int tako da mi salje int a ne string
+        $izraz->bindValue('brps',$brps, PDO::PARAM_INT); // param int tako da mi salje int a ne string
+        $izraz->bindParam('uvjet', $uvjet);
+
         $izraz->execute();
-        $rez = $izraz->fetchAll(); 
-        foreach($rez as $r){
-            $r->pacijent=Isporuka::pacijentNaIsporuki($r->sifra);
-            $r->koncentratorKisika=Isporuka::koncentratorKisikaNaIsporuki($r->sifra);
-        }
-        //log::info($rez);
-        return $rez;
+        return $izraz->fetchAll();
+    }
+
+    public static function ukupnoIsporuka($uvjet='')
+    {
+        $uvjet = '%' . $uvjet . '%';
+        $veza = DB::getInstance();
+        $izraz = $veza->prepare('
+        
+        select count(*)
+        from 
+        isporuka a 
+        left join pacijent d on d.sifra = a.pacijent
+        left join koncentratorkisika e on e.sifra = a.koncentratorKisika 
+        where  concat(a.datumIsporuke, \' \', d.imeprezime, \' \', e.serijskiKod,\'\')
+        like :uvjet;
+        
+        ');
+        $izraz->execute([
+            'uvjet'=>$uvjet
+        ]);
+        return $izraz->fetchColumn();
     }
 
 
-    public static function pacijentNaIsporuki($sifra)
+  /*  public static function pacijentNaIsporuki($sifra)
     {
         $veza = DB::getInstance();
         $izraz = $veza->prepare('
@@ -43,6 +72,7 @@ class Isporuka
         $izraz->execute([
             'sifra'=>$sifra
         ]);
+        
         return $izraz->fetchAll();
     }
 
@@ -62,7 +92,7 @@ class Isporuka
             'sifra'=>$sifra
         ]);
         return $izraz->fetchAll();
-    }
+    }*/
 
  
 
@@ -71,50 +101,19 @@ class Isporuka
         $veza = DB::getInstance();
         $izraz = $veza->prepare('
         
-        select * from isporuka
-        where sifra=:sifra;
+        select a.sifra,a.datumIsporuke,a.pacijent,a.koncentratorKisika,b.imeprezime,c.serijskiKod 
+        from isporuka a
+        inner join pacijent b on b.sifra=a.pacijent
+        inner join koncentratorKisika c on c.sifra=a.koncentratorKisika
+        where a.sifra=:sifra;
         
         ');
         $izraz->execute([ //dovuko sam osnovne podatke
             'sifra'=>$sifra
         ]);
 
-        $isporuka = $izraz->fetch();
-
+        return $izraz->fetch();
         
-        $veza = DB::getInstance();
-        $izraz = $veza->prepare('
-        
-        select 
-            b.sifra , b.imeprezime 
-        from isporukapacijent a 
-            inner join pacijent b on b.sifra  = a.pacijent 
-            inner join isporuka c on c.sifra = a.isporuka  
-        where a.isporuka =:sifra;
-        
-        ');
-        $izraz->execute([ //dovuko sam osnovne podatke
-            'sifra'=>$sifra
-        ]);
-
-        $veza = DB::getInstance();
-        $izraz = $veza->prepare('
-        
-        select 
-            b.sifra , b.serijskiKod 
-        from isporukaKoncentratorKisika a 
-            inner join koncentratorKisika b on b.sifra  = a.koncentratorKisika 
-            inner join isporuka c on c.sifra = a.isporuka  
-        where a.isporuka =:sifra;
-        
-        ');
-        $izraz->execute([ //dovuko sam osnovne podatke
-            'sifra'=>$sifra
-        ]);
-
-        $isporuka->pacijent = $izraz->fetchAll();// vraca array std objekata znaci da ce mi pacijent biti kao objekt u arrayu
-        $isporuka->koncentratorKisika = $izraz->fetchAll();// vraca array std objekata znaci da ce mi pacijent biti kao objekt u arrayu
-        return $isporuka;
         
     }
 
@@ -124,9 +123,9 @@ class Isporuka
         $izraz = $veza->prepare('
         
         insert into isporuka
-        (datumIsporuke)
+        (datumIsporuke,pacijent,koncentratorKisika)
         values
-        (:datumIsporuke);
+        (:datumIsporuke,:pacijent,:koncentratorKisika);
         
         ');
         $izraz->execute($parametri);

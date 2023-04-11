@@ -16,23 +16,6 @@ implements ViewSucelje
         parent::__construct(); // pozivam parent construct da ode provjerit u autorizacijacontroller dal ima ovlasti
     }
 
-    public function dodajpolaznike()
-    {
-        for($i=0;$i<300;$i++){
-            Pacijent::create([
-                'imeprezime'=>'Prezime Pacijent' . $i,
-                'telefon' =>'',
-                'adresa' => '',
-                'oib'=>'',
-                'pacijentKomentar' => '',
-                'datumRodenja' => ''
-            ]);
-            echo $i . '<br>';
-        }
-
-        
-    }
-
     public function index() 
     {
         $poruka='';

@@ -1,6 +1,7 @@
 
 
-# C:\Users\Adam\xampp\mysql\bin>mysql -uroot --default_character_set=utf8 < C:\Users\Adam\Desktop\repositories\Warevic\www\app.hr\warehouse.sql
+# C:\Users\Adam\xampp\mysql\bin> prvo ovo 
+# mysql -uroot --default_character_set=utf8 < C:\Users\Adam\Desktop\repositories\Warevic\www\app.hr\warehouse.sql
 
 drop database if exists edunovapp26;
 create database edunovapp26 default charset utf8mb4;
@@ -51,18 +52,10 @@ create table koncentratorKisika(
 
 create table isporuka(
     sifra int not null primary key auto_increment,
-    datumIsporuke date
+    datumIsporuke date,
+    pacijent int,
+    koncentratorKisika int
 );
-
-        create table isporukaKoncentratorKisika(
-            isporuka int not null ,
-            koncentratorKisika int not null
-        );
-
-        create table isporukaPacijent(
-            isporuka int not null,
-            pacijent int not null
-        );
 
 create table prikup(
     sifra int not null primary key auto_increment,
@@ -72,13 +65,8 @@ create table prikup(
 );
 
 #PROIZVOD
-
-alter table isporukaKoncentratorKisika add foreign key (isporuka) references isporuka (sifra);
-alter table isporukaKoncentratorKisika add foreign key (koncentratorKisika) references koncentratorKisika (sifra);
-
-alter table isporukaPacijent add foreign key (isporuka) references isporuka (sifra);
-alter table isporukaPacijent add foreign key (pacijent) references pacijent (sifra);
-
+alter table isporuka add foreign key (koncentratorKisika) references koncentratorKisika (sifra);
+alter table isporuka add foreign key (pacijent) references pacijent (sifra);
 alter table prikup add foreign key (pacijent) references pacijent (sifra);
 alter table prikup add foreign key (koncentratorKisika) references koncentratorKisika (sifra);
 
@@ -102,22 +90,10 @@ values
 (null,'BK533456343','124,5','Devilbiss','5L','2020.03.14',''),
 (null,'BK345674343','2257','Devilbiss','5L','2020.02.19','');
 
-insert into isporuka(sifra,datumIsporuke)
+insert into isporuka(sifra,datumIsporuke,pacijent,koncentratorKisika)
 values
-(null,'2022.04.03'),
-(null,'2022.12.03');
-
-insert into isporukaKoncentratorKisika (isporuka,koncentratorKisika)
-values
-('1','1'),
-('2','2')
-;
-
-insert into isporukaPacijent (isporuka,pacijent)
-values
-('1','1'),  
-('2','2')
-;
+(null,'2022.04.03',1,1),
+(null,'2022.12.03',2,2);
 
 insert into prikup(sifra,datumPrikupa,pacijent,koncentratorKisika)
 values

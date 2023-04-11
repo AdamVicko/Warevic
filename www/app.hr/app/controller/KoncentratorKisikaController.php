@@ -30,7 +30,27 @@ class KoncentratorKisikaController extends AutorizacijaController
                     break;
             }
         }
+        if(isset($_GET['uvjet']))
+        {
+            $uvjet = trim($_GET['uvjet']);
+        }else
+        {
+            $uvjet=''; // uvjet za search
+        }
 
+        if(isset($_GET['stranica']))
+        {
+            $stranica = (int)$_GET['stranica'];
+            if($stranica < 1)
+            { 
+                $stranica =1;
+            }
+        }else
+        {
+            $stranica=1; // uvjet za search
+        }
+        $uk = KoncentratorKisika::ukupnoKisika($uvjet);
+        $zadnja = (int)ceil($uk/App::config('brps')); // ceil= zaokruzi na prvi veci cijeli broj ako je decimalno
         $koncentratorKisika = KoncentratorKisika::read();
         foreach($koncentratorKisika as $p)
         {
@@ -43,11 +63,15 @@ class KoncentratorKisikaController extends AutorizacijaController
                 $p->radniSat = $this->nf->format($p->radniSat);
             }
         }
+
         $this->view->render($this->viewPutanja.'index',
         [
-            'podaci' => $koncentratorKisika,
+            'podaci' => KoncentratorKisika::read($uvjet,$stranica),
             'css' => 'koncentratorKisika.css',
-            'poruka' => $poruka
+            'poruka' => $poruka,
+            'stranica' => $stranica,
+            'uvjet' => $uvjet, // ucitavam uvjet
+            'zadnja' => $zadnja
         ]);
     }
     public function novi()

@@ -18,65 +18,124 @@ implements ViewSucelje
         parent::__construct();
     }
 
+    public function pocetniPodaci()
+    {
+        $e = new stdClass();
+        $e->datumIsporuke='';
+        $e->imeprezime='';
+        $e->serijskiKod='';
+        return $e;
+    }
+
     public function index()
     {
+        if(isset($_GET['uvjet']))
+        {
+            $uvjet = trim($_GET['uvjet']);
+        }else
+        {
+            $uvjet=''; // uvjet za search
+        }
 
-     $this->view->render($this->viewPutanja . 
+        if(isset($_GET['stranica']))
+        {
+            $stranica = (int)$_GET['stranica'];
+            if($stranica < 1)
+            { 
+                $stranica =1;
+            }
+        }else
+        {
+            $stranica=1; // uvjet za search
+        }
+        $ui = Isporuka::ukupnoIsporuka($uvjet);
+        $zadnja = (int)ceil($ui/App::config('brps')); // ceil= zaokruzi na prvi veci cijeli broj ako je decimalno
+        $this->view->render($this->viewPutanja . 
             'index',[
-                'podaci'=>Isporuka::read()
+                'podaci'=>Isporuka::read($uvjet,$stranica),
+                'css' => 'isporuka.css',
+                'stranica' => $stranica,
+                'uvjet' => $uvjet, // ucitavam uvjet
+                'zadnja' => $zadnja
             ]);   
     }
 
     public function novi()
-    {   // pacijent sifra sluzi da ako nema niti jednog pacijenta da te automatski baci na kreaciju pacijente ili kisika!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        /*$pacijentSifra = Pacijent::prviPacijent();
+    {   // pacijent sifra sluzi da ako nema niti jednog pacijenta da te automatski baci na kreaciju pacijente ili kisika
+        $pacijentSifra = Pacijent::prviPacijent();
+        //log::info($pacijentSifra);
         if($pacijentSifra==0){
          header('location: ' . App::config('url') . 'pacijent/index?p=1');// saljjem poruke ovim putem
         }
-
+        
         $koncentratorSifra = KoncentratorKisika::prviKoncentrator();
         if($koncentratorSifra==0){
          header('location: ' . App::config('url') . 'koncentratorKisika/index?p=2');// saljjem poruke ovim putem
         }
-        */
+        
         //Moze i ovako
         header('location: ' . 
         App::config('url') . 'Isporuka/promjena/' .
         Isporuka::create([
-            'datumIsporuke'=>''
-        ]));
+            'datumIsporuke'=>'',
+            'pacijent'=>$pacijentSifra,
+            'koncentratorKisika'=>$koncentratorSifra
+        ])); // kreiram odma isporuku kako bi ju mogo napunit s pacijentom i koncentratorom kisika
         
         //$this->promjena(Isporuka::create([
           //  'datumIsporuke'=>''
             //'pacijent'=>$pacijentSifra,// najbolje je tako a ne fiksno stavljat 1 jel se moze desit da se 1 izbrise!!
             //'koncentratorKisika'=>$koncentratorSifra
         //])); ///////////////////////////// tru si stao provjeri jel ti to radi bar da ucita kao i njegovo na videu zatim ide promjena!!!!!!!
-        
+    }
+
+    public function izbrisi($sifra=0){
+        $sifra=(int)$sifra;
+        if($sifra===0){
+            header('location: ' . App::config('url') . 'prijava/odjava');
+            return;
+        }
+        Isporuka::delete($sifra);
+        header('location: ' . App::config('url') . 'isporuka/index');
     }
 
     public function odustani($sifra='')
     {
         $e=Isporuka::readOne($sifra);
         
-        if(count($e->pacijent)==null)
+        if(!isset($e->pacijent)&&(!isset($e->koncentratorKisika)))
         {
-            Isporuka::delete($e->sifra);  
+            Isporuka::delete($e->sifra);
         }
         header('location: ' . App::config('url') . 'isporuka/index');
-    
     }
 
     public function promjena($sifra='')
     {
+        parent::setCSSdependency([
+            '    <link rel="stylesheet" href="' . App::config('url') . 'public/css/dependency/jquery-ui.css">'
+        ]);
+        parent::setJSdependency([
+            '<script src="' . App::config('url') . 'public/js/dependency/jquery-ui.js"></script>',
+            '<script>
+                let url=\'' . App::config('url') . '\';
+                let isporukasifra=' . $sifra . ';
+            </script>' // app config ima zapisano na kojem smo url-u, iz php proslijedujem controlleru da postoji varijabla URL nakon koje dolazi JS
+        ]);
+        
+        if($_SERVER['REQUEST_METHOD']==='GET'){
+            $this->promjena_GET($sifra);
+            return;
+        }
         
         $this->e = Isporuka::readOne($sifra);
         log::info($this->e);
-
+        
         $this->view->render
         (
             $this->viewPutanja . 'detalji',
             [
-                'e' =>$this->e,
+                'e' =>$this->e
             ]
         );
         
@@ -170,54 +229,19 @@ implements ViewSucelje
     }
     private function promjena_GET($sifra)
     {
-        /*$this->e = Isporuka::readOne($sifra);
+        $this->e = Isporuka::readOne($sifra);
       
        if($this->e->datumIsporuke!=null){
         $this->e->datumIsporuke = date('Y-m-d',strtotime($this->e->datumIsporuke));
        }
        $this->view->render($this->viewPutanja . 
        'detalji',[
-           'e'=>$this->e,
-           'pacijent'=>Pacijent::readOne($this->e->pacijent),
-           'koncentratorKisika'=>KoncentratorKisika::readOne($this->e->koncentratorKisika)
-       ]); */
+           'e'=>$this->e
+       ]); 
     }
 
-    private function definirajKoncentratorKisika()
-    {
-     $koncentratoriKisika = [];
-     $p = new stdClass();
-     $p->sifra=0;
-     $p->serijskiKod='Not defined!';
-     $koncentratoriKisika[]=$p;
-     foreach(KoncentratorKisika::read() as $koncentratorKisika){
-      $koncentratoriKisika[]=$koncentratorKisika;
-     }
-     return $koncentratoriKisika;
-    }
 
-    private function definirajPacijenta()
-    {
-     $pacijenti = [];
-     $p = new stdClass();
-     $p->sifra=0;
-     $p->imeprezime='Not defined!';
-     $pacijenti[]=$p;
-     foreach(Pacijent::read() as $pacijent){
-      $pacijenti[]=$pacijent;
-     }
-     return $pacijenti;
-    }
-
-    public function izbrisi($sifra=0){
-        $sifra=(int)$sifra;
-        if($sifra===0){
-            header('location: ' . App::config('url') . 'prijava/odjava');
-            return;
-        }
-        Isporuka::delete($sifra);
-        header('location: ' . App::config('url') . 'isporuka/index');
-    }
+   
 
    
     public function pripremiZaView()
@@ -236,12 +260,7 @@ implements ViewSucelje
 
    
 
-    public function pocetniPodaci()
-    {
-        $e = new stdClass();
-        $e->datumIsporuke='';
-        return $e;
-    }
+
 
     public function dodajKoncentratorKisika()
     {/*

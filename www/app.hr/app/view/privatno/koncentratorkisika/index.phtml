@@ -6,8 +6,13 @@
     <?=$poruka?>
 </div>
 
-<div class="table-responsive">
-    <table class="table table-dark table-hover" style="margin: 50px 0 50px 0;">
+<div class="table-responsive" style="margin: 50px 0 0px 0;">
+    <form action="" method="get">
+        <input type="text" name="uvjet"
+        placeholder="Part of Serial Number" value="<?=$uvjet?>" >
+    </form>
+    <?php include 'stranicenje.phtml' ?>
+    <table class="table table-dark table-hover" style="margin: 20px 0 20px 0;">
         <thead>
             <tr>
                 <th scope="col">Serial number</th>
@@ -57,3 +62,4 @@
         </tbody>
     </table>
 </div>
+<?php include 'stranicenje.phtml' ?>

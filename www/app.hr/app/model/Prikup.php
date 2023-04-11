@@ -11,13 +11,15 @@ class Prikup
         $veza = DB::getInstance();
         $izraz = $veza->prepare('
         
-        select 
-            a.sifra,a.datumPrikupa, b.imeprezime ,b.datumRodenja,
-            b.oib ,b.telefon ,b.adresa,b.pacijentKomentar, 
-            c.serijskiKod,c.radniSat,c.ocKomentar
-        from prikup a 
-            inner join pacijent b on a.pacijent = b.sifra  
-            inner join koncentratorKisika c on a.koncentratorKisika = c.sifra  
+        select
+            a.sifra,a.datumPrikupa,d.imeprezime,e.serijskiKod 
+        from prikup a
+            left join isporukapacijent b on b.prikup =a.sifra
+            left join pacijent d on d.sifra = b.pacijent
+            left join isporukakoncentratorkisika c on c.prikup =a.sifra
+            left join koncentratorkisika e on e.sifra = c.koncentratorKisika 
+        group by 
+            a.sifra,a.datumPrikupa,d.imeprezime, e.serijskiKod  
         order by datumPrikupa asc;
 
         ');

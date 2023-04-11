@@ -23,10 +23,10 @@ class Pacijent
                 a.oib ,
                 a.pacijentKomentar ,
                 count(b.sifra) as prikupljen,
-                count(c.isporuka) as isporucen
+                count(c.sifra) as isporucen
         from pacijent a
         left join prikup b on a.sifra = b.pacijent
-        left join isporukapacijent c on a.sifra = c.pacijent
+        left join isporuka c on a.sifra = c.pacijent
         where concat(a.imeprezime, \' \', ifnull(a.oib,\'\'))
         like :uvjet
         group by a.sifra, 
@@ -44,7 +44,6 @@ class Pacijent
         $izraz->bindParam('uvjet', $uvjet);
 
         $izraz->execute();
-
         return $izraz->fetchAll();
     }
 
@@ -122,7 +121,7 @@ class Pacijent
         $izraz = $veza->prepare('
 
             select pacijent 
-            from isporukaPacijent 
+            from isporuka 
             where pacijent=:sifra;
         
         ');
@@ -132,7 +131,7 @@ class Pacijent
 
         $izraz = $veza->prepare('
         
-        delete from isporukaPacijent
+        delete from isporuka
         where pacijent=:sifra
     
         ');
@@ -144,7 +143,7 @@ class Pacijent
 
         select pacijent 
         from prikup 
-        where sifra=:sifra;
+        where pacijent=:sifra;
     
         ');
         $izraz->execute([
@@ -154,7 +153,7 @@ class Pacijent
         $izraz = $veza->prepare('
         
         delete from prikup
-        where sifra=:sifra
+        where pacijent=:sifra
 
         ');
         $izraz->execute([
@@ -178,13 +177,13 @@ class Pacijent
         $veza = DB::getInstance();
         $izraz = $veza->prepare('
         
-        select sifra from pacijent
-        order by sifra limit 1;
-
-        ');//dvotocke moraju odgovarat vrijednosti name od inputa
+            select sifra from pacijent
+            order by sifra limit 1
+        
+        ');
         $izraz->execute();
-        $imeprezime=$izraz->fetchColumn();
-        return (int)$imeprezime;
+        $sifra=$izraz->fetchColumn();
+        return $sifra;
     }
 
 
