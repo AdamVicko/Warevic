@@ -29,6 +29,7 @@ implements ViewSucelje
 
     public function index()
     {
+       
         if(isset($_GET['uvjet']))
         {
             $uvjet = trim($_GET['uvjet']);
@@ -57,7 +58,8 @@ implements ViewSucelje
                 'stranica' => $stranica,
                 'uvjet' => $uvjet, // ucitavam uvjet
                 'zadnja' => $zadnja
-            ]);   
+            ]);
+            
     }
 
     public function novi()
@@ -78,7 +80,7 @@ implements ViewSucelje
         App::config('url') . 'Isporuka/promjena/' .
         Isporuka::create([
             'datumIsporuke'=>'',
-            'pacijent'=>$pacijentSifra,
+            'pacijent'=>$pacijentSifra, 
             'koncentratorKisika'=>$koncentratorSifra
         ])); // kreiram odma isporuku kako bi ju mogo napunit s pacijentom i koncentratorom kisika
         
@@ -103,7 +105,7 @@ implements ViewSucelje
     {
         $e=Isporuka::readOne($sifra);
         
-        if(!isset($e->pacijent)&&(!isset($e->koncentratorKisika)))
+        if(empty($e->pacijentSifra)&&(empty($e->kisikSifra)))
         {
             Isporuka::delete($e->sifra);
         }
@@ -122,14 +124,11 @@ implements ViewSucelje
                 let isporukasifra=' . $sifra . ';
             </script>' // app config ima zapisano na kojem smo url-u, iz php proslijedujem controlleru da postoji varijabla URL nakon koje dolazi JS
         ]);
-        
+
         if($_SERVER['REQUEST_METHOD']==='GET'){
             $this->promjena_GET($sifra);
             return;
         }
-        
-        $this->e = Isporuka::readOne($sifra);
-        log::info($this->e);
         
         $this->view->render
         (
@@ -137,24 +136,8 @@ implements ViewSucelje
             [
                 'e' =>$this->e
             ]
-        );
-        
-        /*
-        //prvo cemo ucitat sve zeljene dependencye
-        parent::setCSSdependency([
-            '    <link rel="stylesheet" href="' . App::config('url') . 'public/css/dependency/jquery-ui.css">'
-        ]);
-        parent::setJSdependency([
-            '<script src="' . App::config('url') . 'public/js/dependency/jquery-ui.js"></script>',
-            '<script>
-                let url=\'' . App::config('url') . '\';
-                let isporukasifra=' . $sifra . ';
-            </script>' // app config ima zapisano na kojem smo url-u, iz php proslijedujem controlleru da postoji varijabla URL nakon koje dolazi JS
-        ]);
+        );/*
 
-        if($_SERVER['REQUEST_METHOD']==='GET'){
-            $this->promjena_GET($sifra);
-            return;
         }
         $this->e = (object)$_POST;
         try {
@@ -216,7 +199,6 @@ implements ViewSucelje
             ]);
            }     */   
     }
-
     private function kontrola()
     {
         return true;
@@ -261,9 +243,9 @@ implements ViewSucelje
    
 
 
-
+    /*
     public function dodajKoncentratorKisika()
-    {/*
+    {
         //prvo se trebala pozabaciti postoji li u $_GET
         // traženi parametri
         $res = new stdClass();
@@ -280,16 +262,16 @@ implements ViewSucelje
 
                     header('Content-Type: application/json; charset=utf-8');
                     echo json_encode($res,JSON_NUMERIC_CHECK);
-    */
+    
     }
 
     public function dodajPacijenta()
-    {/*
+    {
         //prvo se trebala pozabaviti postoji li u $_GET traženi parametri
 
         $res = new stdClass();
-        if(!Isporuka::postojiPacijentIsporuka(var_dump($_GET['isporuka']),
-                    var_dump($_GET['pacijent']))){
+        if(!Isporuka::postojiPacijentIsporuka(($_GET['isporuka']),
+                    ($_GET['pacijent']))){
                         Isporuka::postojiPacijentIsporuka($_GET['isporuka'],
                         $_GET['pacijent']);
                     $res->error=false;
@@ -301,16 +283,13 @@ implements ViewSucelje
 
                     header('Content-Type: application/json; charset=utf-8');
                     echo json_encode($res,JSON_NUMERIC_CHECK);
-    */
+    
     }
 
-    public function obrisipacijent()
-    {/*
-        //prvo se trebala pozabaciti postoji li u $_GET
-        // traženi parametri
-
-        Isporuka::obrisiPacijentIsporuka($_GET['isporuka'],
-                    $_GET['pacijent']);
+    public function obrisipacijenta($sifra)
+    {
+        $podaci= Isporuka::
+        Isporuka::obrisiPacijentIsporuka();
                
     }
 
@@ -321,7 +300,7 @@ implements ViewSucelje
 
         Isporuka::obrisiKoncentratorKisikaIsporuka($_GET['isporuka'],
                     $_GET['koncentratorKisika']);
-         */      
-    }
+             
+    }*/
     
 }

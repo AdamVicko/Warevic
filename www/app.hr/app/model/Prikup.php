@@ -13,14 +13,15 @@ class Prikup
         
         select
             a.sifra,a.datumPrikupa,d.imeprezime,e.serijskiKod 
-        from prikup a
-            left join isporukapacijent b on b.prikup =a.sifra
-            left join pacijent d on d.sifra = b.pacijent
-            left join isporukakoncentratorkisika c on c.prikup =a.sifra
-            left join koncentratorkisika e on e.sifra = c.koncentratorKisika 
+        from isporuka a
+            left join pacijent d on d.sifra = a.pacijent
+            left join koncentratorKisika e on e.sifra = a.koncentratorKisika 
+            where concat(a.datumPrikupa, \' \', d.imeprezime, \' \', e.serijskiKod,\'\')
+            like :uvjet
         group by 
             a.sifra,a.datumPrikupa,d.imeprezime, e.serijskiKod  
-        order by datumPrikupa asc;
+        order by datumPrikupa asc
+        limit :pocetak, :brps;
 
         ');
         $izraz->execute();
@@ -32,15 +33,11 @@ class Prikup
         $veza = DB::getInstance();
         $izraz = $veza->prepare('
         
-        select 
-            a.sifra, a.datumPrikupa, b.sifra, b.imeprezime ,b.datumRodenja,
-            b.oib ,b.telefon ,b.adresa,b.pacijentKomentar, 
-            c.serijskiKod,c.radniSat,c.ocKomentar,c.sifra
-        from prikup a 
-            inner join pacijent b on a.pacijent = b.sifra  
-            inner join koncentratorKisika c on a.koncentratorKisika = c.sifra
-        where a.sifra=:sifra
-        order by datumPrikupa asc;
+        select a.sifra,a.datumPrikupa,a.pacijent,a.koncentratorKisika,b.imeprezime,c.serijskiKod 
+        from prikup a
+        inner join pacijent b on b.sifra=a.pacijent
+        inner join koncentratorKisika c on c.sifra=a.koncentratorKisika
+        where a.sifra=:sifra;
         
         ');
         $izraz->execute([

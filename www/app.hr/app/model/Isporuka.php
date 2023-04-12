@@ -18,7 +18,7 @@ class Isporuka
             a.sifra,a.datumIsporuke,d.imeprezime,e.serijskiKod 
         from isporuka a
             left join pacijent d on d.sifra = a.pacijent
-            left join koncentratorkisika e on e.sifra = a.koncentratorKisika 
+            left join koncentratorKisika e on e.sifra = a.koncentratorKisika 
             where concat(a.datumIsporuke, \' \', d.imeprezime, \' \', e.serijskiKod,\'\')
             like :uvjet
         group by 
@@ -45,7 +45,7 @@ class Isporuka
         from 
         isporuka a 
         left join pacijent d on d.sifra = a.pacijent
-        left join koncentratorkisika e on e.sifra = a.koncentratorKisika 
+        left join koncentratorKisika e on e.sifra = a.koncentratorKisika 
         where  concat(a.datumIsporuke, \' \', d.imeprezime, \' \', e.serijskiKod,\'\')
         like :uvjet;
         
@@ -101,19 +101,24 @@ class Isporuka
         $veza = DB::getInstance();
         $izraz = $veza->prepare('
         
-        select a.sifra,a.datumIsporuke,a.pacijent,a.koncentratorKisika,b.imeprezime,c.serijskiKod 
+        select 
+            a.sifra,
+            a.datumIsporuke,
+            b.sifra as pacijentSifra,
+            b.imeprezime,
+            c.sifra as kisikSifra,
+            c.serijskiKod 
         from isporuka a
-        inner join pacijent b on b.sifra=a.pacijent
-        inner join koncentratorKisika c on c.sifra=a.koncentratorKisika
+            inner join pacijent b on b.sifra=a.pacijent
+            inner join koncentratorKisika c on c.sifra=a.koncentratorKisika
         where a.sifra=:sifra;
         
         ');
-        $izraz->execute([ //dovuko sam osnovne podatke
+        $izraz->execute([
             'sifra'=>$sifra
         ]);
 
         return $izraz->fetch();
-        
         
     }
 
@@ -162,7 +167,6 @@ class Isporuka
         ]);
     }
 
-/*
     public static function postojiPacijentIsporuka($isporuka, $pacijent)
     {   
         $veza = DB::getInstance();
@@ -180,18 +184,18 @@ class Isporuka
         return $rez>0;
     }
 
-    public static function postojiKoncentratorKisikaIsporuka($isporuka, $koncentrator)
+    public static function postojiKoncentratorKisikaIsporuka($isporuka, $koncentratorKisika)
     {   
         $veza = DB::getInstance();
         $izraz = $veza->prepare('
         
         select count(*) as ukupno 
-        from isporuka where koncentrator=:koncentrator
+        from isporuka where koncentratorKisika=:koncentratorKisika
         
         ');
         $izraz->execute([
             'isporuka'=>$isporuka,
-            'koncentrator'=>$koncentrator
+            'koncentratorKisika'=>$koncentratorKisika
         ]);
         $rez = (int)$izraz->fetchColumn();
         return $rez>0;
@@ -233,7 +237,7 @@ class Isporuka
     {   
         $veza = DB::getInstance();
         $izraz = $veza->prepare('
-            DELETE FROM isporuka
+            DELETE pacijent FROM isporuka
             WHERE pacijent = :pacijent
         ');
         $izraz->execute([
@@ -256,6 +260,6 @@ class Isporuka
             'koncentratorKisika'=>$koncentratorKisika
         ]);
     }
-    */
+    
 }
 
