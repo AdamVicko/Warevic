@@ -3,26 +3,5 @@
     <div style="min-height: 20px;">
         <div style="font-size: 0.6rem;" id="poruka"></div>
     </div>
-    <table>
-        <thead>
-            <tr>
-                <th>Patient </th>
-                <th>Remove</th>
-            </tr>
-        </thead>
-        <tbody id="podaciPacijent">
 
-            <tr>
-                <td>
-                    <?=$e->imeprezime//pazi da ti je i za koncentrator kisika?> 
-                </td>
-                <td>
-                    <a href="<?=App::config('url')?>isporuka/obrisipacijent/<?=$e->sifra?>" class="odabraniPacijent" id="p_<?=$e->sifra?>">
-                    <i class="bi bi-trash3"></i>
-                    </a>
-                </td>
-            </tr>
-
-        </tbody>
-        </table>
 </div>

@@ -172,11 +172,11 @@ function definirajBrisanjePacijent(){ // stavljamo u funkciju radi optimizranja 
     $('.odabraniPacijent').click(function(){
 
         console.log(isporukasifra);
+        
         //console.log($(this).attr('id').split('_')[1]);
         let element = $(this);
         $.ajax({
-            url: url + 'isporuka/obrisipacijent?isporuka=' + isporukasifra + 
-                 '&pacijent=' + element.attr('id').split('_')[1],
+            url: url + 'isporuka/obrisipacijent/' + isporukasifra ,
             success:function(odgovor){
                element.parent().parent().remove();
          }

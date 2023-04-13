@@ -4,12 +4,10 @@
     <form class="row g-3" id="registrationForm" action="<?php echo App::config('url') ?>isporuka/novaIsporuka" method="post"><?//dovest ce me na promjenu sa svim podacima + sa sifrom?>
         <div class="d-grid col">
             <div class="col-md-11">
-            </div>
-            <div class="col-md-11">
 
                 <label for="datumIsporuke">Delivery date</label>
                 <input type="date" name="datumIsporuke" id="datumIsporuke">
-
+                
             </div>
             <div class="row" style="margin-top: 50px;">
                 <div class="d-grid col-md-6">
@@ -19,9 +17,9 @@
                             <option value="<?php echo $p->sifra?>"><?php echo $p->imeprezime?></option>
                             <?php 
                         } ?>
+                            
+
                     </select>
-                    <?php var_dump($trenutniPodaciIsporuke);  ?>
-                    <p>Trenutno:<?= $trenutniPodaciIsporuke->imeprezime?></p>
                 </div>
                 <div class="d-grid col-md-6">
                 <select name="koncentratoriKisika" id="koncentratoriKisika">

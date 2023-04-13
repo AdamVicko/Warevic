@@ -128,9 +128,9 @@ class Isporuka
         $izraz = $veza->prepare('
         
         insert into isporuka
-        (datumIsporuke,pacijent,koncentratorKisika)
+        (datumIsporuke)
         values
-        (:datumIsporuke,:pacijent,:koncentratorKisika);
+        (:datumIsporuke);
         
         ');
         $izraz->execute($parametri);
@@ -164,6 +164,24 @@ class Isporuka
         ');
         $izraz->execute([
             'sifra'=>$sifra
+        ]);
+    }
+
+    public static function novaIsporuka()
+    {
+        $veza = DB::getInstance();
+        $izraz = $veza->prepare('
+        
+        insert into isporuka 
+            (datumIsporuke,pacijent,koncentratorKisika)
+        values 
+            (:datumIsporuke,:pacijent,:koncentratorKisika);
+        
+        ');
+        $izraz->execute([
+            'datumIsporuke'=>$_POST['datumIsporuke'],
+            'pacijent'=>$_POST['pacijent'],
+            'koncentratorKisika'=>$_POST['koncentratoriKisika']
         ]);
     }
 
@@ -233,16 +251,18 @@ class Isporuka
     }
 
 
-    public static function obrisiPacijentIsporuka($isporuka, $pacijent)
+    public static function obrisiPacijentIsporuka($pacijent)
     {   
         $veza = DB::getInstance();
         $izraz = $veza->prepare('
-            DELETE pacijent FROM isporuka
+            DELETE FROM isporuka
             WHERE pacijent = :pacijent
         ');
         $izraz->execute([
             'pacijent' => $pacijent
         ]);
+
+
     }
 
     public static function obrisiKoncentratorKisikaIsporuka($isporuka, $koncentratorKisika)
@@ -250,13 +270,12 @@ class Isporuka
         $veza = DB::getInstance();
         $izraz = $veza->prepare('
         
-           delete from isporuka
-           where isporuka=:isporuka
-           and koncentratorKisika=:koncentratorKisika
+           delete koncentratorKisika from isporuka
+           where koncentratorKisika=:koncentratorKisika
         
         ');
         $izraz->execute([
-            'isporuka'=>$isporuka,
+            
             'koncentratorKisika'=>$koncentratorKisika
         ]);
     }

@@ -63,32 +63,29 @@ implements ViewSucelje
     }
 
     public function novi()
-    {   // pacijent sifra sluzi da ako nema niti jednog pacijenta da te automatski baci na kreaciju pacijente ili kisika
-        $pacijentSifra = Pacijent::prviPacijent();
-        //log::info($pacijentSifra);
-        if($pacijentSifra==0){
-         header('location: ' . App::config('url') . 'pacijent/index?p=1');// saljjem poruke ovim putem
-        }
-        
-        $koncentratorSifra = KoncentratorKisika::prviKoncentrator();
-        if($koncentratorSifra==0){
-         header('location: ' . App::config('url') . 'koncentratorKisika/index?p=2');// saljjem poruke ovim putem
-        }
-        
+    {  
+     
+        $pacijenti=Pacijent::read();
+        $koncentratoriKisika=KoncentratorKisika::read();
         //Moze i ovako
-        header('location: ' . 
-        App::config('url') . 'Isporuka/promjena/' .
-        Isporuka::create([
-            'datumIsporuke'=>'',
-            'pacijent'=>$pacijentSifra, 
-            'koncentratorKisika'=>$koncentratorSifra
-        ])); // kreiram odma isporuku kako bi ju mogo napunit s pacijentom i koncentratorom kisika
+        $this->view->render($this->viewPutanja . 
+            'detaljiNovo',[
+            'e'=>$this->e,
+            'pacijenti'=>$pacijenti,
+            'koncentratoriKisika' => $koncentratoriKisika
+       ]); // kreiram odma isporuku kako bi ju mogo napunit s pacijentom i koncentratorom kisika
         
         //$this->promjena(Isporuka::create([
           //  'datumIsporuke'=>''
             //'pacijent'=>$pacijentSifra,// najbolje je tako a ne fiksno stavljat 1 jel se moze desit da se 1 izbrise!!
             //'koncentratorKisika'=>$koncentratorSifra
         //])); ///////////////////////////// tru si stao provjeri jel ti to radi bar da ucita kao i njegovo na videu zatim ide promjena!!!!!!!
+    }
+
+    public function novaIsporuka()
+    {
+        Isporuka::novaIsporuka();
+        $this->index();
     }
 
     public function izbrisi($sifra=0){
@@ -112,6 +109,7 @@ implements ViewSucelje
         header('location: ' . App::config('url') . 'isporuka/index');
     }
 
+   
     public function promjena($sifra='')
     {
         parent::setCSSdependency([
@@ -125,18 +123,19 @@ implements ViewSucelje
             </script>' // app config ima zapisano na kojem smo url-u, iz php proslijedujem controlleru da postoji varijabla URL nakon koje dolazi JS
         ]);
 
-        if($_SERVER['REQUEST_METHOD']==='GET'){
-            $this->promjena_GET($sifra);
-            return;
-        }
+        $pacijenti=Pacijent::read();
+        $koncentratoriKisika=KoncentratorKisika::read();
+
+        $trenutniPodaciIsporuke = Isporuka::readOne($sifra);
+
         
-        $this->view->render
-        (
-            $this->viewPutanja . 'detalji',
-            [
-                'e' =>$this->e
-            ]
-        );/*
+        
+        $this->view->render($this->viewPutanja . 
+            'detalji',[
+            'pacijenti'=> $pacijenti,
+            'koncentratoriKisika' => $koncentratoriKisika,
+            'trenutniPodaciIsporuke' => $trenutniPodaciIsporuke
+       ]);/*
 
         }
         $this->e = (object)$_POST;
@@ -222,8 +221,19 @@ implements ViewSucelje
        ]); 
     }
 
+    public function obrisipacijent($sifra)
+    {
 
-   
+        Isporuka::obrisiPacijentIsporuka($sifra);
+        
+    }
+    public function obrisiKoncentratorKisika()
+    {
+        //prvo se trebala pozabaciti postoji li u $_GET
+        // traženi parametri
+        Isporuka::obrisiKoncentratorKisikaIsporuka($_GET['isporuka'],
+            $_GET['kisikSifra']);
+    }
 
    
     public function pripremiZaView()
