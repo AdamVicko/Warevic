@@ -1,70 +1,65 @@
 
 <fieldset class="border p-2">
-  <legend class="float-none w-auto"><h1><?=$legend?></h1></legend>
-    <form class="row g-3" id="registrationForm" action="" method="post">
+  <legend class="float-none w-auto"><h1>Collection Update</h1></legend>
+    <form class="row g-3" id="registrationForm" action="<?php echo App::config('url') ?>prikup/azurirajPrikup/<?= $trenutniPodaciPrikupa->sifra ?>" method="post"><?//dovest ce me na promjenu sa svim podacima + sa sifrom?>
         <div class="d-grid col">
             <div class="col-md-11">
-                <?php   
-                echo App::inputText('datumPrikupa',$e->datumPrikupa);
-                ?>
             </div>
             <div class="col-md-11">
-                <?php   
-                echo App::inputText('serijskiKod',$e->serijskiKod);
-                ?>
+
+                <label for="datumPrikupa">Delivery date</label>
+                <input type="date" name="datumPrikupa" id="datumPrikupa" 
+                    value="<?= preg_replace('/^(\d{2})\/(\d{2})\/(\d{4})$/', '$3-$2-$1', $trenutniPodaciPrikupa->datumPrikupa); ?>">
+
             </div>
-            <div class="col-md-11">
-                <?php   
-                echo App::inputText('radniSat',$e->radniSat);
-                ?>
+            <div class="row" style="margin-top: 50px;">
+                <div class="d-grid col-md-6">
+                    <select name="pacijent" id="pacijent">
+                    <?php foreach($pacijenti as $p)
+                        { ?>
+                            <?php 
+                                $selected = "";
+                                if($p->imeprezime === $trenutniPodaciPrikupa->imeprezime )
+                                {
+                                    $selected = "selected";
+                                }
+                            ?>
+                            <option value="<?php echo $p->sifra?>" <?=$selected?> ><?php echo $p->imeprezime?></option>
+                            <?php 
+                        } ?>
+                    </select>
+                </div>
+                <div class="d-grid col-md-6">
+                <select name="koncentratoriKisika" id="koncentratoriKisika">
+                    <?php foreach($koncentratoriKisika as $k)
+                        { ?>
+                         <?php 
+                                $selected = "";
+                                if($k->serijskiKod === $trenutniPodaciPrikupa->serijskiKod )
+                                {
+                                    $selected = "selected";
+                                }
+                            ?>
+                            <option value="<?php echo $k->sifra?> " <?=$selected?> ><?php echo $k->serijskiKod?></option>
+                            <?php 
+                        } ?>
+                            
+
+                    </select>
+
+                
+                </div>
             </div>
-            <div class="col-md-11"> 
-                <?php   
-                echo App::inputText('ocKomentar',$e->ocKomentar);
-                ?>
-            </div>
-        </div>
-        <div class="d-grid col">
-            <div class="col-md-11">
-                <?php   
-                echo App::inputText('imeprezime',$e->imeprezime);
-                ?>
-            </div>
-            <div class="col-md-11">
-                <?php   
-                echo App::inputText('adresa',$e->adresa);
-                ?>
-            </div>
-            <div class="col-md-11">
-                <?php   
-                echo App::inputText('datumRodenja',$e->datumRodenja);
-                ?>
-            </div>
-            <div class="col-md-11">
-                <?php   
-                echo App::inputText('oib',$e->oib);
-                ?>
-            </div>
-            <div class="col-md-11">
-                <?php   
-                echo App::inputText('telefon',$e->telefon);
-                ?>
-            </div>
-            <div class="col-md-11">
-                <?php   
-                echo App::inputText('pacijentKomentar',$e->pacijentKomentar);
-                ?>
-            </div>
+
         </div>
         <hr>
-          <?=$poruka?>
             <div class="row" style="margin-top: 50px;">
                 <div class="d-grid col">
                     <button type="submit" class="btn btn-success" 
-                            value="<?=$akcija?>"><?=$akcija?></button>
+                            value="submit">Submit</button>
                 </div>
                 <div class="d-grid col">
-                    <a href="<?=App::config('url')?>prikup/index"
+                    <a href="<?=App::config('url')?>prikup/odustani"
                         class="btn btn-danger">Cancel</a>
                 </div>
             </div>

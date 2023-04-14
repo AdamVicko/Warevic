@@ -5,15 +5,18 @@ class Prikup
 {
     //CRUD OPERACIJE
 
-    public static function read()
+    public static function read($uvjet='',$stranica=1)
     {
+        $uvjet = '%' . $uvjet . '%';
+        $brps = App::config('brps');
+        $pocetak = ($stranica * $brps) - $brps;
 
         $veza = DB::getInstance();
         $izraz = $veza->prepare('
-        
+
         select
             a.sifra,a.datumPrikupa,d.imeprezime,e.serijskiKod 
-        from isporuka a
+        from prikup a
             left join pacijent d on d.sifra = a.pacijent
             left join koncentratorKisika e on e.sifra = a.koncentratorKisika 
             where concat(a.datumPrikupa, \' \', d.imeprezime, \' \', e.serijskiKod,\'\')
@@ -24,21 +27,53 @@ class Prikup
         limit :pocetak, :brps;
 
         ');
+        $izraz->bindValue('pocetak',$pocetak, PDO::PARAM_INT); // param int tako da mi salje int a ne string
+        $izraz->bindValue('brps',$brps, PDO::PARAM_INT); // param int tako da mi salje int a ne string
+        $izraz->bindParam('uvjet', $uvjet);
+
         $izraz->execute();
         return $izraz->fetchAll();
     }
+
+    public static function ukupnoPrikupa($uvjet='')
+    {
+        $uvjet = '%' . $uvjet . '%';
+        $veza = DB::getInstance();
+        $izraz = $veza->prepare('
+        
+        select count(*)
+        from 
+        prikup a 
+        left join pacijent d on d.sifra = a.pacijent
+        left join koncentratorKisika e on e.sifra = a.koncentratorKisika 
+        where  concat(a.datumPrikupa, \' \', d.imeprezime, \' \', e.serijskiKod,\'\')
+        like :uvjet;
+        
+        ');
+        $izraz->execute([
+            'uvjet'=>$uvjet
+        ]);
+        return $izraz->fetchColumn();
+    }
+
+
     public static function readOne($sifra)
     {
         
         $veza = DB::getInstance();
         $izraz = $veza->prepare('
         
-        select a.sifra,a.datumPrikupa,a.pacijent,a.koncentratorKisika,b.imeprezime,c.serijskiKod 
+        select 
+            a.sifra,
+            a.datumPrikupa,
+            b.sifra as pacijentSifra,
+            b.imeprezime,
+            c.sifra as kisikSifra,
+            c.serijskiKod 
         from prikup a
-        inner join pacijent b on b.sifra=a.pacijent
-        inner join koncentratorKisika c on c.sifra=a.koncentratorKisika
+            inner join pacijent b on b.sifra=a.pacijent
+            inner join koncentratorKisika c on c.sifra=a.koncentratorKisika
         where a.sifra=:sifra;
-        
         ');
         $izraz->execute([
             'sifra'=>$sifra
@@ -49,122 +84,33 @@ class Prikup
     public static function create($parametri)
     {
         $veza = DB::getInstance();
-        $veza->beginTransaction();
-
         $izraz = $veza->prepare('
-        insert into pacijent(imeprezime,telefon,datumRodenja,adresa,oib,pacijentKomentar)
-        values(:imeprezime,:telefon,:datumRodenja,:adresa,:oib,:pacijentKomentar)
-        ');//dvotocke moraju odgovarat vrijednosti name od inputa
-        $izraz->execute(
-        [
-            'imeprezime'=>$parametri['imeprezime'],
-            'telefon'=>$parametri['telefon'],
-            'datumRodenja'=>$parametri['datumRodenja'],
-            'adresa'=>$parametri['adresa'],
-            'oib'=>$parametri['oib'],
-            'pacijentKomentar'=>$parametri['pacijentKomentar']
-        ]);
-
-        $sifraPacijent = $veza->lastInsertId();//sifra za pacijent
-        $izraz=$veza->prepare('
-        insert into koncentratorKisika (serijskiKod,radniSat ,ocKomentar)
-        values (:serijskiKod,:radniSat,:ocKomentar)
+        
+        insert into prikup
+        (datumPrikupa)
+        values
+        (:datumPrikupa);
+        
         ');
-        $izraz->execute(
-            [
-                'serijskiKod'=>$parametri['serijskiKod'],
-                'radniSat'=>$parametri['radniSat'],
-                'ocKomentar'=>$parametri['ocKomentar'],
-            ]);
-
-
-        $sifraKoncentratorKisika = $veza->lastInsertId();//sifra za koncentrator kisika
-        $izraz=$veza->prepare('
-        insert into prikup(datumPrikupa,pacijent,koncentratorKisika)
-        values (:datumPrikupa,:pacijent,:koncentratorKisika)
-        ');
-
-        $izraz->execute(
-            [
-                'datumPrikupa'=>$parametri['datumPrikupa'],
-                'pacijent'=>$sifraPacijent,
-                'koncentratorKisika'=>$sifraKoncentratorKisika
-            ]);
-
-        $veza->commit();
+        $izraz->execute($parametri);
+        return $veza->lastInsertId();
     }
 
     public static function update($parametri)
     {
+        unset($parametri['pacijent']);
+        unset($parametri['koncentratorKisika']);
         $veza = DB::getInstance();
-        $veza->beginTransaction();
-
         $izraz = $veza->prepare('
-            select pacijent from prikup where sifra=:sifa; 
-        ');//dvotocke moraju odgovarat vrijednosti name od inputa
-        $izraz->execute([
-            'sifra'=>$parametri['sifra']
-        ]);
-        $sifraPacijent = $izraz->fetchColumn();
-        $izraz = $veza->prepare('
-            update pacijent set
-                    imeprezime=:imeprezime,
-                    telefon=:telefon,
-                    datumRodenja=:datumRodenja,
-                    adresa=:adresa,
-                    oib=:oib,
-                    pacijentKomentar=:pacijentKomentar
+            update prikup set
+            datumPrikupa=:datumPrikupa
             where sifra=:sifra
         ');
-        $izraz->execute([
-            'sifra'=>$sifraPacijent,
-            'imeprezime'=>$parametri['imeprezime'],
-            'telefon'=>$parametri['telefon'],
-            'datumRodenja'=>$parametri['datumRodenja'],
-            'adresa'=>$parametri['adresa'],
-            'oib'=>$parametri['oib'],
-            'pacijentKomentar'=>$parametri['pacijentKomentar']
-        ]);
-
-
-        $izraz = $veza->prepare('
-            select koncentratoKisika from prikup where sifra=:sifa; 
-        ');//dvotocke moraju odgovarat vrijednosti name od inputa
-        $izraz->execute([
-            'sifra'=>$parametri['sifra']
-        ]);
-        $sifraKoncentratorKisika = $izraz->fetchColumn();
-        $izraz = $veza->prepare('
-        update koncentratoKisika set
-            serijskiKod=:serijskiKod,
-            radniSat=:radniSat,
-            ocKomentar=:ocKomentar
-        where sifra=:sifra
-        ');
-        $izraz->execute([
-            'sifra'=>$sifraKoncentratorKisika,
-            'serijskiKod'=>$parametri['serijskiKod'],
-            'radniSat'=>$parametri['radniSat'],
-            'ocKomentar'=>$parametri['ocKomentar']
-        ]);
-
-
-        $izraz = $veza->prepare('
-        update prikup set
-            datumPrikupa=:datumPrikupa
-        where sifra=:sifra
-        ');
-        $izraz->execute([
-            'sifra'=>$parametri['sifra'],
-            'datumPrikupa'=>$parametri['datumPrikupa']
-        ]);
-            
-            $veza->commit();
+        $izraz->execute($parametri);
     }
 
     public static function delete($sifra)
     {
-        
         $veza = DB::getInstance();
         $izraz = $veza->prepare('
         
@@ -175,8 +121,77 @@ class Prikup
         $izraz->execute([
             'sifra'=>$sifra
         ]);
-        $izraz->execute();
     }
+
+    public static function noviPrikup()
+    {
+        $veza = DB::getInstance();
+        $izraz = $veza->prepare('
+        
+        insert into prikup 
+            (datumPrikupa,pacijent,koncentratorKisika)
+        values 
+            (:datumPrikupa,:pacijent,:koncentratorKisika);
+        
+        ');
+        $izraz->execute([
+            'datumPrikupa'=>$_POST['datumPrikupa'],
+            'pacijent'=>$_POST['pacijent'],
+            'koncentratorKisika'=>$_POST['koncentratoriKisika']
+        ]);
+    }
+
+    
+    public static function azurirajPrikup($sifra)
+    {
+
+        $veza = DB::getInstance();
+        $izraz = $veza->prepare('
+        update prikup set 
+            datumPrikupa=:datumPrikupa, 
+            pacijent=:pacijent, 
+            koncentratorKisika=:koncentratorKisika 
+        where sifra=:sifra
+        ');
+        $izraz->execute([
+            'datumPrikupa'=>$_POST['datumPrikupa'],
+            'pacijent'=>$_POST['pacijent'],
+            'koncentratorKisika'=>$_POST['koncentratoriKisika'],
+            'sifra' => $sifra
+        ]);
+
+    }
+
+    
+    public static function obrisiPacijentPrikup($pacijent)
+    {   
+        $veza = DB::getInstance();
+        $izraz = $veza->prepare('
+            DELETE FROM prikup
+            WHERE pacijent = :pacijent
+        ');
+        $izraz->execute([
+            'pacijent' => $pacijent
+        ]);
+    }
+
+    public static function obrisiKoncentratorKisikaPrikup( $koncentratorKisika)
+    {   
+        $veza = DB::getInstance();
+        $izraz = $veza->prepare('
+        
+           delete koncentratorKisika from prikup
+           where koncentratorKisika=:koncentratorKisika
+        
+        ');
+        $izraz->execute([
+            
+            'koncentratorKisika'=>$koncentratorKisika
+        ]);
+    }
+
+
+
 
     public static function postojiIstiOIB($oib,$sifra=0)
     {

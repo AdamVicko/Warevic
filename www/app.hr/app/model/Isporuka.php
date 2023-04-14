@@ -56,46 +56,6 @@ class Isporuka
         return $izraz->fetchColumn();
     }
 
-
-  /*  public static function pacijentNaIsporuki($sifra)
-    {
-        $veza = DB::getInstance();
-        $izraz = $veza->prepare('
-        
-        select 
-            a.sifra,a.imeprezime,a.adresa,a.telefon
-        from pacijent a 
-            inner join isporukapacijent b on b.pacijent =a.sifra 
-        where b.isporuka=:sifra;
-        
-        ');
-        $izraz->execute([
-            'sifra'=>$sifra
-        ]);
-        
-        return $izraz->fetchAll();
-    }
-
-    public static function  koncentratorKisikaNaIsporuki($sifra)
-    {
-        $veza = DB::getInstance();
-        $izraz = $veza->prepare('
-        
-        select 
-            a.sifra,a.serijskiKod,a.radniSat ,a.proizvodac,a.model
-        from koncentratorkisika a 
-            inner join isporukakoncentratorkisika b on b.koncentratorKisika  =a.sifra 
-        where b.isporuka=:sifra;
-        
-        ');
-        $izraz->execute([
-            'sifra'=>$sifra
-        ]);
-        return $izraz->fetchAll();
-    }*/
-
- 
-
     public static function readOne($sifra)
     {
         $veza = DB::getInstance();
@@ -139,16 +99,13 @@ class Isporuka
 
     public static function update($parametri)
     {
-        //Log::info($parametri);
         unset($parametri['pacijent']);
         unset($parametri['koncentratorKisika']);
         $veza = DB::getInstance();
         $izraz = $veza->prepare('
-        
             update isporuka set
             datumIsporuke=:datumIsporuke
             where sifra=:sifra
-        
         ');
         $izraz->execute($parametri);
     }
@@ -183,6 +140,22 @@ class Isporuka
             'pacijent'=>$_POST['pacijent'],
             'koncentratorKisika'=>$_POST['koncentratoriKisika']
         ]);
+    }
+
+    public static function azurirajIsporuku($sifra)
+    {
+
+        $veza = DB::getInstance();
+        $izraz = $veza->prepare('
+        update isporuka set datumIsporuke=:datumIsporuke, pacijent=:pacijent, koncentratorKisika=:koncentratorKisika where sifra=:sifra
+        ');
+        $izraz->execute([
+            'datumIsporuke'=>$_POST['datumIsporuke'],
+            'pacijent'=>$_POST['pacijent'],
+            'koncentratorKisika'=>$_POST['koncentratoriKisika'],
+            'sifra' => $sifra
+        ]);
+
     }
 
     public static function postojiPacijentIsporuka($isporuka, $pacijent)
@@ -265,7 +238,7 @@ class Isporuka
 
     }
 
-    public static function obrisiKoncentratorKisikaIsporuka($isporuka, $koncentratorKisika)
+    public static function obrisiKoncentratorKisikaIsporuka( $koncentratorKisika)
     {   
         $veza = DB::getInstance();
         $izraz = $veza->prepare('

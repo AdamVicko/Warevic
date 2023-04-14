@@ -9,138 +9,76 @@ implements ViewSucelje
     DIRECTORY_SEPARATOR . 'prikup' . 
     DIRECTORY_SEPARATOR;
     private $e;
-    private $poruka='';
-    private $nf; // number formater dostupan u svim metodama ove klase 
     
     public function __construct()
     {
         parent::__construct(); // pozivam parent construct da ode provjerit u autorizacijacontroller dal ima ovlasti
-        $this->nf = new NumberFormatter('hr-HR',NumberFormatter::DECIMAL); // format za prikaz broja(radni sat)
-        $this->nf->setPattern('###.##0.00');
     }
+
+    public function pocetniPodaci()
+    {
+        $e = new stdClass();
+        $e->datumPrikupa='';
+        $e->imeprezime='';
+        $e->serijskiKod='';
+        return $e;
+    }
+
 
     public function index()
     {
-       $prikup = Prikup::read();
-       foreach($prikup as $p)
+        if(isset($_GET['uvjet']))
         {
-            if($p->radniSat==null)
-            {
-                $p->radniSat = $this->nf->format(0);
-            }
-            else
-            {
-                $p->radniSat = $this->nf->format($p->radniSat);
-            }
+            $uvjet = trim($_GET['uvjet']);
+        }else
+        {
+            $uvjet=''; // uvjet za search
         }
-
-
-        $this->view->render($this->viewPutanja . 'index',
-        [
-            'podaci' => $prikup,
-            'css' => 'prikup.css'
-        ]);
+        if(isset($_GET['stranica']))
+        {
+            $stranica = (int)$_GET['stranica'];
+            if($stranica < 1)
+            { 
+                $stranica =1;
+            }
+        }else
+        {
+            $stranica=1; // uvjet za search
+        }
+        $ui = Prikup::ukupnoPrikupa($uvjet);
+        $zadnja = (int)ceil($ui/App::config('brps')); // ceil= zaokruzi na prvi veci cijeli broj ako je decimalno
+        $this->view->render($this->viewPutanja . 
+            'index',[
+                'podaci'=>Prikup::read($uvjet,$stranica),
+                'css' => 'prikup.css',
+                'stranica' => $stranica,
+                'uvjet' => $uvjet, // ucitavam uvjet
+                'zadnja' => $zadnja
+            ]);
     }
 
     public function novi()
     {
-        if($_SERVER['REQUEST_METHOD']==='GET')
-        {
-            $this->view->render($this->viewPutanja . 'detalji', 
-            [
-                'legend'=>'New Collection',
-                'akcija'=>'Create',
-                'poruka'=>'Fullfil needed data!',
-                'e'=>$this->pocetniPodaci()
-            ]);
-            return;
-        }
-        $this->pripremiZaView();//i da je metoda prazna slobodno ju mogu pozvat!!
-        //ovdje sam siguran da nije GET,za nas je onda POST
-        
-
-        try {
-            $this->kontrola();
-            $this->pripremiZaBazu();
-            Prikup::create((array)$this->e);//sve ok spremi u bazu
-            header('location:' . App::config('url') . 'prikup/index');
-        } catch (\Exception $th) {
-                $this->view->render($this->viewPutanja . 'detalji' , 
-            [
-                'legend'=>'New Collection',
-                'akcija'=>'Create',
-                'poruka'=>$this->poruka,
-                'e'=>$this->e
-            ]);
-        }
-       
-       //Log::info($this->e);
-       //Log::info($this->poruka);
-
-       //kontrola podataka
-       /*if(!$this->kontrola())
-        {
-            $this->view->render($this->viewPutanja .
-            'detalji',
-            [
-                'legend'=>'New Collection',
-                'akcija'=>'Dodaj',
-                'poruka'=>'Popunite trazene podatke',
-                'e'=>$this->e
-             ]);
-             return;
-        }*/
-      
-       
-
-        
-       
-
-      /*  $this->view->render($this->viewPutanja . 'novi',
-        [
-            'e'=>$this->pocetniPodaci(),
-            'poruka'=>'Collection added!'
-        ]);*/
+        $pacijenti=Pacijent::read();
+        $koncentratoriKisika=KoncentratorKisika::read();
+        $this->view->render($this->viewPutanja . 
+            'detaljiNovo',[
+            'e'=>$this->e,
+            'pacijenti'=>$pacijenti,
+            'koncentratoriKisika' => $koncentratoriKisika
+       ]); // kreiram odma isporuku kako bi ju mogo napunit s pacijentom i koncentratorom kisika
     }
 
-    public function promjena($sifra=0)
+    public function noviPrikup()
     {
-        if($_SERVER['REQUEST_METHOD']==='GET'){
-             $this->e = Prikup::readOne($sifra);
-             $this->provjeraIntParametra($sifra);
-             if($this->e==null){
-                 header('location: ' . App::config('url') . 'prijava/odjava');
-                 return;
-             }
- 
-             $this->view->render($this->viewPutanja .
-             'detalji',[
-                 'legend'=>'Modify collection',
-                 'akcija'=>'Modify',
-                 'poruka'=>'Modify data',
-                 'e'=>$this->e
-             ]);
-             return;
-         }
-         //sada ide POST
- 
-         $this->pripremiZaView();
-            
-            try {
-             $this->e->sifra=$sifra; // POSTO NISAM NA POCETNIM PARAMETRIMA STAVIO SIFRU OVDJE JU DEKLARIRAM
-             $this->kontrola();
-             $this->pripremiZaBazu();
-             Prikup::update((array)$this->e);
-             header('location:' . App::config('url') . 'prikup');
-            } catch (\Exception $th) {
-             $this->view->render($this->viewPutanja .
-             'detalji',[
-                 'legend'=>'Collection modify error!',
-                 'akcija'=>'Modify',
-                 'poruka'=>$this->poruka . ' ' . $th->getMessage(),
-                 'e'=>$this->e
-             ]);
-            }
+        Prikup::noviPrikup();
+        $this->index();
+    }
+
+    public function azurirajPrikup($sifra)
+    {
+        Prikup::azurirajPrikup($sifra);
+        $this->index();
     }
 
     public function izbrisi($sifra=0)
@@ -155,9 +93,55 @@ implements ViewSucelje
         header('location: ' . App::config('url') . 'prikup/index' );
     }
 
+    public function odustani($sifra='')
+    {
+        $e=Prikup::readOne($sifra);
+        if(empty($e->pacijentSifra)&&(empty($e->kisikSifra)))
+        {
+            Prikup::delete($e->sifra);
+        }
+        header('location: ' . App::config('url') . 'prikup/index');
+    }
+
+    public function promjena($sifra='')
+    {
+        parent::setCSSdependency([
+            '    <link rel="stylesheet" href="' . App::config('url') . 'public/css/dependency/jquery-ui.css">'
+        ]);
+        parent::setJSdependency([
+            '<script src="' . App::config('url') . 'public/js/dependency/jquery-ui.js"></script>',
+            '<script>
+                let url=\'' . App::config('url') . '\';
+                let isporukasifra=' . $sifra . ';
+            </script>' // app config ima zapisano na kojem smo url-u, iz php proslijedujem controlleru da postoji varijabla URL nakon koje dolazi JS
+        ]);
+        $pacijenti=Pacijent::read();
+        $koncentratoriKisika=KoncentratorKisika::read();
+        $trenutniPodaciPrikupa = Prikup::readOne($sifra);
+        $this->view->render($this->viewPutanja . 
+            'detalji',[
+            'pacijenti'=> $pacijenti,
+            'koncentratoriKisika' => $koncentratoriKisika,
+            'trenutniPodaciPrikupa' => $trenutniPodaciPrikupa
+       ]);
+    }
+
+    public function obrisipacijent($sifra)
+    {
+
+        Prikup::obrisiPacijentPrikup($sifra);
+        
+    }
+    public function obrisiKoncentratorKisika()
+    {
+        Prikup::obrisiKoncentratorKisikaPrikup($_GET['isporuka'],
+            $_GET['kisikSifra']);
+    }
+
+  
 
     //ako nesto ne valja vratiti na view s odgovorom
-    private function kontrola()
+  /*  private function kontrola()
     {
         $this->kontrolaimeprezime();
         $this->kontrolaDatumPrikupa();
@@ -311,10 +295,9 @@ implements ViewSucelje
             throw new Exception();
         }
     }
-
+ */
     public function pripremiZaBazu()
     {
-        $this->e->radniSat = $this->nf->parse($this->e->radniSat);  //priprema za bazu
     }
 
     public function pripremiZaView()
@@ -322,23 +305,7 @@ implements ViewSucelje
         $this->e = (object)$_POST; // prebacim post u objekt i posaljem na view koji prima taj objekt
     }
 
-    public function pocetniPodaci()
-    {
-        //e kao element
-        $e = new stdClass();
-        $e->sifra='';
-        $e->datumPrikupa='';
-        $e->serijskiKod='';
-        $e->imeprezime='';
-        $e->radniSat='';
-        $e->adresa='';
-        $e->ocKomentar='';
-        $e->telefon='';
-        $e->pacijentKomentar='';
-        $e->datumRodenja='';
-        $e->oib='';
-        return $e;
-    }
+ 
 
     
 }

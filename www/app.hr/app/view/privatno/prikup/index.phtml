@@ -1,12 +1,17 @@
 
-    <h1>Collection's</h1>
+<h1>Collection</h1>
 
 <div class="d-grid gap-2 col-6 mx-auto" style="margin: 50px 0 0 0;">
-    <a href="novi" class="btn btn-primary">New collection</a>
+    <a href="<?=App::config('url')?>prikup/novi" class="btn btn-primary">New collection</a>
 </div>
 
-<div class="table-responsive">
-    <table class="table table-dark table-hover" style="margin: 50px 0 50px 0;">
+<div class="table-responsive" style="margin: 50px 0 0px 0;">
+    <form action="" method="get">
+        <input type="text" name="uvjet"
+        placeholder="Part of Collection Date, Serial Number, Name" value="<?=$uvjet?>" >
+    </form>
+    <?php include 'stranicenje.phtml' ?>
+    <table class="table table-dark table-hover" style="margin: 20px 0 20px 0;">
         <thead>
             <tr>
                 <th scope="col">Date</th>
@@ -20,15 +25,23 @@
                 <tr>
                     <td><?=$p->datumPrikupa?></td>
                     <td><?=$p->imeprezime?></td>
-                    <td><?=$p->serijskiKod?></td>
+                    <td><?=$p->serijskiKod?></td> 
                     <td>
-                    <?php   
-                    $entitet='prikup';
-                    include BP_APP . 'view/includes/promjenaBrisanje.phtml';
-                    ?>
+                    <a href="<?=App::config('url')?>prikup/promjena/<?=$p->sifra?>"><i class="bi bi-pencil"></i></a>    
+                    <?php if(App::admin()): //ako je auth admin?>
+                            <a
+                                onclick="return confirm('Deleting <?=$p->imeprezime?> on <?=$p->datumIsporuke?> ? ')"
+                                href="<?=APP::config('url')?>prikup/izbrisi/<?=$p->sifra?>"
+                            >
+                                <i class="bi bi-trash3" style="color: tomato;"></i>
+                            </a>
+                    <?php else: ?>
+                        <i title="Only Admin can delete collection" class="bi bi-trash3"  style="color: grey;"></i>
+                    <?php endif; ?>
                     </td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
     </table>
 </div>
+<?php include 'stranicenje.phtml' ?>

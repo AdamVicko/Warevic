@@ -1,0 +1,33 @@
+<div class="d-flex justify-content-center">
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <?php if($stranica===1): ?>
+                <li class="page-item disabled">
+                    <a class="page-link"  href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo; Previous</span>
+                    </a>
+                </li>
+            <?php else: ?>
+                <li class="page-item">
+                    <a class="page-link" href="<?=App::config('url')?>prikup/index?stranica=<?php echo $stranica-1;?> & uvjet=<?=$uvjet?>" aria-label="Previous">
+                        <span aria-hidden="true">&laquo; Previous</span>
+                    </a>
+                </li>
+            <?php endif; ?>
+            <li class="page-item"><a class="page-link" href="#"><?=$stranica?></a></li>
+            <?php if($stranica===$zadnja): ?>
+                <li class="page-item disabled">
+                    <a class="page-link"  href="#" aria-label="Next">
+                        <span aria-hidden="true">Next &raquo; </span>
+                    </a>
+                </li>
+            <?php else: ?>
+                <li class="page-item">
+                    <a class="page-link" href="<?=App::config('url')?>prikup/index?stranica=<?php echo $stranica+1;?> & uvjet=<?=$uvjet?>" aria-label="Next">
+                        <span aria-hidden="true">Next &raquo; </span>
+                    </a>
+                </li>
+            <?php endif; ?>
+        </ul>
+    </nav>
+</div>
