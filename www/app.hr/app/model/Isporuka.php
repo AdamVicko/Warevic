@@ -44,9 +44,10 @@ class Isporuka
         select count(*)
         from 
         isporuka a 
-        left join pacijent d on d.sifra = a.pacijent
-        left join koncentratorKisika e on e.sifra = a.koncentratorKisika 
-        where  concat(a.datumIsporuke, \' \', d.imeprezime, \' \', e.serijskiKod,\'\')
+            left join pacijent d on d.sifra = a.pacijent
+            left join koncentratorKisika e on e.sifra = a.koncentratorKisika 
+        where  
+            concat(a.datumIsporuke, \' \', d.imeprezime, \' \', e.serijskiKod,\'\')
         like :uvjet;
         
         ');
@@ -157,7 +158,7 @@ class Isporuka
         ]);
 
     }
-
+/*
     public static function postojiPacijentIsporuka($isporuka, $pacijent)
     {   
         $veza = DB::getInstance();
@@ -252,6 +253,6 @@ class Isporuka
             'koncentratorKisika'=>$koncentratorKisika
         ]);
     }
-    
+    */
 }
 

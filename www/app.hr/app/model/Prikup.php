@@ -42,11 +42,11 @@ class Prikup
         $izraz = $veza->prepare('
         
         select count(*)
-        from 
-        prikup a 
-        left join pacijent d on d.sifra = a.pacijent
-        left join koncentratorKisika e on e.sifra = a.koncentratorKisika 
-        where  concat(a.datumPrikupa, \' \', d.imeprezime, \' \', e.serijskiKod,\'\')
+        from prikup a 
+            left join pacijent d on d.sifra = a.pacijent
+            left join koncentratorKisika e on e.sifra = a.koncentratorKisika 
+        where  
+            concat(a.datumPrikupa, \' \', d.imeprezime, \' \', e.serijskiKod,\'\')
         like :uvjet;
         
         ');
@@ -62,7 +62,6 @@ class Prikup
         
         $veza = DB::getInstance();
         $izraz = $veza->prepare('
-        
         select 
             a.sifra,
             a.datumPrikupa,
@@ -192,7 +191,7 @@ class Prikup
 
 
 
-
+/*
     public static function postojiIstiOIB($oib,$sifra=0)
     {
         if($sifra>0){
@@ -221,5 +220,5 @@ class Prikup
         $izraz->execute($parametri);
         $sifra=$izraz->fetchColumn();
         return $sifra==0;
-    }
+    }*/
 }

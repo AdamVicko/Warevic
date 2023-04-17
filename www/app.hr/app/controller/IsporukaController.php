@@ -123,18 +123,6 @@ implements ViewSucelje
             'trenutniPodaciIsporuke' => $trenutniPodaciIsporuke
        ]);
     }
-
-    public function obrisipacijent($sifra)
-    {
-
-        Isporuka::obrisiPacijentIsporuka($sifra);
-        
-    }
-    public function obrisiKoncentratorKisika()
-    {
-        Isporuka::obrisiKoncentratorKisikaIsporuka($_GET['isporuka'],
-            $_GET['kisikSifra']);
-    }
     public function pripremiZaView()
     {
        // $this->e = (object)$_POST;
