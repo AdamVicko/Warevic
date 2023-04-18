@@ -92,11 +92,6 @@ implements ViewSucelje
 
     public function odustani($sifra='')
     {
-        $e=Isporuka::readOne($sifra);
-        if(empty($e->pacijentSifra)&&(empty($e->kisikSifra)))
-        {
-            Isporuka::delete($e->sifra);
-        }
         header('location: ' . App::config('url') . 'isporuka/index');
     }
 

@@ -13,21 +13,22 @@ class IndexController extends AutorizacijaController
         parent::__construct();
     }
 
-    public function search($uvjet)
-    {
-        $rez =Index::searchAll($uvjet);
-        usort($rez, function($a, $b) { return strcmp($a->tekst, $b->tekst); });
-        $this->view->api($rez);
-    }
-
     public function index()
     {
+        if(isset($_GET['uvjet']))
+        {
+            $uvjet = trim($_GET['uvjet']);
+        }else
+        {
+            $uvjet=''; // uvjet za search
+        }
 
         $this->view->render($this->viewPutanja . 
             'index',[
                 'css' => 'index.css',
+                'uvjet' => $uvjet,
+                'podaci' => Index::searchAll($uvjet)
             ]);
-            
     }
 
 }

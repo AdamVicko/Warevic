@@ -95,11 +95,6 @@ implements ViewSucelje
 
     public function odustani($sifra='')
     {
-        $e=Prikup::readOne($sifra);
-        if(empty($e->pacijentSifra)&&(empty($e->kisikSifra)))
-        {
-            Prikup::delete($e->sifra);
-        }
         header('location: ' . App::config('url') . 'prikup/index');
     }
 
