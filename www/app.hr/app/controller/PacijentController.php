@@ -16,6 +16,20 @@ implements ViewSucelje
         parent::__construct(); // pozivam parent construct da ode provjerit u autorizacijacontroller dal ima ovlasti
     }
 
+    public function pocetniPodaci()
+    {
+        //e kao element
+        $e = new stdClass();
+        $e->sifra='';
+        $e->imeprezime='';
+        $e->telefon='';
+        $e->datumRodenja='';
+        $e->adresa='';
+        $e->oib='';
+        $e->pacijentKomentar='';
+        return $e;
+    }
+
     public function index() 
     {
         $poruka='';
@@ -271,19 +285,7 @@ implements ViewSucelje
 
         return true;
     }
-    public function pocetniPodaci()
-    {
-        //e kao element
-        $e = new stdClass();
-        $e->sifra='';
-        $e->imeprezime='';
-        $e->telefon='';
-        $e->datumRodenja='';
-        $e->adresa='';
-        $e->oib='';
-        $e->pacijentKomentar='';
-        return $e;
-    }
+   
 
     public function pripremiZaBazu()
     {

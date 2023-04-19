@@ -1,0 +1,47 @@
+<div class="customModal" style="margin-top: 50px;">
+    <div class="text-center" style="margin: 100px 0 0 0;">
+        <h1>Creating new Worker</h1>
+    </div>
+    <form class="row g-3" id="registrationForm" action="" method="post">
+        <div class="col-md-6">
+            <label for="imeprezime" class="form-label">Worker Name and Surname</label>
+            <input type="text" class="form-control" id="imeprezime" 
+                name="imeprezime" value="<?=$e->imeprezime?>">
+        </div>
+
+        <div class="col-md-6">
+            <label for="telefon" class="form-label">Worker Phone</label>
+            <input type="text" class="form-control" id="telefon" 
+                name="telefon" value="<?=$e->telefon?>">
+        </div>
+        <div class="col-md-6">
+            <label for="email" class="form-label">Worker email</label>
+            <input type="text" class="form-control" id="email" 
+                name="email" value="<?=$e->email?>">
+        </div>
+        <div class="col-md-6">
+            <label for="lozinka" class="form-label">Password</label>
+            <input type="text" class="form-control" id="lozinka" 
+                name="lozinka" value="<?=$e->lozinka?>">
+        </div>
+        <div class="col-md-6">
+            <label for="uloga" class="form-label">Worker Role</label>
+            <input type="text" class="form-control" id="uloga" 
+                name="uloga" value="<?=$e->uloga?>">
+        </div>
+        <hr>
+        <?=$poruka?>
+        <div class="row" style="margin-top: 50px;">
+            <div class="d-grid col">
+                <button type="submit" class="btn btn-success" 
+                value="dodaj">Create</button>
+            </div>
+            <div class="d-grid col">
+                <a href="<?=App::config('url')?>djelatnik/index"
+                    class="btn btn-danger">Cancel</a> 
+            </div>
+        </div>
+        
+    </form>
+
+</div>
