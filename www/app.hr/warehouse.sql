@@ -80,7 +80,21 @@ alter table prikup add foreign key (koncentratorKisika) references koncentratorK
 insert into pacijent (sifra,imeprezime,telefon,datumRodenja,adresa,oib,pacijentKomentar)
 values
 (null,'Bubo Basić','097 6444789','1965.03.26','Ivaundulica 588','83500348060',''),
-(null,'Ivo Mali','097 6444789','1990.03.26','Iva Guica 8','59452136896','')
+(null,'Ivo Mali','097 6444789','1990.03.26','Iva Guica 8','59452136896',''),
+(null,'Bubo Basić14','097 6444789','1965.03.26','Ivaundulica 588','83500348060',''),
+(null,'Ivo Mali13','097 6444789','1990.03.26','Iva Guica 8','59452136896',''),
+(null,'Bubo Basić12','097 6444789','1965.03.26','Ivaundulica 588','83500348060',''),
+(null,'Ivo Mali11','097 6444789','1990.03.26','Iva Guica 8','59452136896',''),
+(null,'Bubo Basić0','097 6444789','1965.03.26','Ivaundulica 588','83500348060',''),
+(null,'Ivo Mali9','097 6444789','1990.03.26','Iva Guica 8','59452136896',''),
+(null,'Bubo Basić8','097 6444789','1965.03.26','Ivaundulica 588','83500348060',''),
+(null,'Ivo Mali7','097 6444789','1990.03.26','Iva Guica 8','59452136896',''),
+(null,'Bubo Basić6','097 6444789','1965.03.26','Ivaundulica 588','83500348060',''),
+(null,'Ivo Mali5','097 6444789','1990.03.26','Iva Guica 8','59452136896',''),
+(null,'Bubo Basić4','097 6444789','1965.03.26','Ivaundulica 588','83500348060',''),
+(null,'Ivo Mali3','097 6444789','1990.03.26','Iva Guica 8','59452136896',''),
+(null,'Bubo Basić2','097 6444789','1965.03.26','Ivaundulica 588','83500348060',''),
+(null,'Ivo Mali1','097 6444789','1990.03.26','Iva Guica 8','59452136896','')
 ;
 
 
@@ -88,7 +102,38 @@ insert into koncentratorKisika(sifra,serijskikod,radniSat,proizvodac,
                                 model,datumKupovine,ocKomentar)
 values
 (null,'BK533456343','124,5','Devilbiss','5L','2020.03.14',''),
-(null,'BK345674343','2257','Devilbiss','5L','2020.02.19','');
+(null,'BK345674343','2257','Devilbiss','5L','2020.02.19',''),
+(null,'BK533451243','124,5','OXTM','5L','2020.03.14',''),
+(null,'BK345672343','2257','Devilbiss','5L','2020.02.19',''),
+(null,'BK533453443','124,5','Olive','5L','2020.03.14',''),
+(null,'BK345674543','2257','Devilbiss','5L','2020.02.19',''),
+(null,'BK533455643','124,5','Devilbiss','5L','2020.03.14',''),
+(null,'BK345675643','2257','Olive','5L','2020.02.19',''),
+(null,'BK533456743','124,5','Devilbiss','5L','2020.03.14',''),
+(null,'BK345677843','2257','Philips','5L','2020.02.19',''),
+(null,'BK533458943','124,5','Devilbiss','5L','2020.03.14',''),
+(null,'BK345678993','2257','Philips','10L','2020.02.19',''),
+(null,'BK111456343','124,5','Devilbiss','5L','2020.03.14',''),
+(null,'BK222674343','2257','OXTM','5L','2020.02.19',''),
+(null,'BK444456343','124,5','Devilbiss','10L','2020.03.14',''),
+(null,'AK666674343','2257','Devilbiss','5L','2020.02.19',''),
+(null,'AK533456343','124,5','Devilbiss','5L','2020.03.14',''),
+(null,'AK345674343','2257','Devilbiss','5L','2020.02.19',''),
+(null,'AK533451243','124,5','OXTM','5L','2020.03.14',''),
+(null,'AK345672343','2257','Devilbiss','5L','2020.02.19',''),
+(null,'AK533453443','124,5','Olive','5L','2020.03.14',''),
+(null,'AK345674543','2257','Devilbiss','5L','2020.02.19',''),
+(null,'AK533455643','124,5','Devilbiss','5L','2020.03.14',''),
+(null,'AK345675643','2257','Olive','5L','2020.02.19',''),
+(null,'AK533456743','124,5','Devilbiss','5L','2020.03.14',''),
+(null,'AK345677843','2257','Philips','5L','2020.02.19',''),
+(null,'AK533458943','124,5','Devilbiss','5L','2020.03.14',''),
+(null,'AK345678993','2257','Philips','10L','2020.02.19',''),
+(null,'AK111456343','124,5','Devilbiss','5L','2020.03.14',''),
+(null,'AK222674343','2257','OXTM','5L','2020.02.19',''),
+(null,'AK444456343','124,5','Devilbiss','10L','2020.03.14',''),
+(null,'AK666674343','2257','Devilbiss','5L','2020.02.19','')
+;
 
 insert into isporuka(sifra,datumIsporuke,pacijent,koncentratorKisika)
 values
@@ -101,29 +146,6 @@ values
 (null,'2023.03.07',2,2);
 
 
-/*
-insert into stanje (sifra,koncentratorKisika,kolicinaKom)
-values
-(null,1,null),
-(null,2,null),
-(null,3,null),
-(null,4,null),
-(null,5,null),
-(null,6,null),
-(null,7,null),
-(null,8,null),
-(null,9,null),
-(null,10,null),
-(null,11,null),
-(null,12,null),
-(null,13,null),
-(null,14,null),
-(null,15,null),
-(null,16,null),
-(null,17,null),
-(null,18,null)
-;
-*/
 
 
 

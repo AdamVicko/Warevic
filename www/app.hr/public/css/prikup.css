@@ -6,3 +6,13 @@ h1
 {
     text-align: center;
 }
+#prikupp
+{   
+    overflow-x:auto;
+    overflow-y:auto; 
+}
+#prikupk
+{   
+    overflow-x:auto;
+    overflow-y:auto; 
+}

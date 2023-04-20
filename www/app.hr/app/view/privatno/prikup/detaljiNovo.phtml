@@ -10,22 +10,28 @@
                 
             </div>
             <div class="row" style="margin-top: 50px;">
-                <div class="d-grid col-md-6">
+                <div class="d-grid col-md-6" id="prikupp">
                     <select name="pacijent" id="pacijent">
                     <?php foreach($pacijenti as $p)
                         { ?>
-                            <option value="<?php echo $p->sifra?>"><?php echo $p->imeprezime?></option>
+                            <?php if(($p->isporucen == 0 && $p->prikupljen == 0) || ($p->isporucen == 1 && $p->prikupljen == 1)){ ?>
+                                <option value="<?php echo $p->sifra?>"><?php echo $p->imeprezime?></option>
+                            <?php }?>
+
                             <?php 
                         } ?>
                             
 
                     </select>
                 </div>
-                <div class="d-grid col-md-6">
+                <div class="d-grid col-md-6" id="prikupk">
                 <select name="koncentratoriKisika" id="koncentratoriKisika">
                     <?php foreach($koncentratoriKisika as $k)
                         { ?>
-                            <option value="<?php echo $k->sifra?>"><?php echo $k->serijskiKod?></option>
+                            <?php if(($k->isporucen == 0 || $k->prikupljen == 0) || ($k->isporucen == 1 || $k->prikupljen == 1)){ ?>
+                                  <option value="<?php echo $k->sifra?>"><?php echo $k->serijskiKod?></option>
+                            <?php }?>
+
                             <?php 
                         } ?>
                             

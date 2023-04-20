@@ -40,7 +40,7 @@ class PrijavaController extends Controller // zbog viewa extenda controller
         //uspjesno prijavljen
         $_SESSION['auth']=$djelatnik;
         header('location:' . App::config('url') . 
-        'index/index');
+        'pacijent/index');
         
 
     }
