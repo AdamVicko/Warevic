@@ -15,3 +15,4 @@ abstract class AutorizacijaController extends Controller
         }
     }
 }
+

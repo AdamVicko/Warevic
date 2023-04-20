@@ -4,8 +4,6 @@
 class DB extends PDO
 {
     private static $instanca=null;
-
-
     private function __construct()
     {
         extract(App::config('baza')); // baza dolazi iz kofiguracije
@@ -19,7 +17,6 @@ class DB extends PDO
         {
             self::$instanca=new self();
         }
-
         return selF::$instanca;
     }
 }

@@ -32,6 +32,15 @@ implements ViewSucelje
 
     public function index() 
     {
+        parent::setCSSdependency([
+            '<link rel="stylesheet" href="' . App::config('url') . 'public/css/dependency/cropper.css">'
+        ]);
+        parent::setJSdependency([
+            '<script src="' . App::config('url') . 'public/js/dependency/cropper.js"></script>',
+            '<script>
+            </script>'
+        ]);
+
         $poruka='';
         if(isset($_GET['p']))
         {
@@ -91,13 +100,10 @@ implements ViewSucelje
             ]);
             return;
         }
-       
         //ovdje sam siguran da nije GET,za nas je onda POST
-       
         $this->e = (object)$_POST; // prebacim post u objekt i posaljem na view koji prima taj objekt
        //Log::info($this->e);
        //Log::info($this->poruka);
-
        //kontrola podataka
        if(!$this->kontrola())
         {
@@ -109,9 +115,7 @@ implements ViewSucelje
              ]);
              return;
         }
-
         Pacijent::create((array)$this->e); //spremi u bazu
-
         $this->view->render($this->viewPutanja . 'novi',
         [
             'e'=>$this->pocetniPodaci(),
@@ -241,9 +245,9 @@ implements ViewSucelje
             return false;
         }
 
-        if(strlen(trim($s)) > 20)
+        if(strlen(trim($s)) > 50)
         {
-            $this->poruka='Must not have more than 20 characters in Patient adress!';
+            $this->poruka='Must not have more than 50 characters in Patient adress!';
             return false;
         }
 
@@ -259,9 +263,9 @@ implements ViewSucelje
             return false;
         }
 
-        if(strlen(trim($s)) > 20)
+        if(strlen(trim($s)) > 30)
         {
-            $this->poruka='Must not have more than 20 characters in Patient Name and Surname!';
+            $this->poruka='Must not have more than 30 characters in Patient Name and Surname!';
             return false;
         }
 

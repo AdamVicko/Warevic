@@ -20,7 +20,7 @@ class PrijavaController extends Controller // zbog viewa extenda controller
             $this->view->render('prijava', //idi na prijava i posalji sljedece parametre
             [
                 'poruka'=>'Enter correct password!',
-                //'email'=>$_POST['email']
+                'email'=>$_POST['email']
             ]);
             return;
         }

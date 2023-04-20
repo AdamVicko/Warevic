@@ -7,7 +7,5 @@ interface ViewSucelje
     public function promjena($sifra=0);
     public function izbrisi($sifra=0);
     public function pocetniPodaci();
-    public function pripremiZaBazu();
-    public function pripremiZaView();
 
 }

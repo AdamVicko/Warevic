@@ -188,37 +188,4 @@ class Prikup
             'koncentratorKisika'=>$koncentratorKisika
         ]);
     }
-
-
-
-/*
-    public static function postojiIstiOIB($oib,$sifra=0)
-    {
-        if($sifra>0){
-            $sql = ' select count(b.sifra) 
-            from prikup a inner join osoba b
-            on a.pacijent=b.sifra where b.oib=:oib ';
-        }else{
-            $sql = ' select count(a.sifra) 
-            from pacijent a where a.oib=:oib ';
-        }
-
-        if($sifra>0){
-            $sql.=' and a.sifra!=:sifra';
-        }
-
-        $veza = DB::getInstance();
-        $izraz = $veza->prepare($sql);
-
-        $parametri=[];
-        $parametri['oib']=$oib;
-
-        if($sifra>0){
-            $parametri['sifra']=$sifra;
-        }
-
-        $izraz->execute($parametri);
-        $sifra=$izraz->fetchColumn();
-        return $sifra==0;
-    }*/
 }

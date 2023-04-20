@@ -52,6 +52,9 @@ class Djelatnik // osoba koja moze mjenjati stanje koncentratora isporuka prikup
 
     public static function create($parametri)
     {
+        $password = password_hash($_POST['lozinka'], PASSWORD_BCRYPT);
+        $parametri['lozinka']= $password;
+        
         $veza = DB::getInstance();
         $izraz = $veza->prepare('
         
@@ -65,19 +68,36 @@ class Djelatnik // osoba koja moze mjenjati stanje koncentratora isporuka prikup
     public static function update($parametri)
     {
         $veza = DB::getInstance();
-        $izraz = $veza->prepare('
-        
-        update djelatnik set
-            sifra =:sifra,
-            imeprezime=:imeprezime,
-            telefon =:telefon,
-            email =:email,
-            lozinka =:lozinka,
-            uloga =:uloga
-        where sifra=:sifra
 
-        ');//dvotocke moraju odgovarat vrijednosti name od inputa
-        $izraz->execute($parametri);
+        if (false === empty($_POST['lozinka'])) {
+            $password = password_hash($_POST['lozinka'], PASSWORD_BCRYPT);
+
+            $parametri['lozinka']= $password;
+
+            $izraz = $veza->prepare('
+        
+            update djelatnik set
+                lozinka=:lozinka
+            where sifra=:sifra
+    
+            ');//dvotocke moraju odgovarat vrijednosti name od inputa
+
+            $izraz->bindValue('lozinka',$parametri['lozinka']);
+            $izraz->bindValue('sifra',$parametri['sifra']);
+            $izraz->execute();
+        } else {
+            $izraz = $veza->prepare('
+        
+            UPDATE djelatnik SET
+                imeprezime=:imeprezime,
+                telefon =:telefon,
+                email =:email,
+                uloga =:uloga
+            WHERE sifra=:sifra
+    
+            ');//dvotocke moraju odgovarat vrijednosti name od inputa
+            $izraz->execute($parametri);
+        }
     }
 
     public static function delete($sifra)

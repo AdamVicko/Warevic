@@ -14,7 +14,7 @@ abstract class Controller
         $this->view->setJSdependency($dependency);
     }
 
-    protected function setCSSdependency($dependency)
+    protected function setCSSdependency($dependency)    
     {
         $this->view->setCSSdependency($dependency);
     }

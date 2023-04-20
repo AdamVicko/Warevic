@@ -7,13 +7,12 @@ class KoncentratorKisikaController extends AutorizacijaController
     DIRECTORY_SEPARATOR;
     private $e;
     private $poruka='';
-    private $nf; // number formater dostupan u svim metodama ove klase 
+
     
     public function __construct()
     {
         parent::__construct(); // pozivam parent construct da ode provjerit u autorizacijacontroller dal ima ovlasti
-        $this->nf = new NumberFormatter('hr-HR',NumberFormatter::DECIMAL); // format za prikaz broja(radni sat)
-        $this->nf->setPattern('####.##0');
+
     }
     public function index()
     {
@@ -52,17 +51,7 @@ class KoncentratorKisikaController extends AutorizacijaController
         $uk = KoncentratorKisika::ukupnoKisika($uvjet);
         $zadnja = (int)ceil($uk/App::config('brps')); // ceil= zaokruzi na prvi veci cijeli broj ako je decimalno
         $koncentratorKisika = KoncentratorKisika::read();
-        foreach($koncentratorKisika as $p)
-        {
-            if($p->radniSat==null)
-            {
-                $p->radniSat = $this->nf->format(0);
-            }
-            else
-            {
-                $p->radniSat = $this->nf->format($p->radniSat);
-            }
-        }
+
 
         $this->view->render($this->viewPutanja.'index',
         [
@@ -96,7 +85,7 @@ class KoncentratorKisikaController extends AutorizacijaController
                 );
                 return;
             }
-            $this->pripremiZaBazu();//priprema za bazu
+
             KoncentratorKisika::create((array)$this->e); //ako je sve u redu spremaj u bazu
             $this->pozoviView(
                 [
@@ -129,7 +118,6 @@ class KoncentratorKisikaController extends AutorizacijaController
                 return;
             }
 
-            $this->e->radniSat=$this->nf->format($this->e->radniSat);
             $this->view->render($this->viewPutanja . 
             'promjena',[
                 'e'=>$this->e,
@@ -150,7 +138,6 @@ class KoncentratorKisikaController extends AutorizacijaController
             }
 
         $this->e->sifra=$sifra;
-        $this->pripremiZaBazu();//priprema za bazu
         KoncentratorKisika::update((array)$this->e);   
         $this->view->render($this->viewPutanja . 
         'promjena',[
@@ -158,7 +145,7 @@ class KoncentratorKisikaController extends AutorizacijaController
             'poruka'=>'Update complete!'
         ]);
     }
-// ____________________________________________________NA INDEXU RIJESI DA JE VECI OD 0 SAO AKO JE PRIKUP NAPRAVLJEN____________________________
+
     public function izbrisi($sifra=0)
     {
         $sifra=(int)$sifra;
@@ -175,11 +162,6 @@ class KoncentratorKisikaController extends AutorizacijaController
     {
         $this->view->render($this->viewPutanja . 
         'novi',$parametri);
-    }
-
-    private function pripremiZaBazu()
-    {
-        $this->e->radniSat = $this->nf->parse($this->e->radniSat);
     }
 
     private function kontrolaNovi() // razdavajome kontrole za noi i promjenu zbog mogucnosti da neke stvari ne zelimo provjeravat
@@ -219,12 +201,7 @@ class KoncentratorKisikaController extends AutorizacijaController
     }
     private function kontrolaRadniSat()
     {
-        $s = $this->nf->parse($this->e->radniSat); //provjera jel u floaatu(double)
-        if(!$s)
-        {
-            $this->poruka='OC Working hours are not in good format!';
-            return false;
-        }
+        $s =$this->e->radniSat; 
         if(strlen(trim($s))===0)
         {
             $this->poruka='Working hours are mandatory!';

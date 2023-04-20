@@ -35,18 +35,7 @@ class DjelatnikController extends AdminController
             unset($loz->lozinka); //onemogucuje da se lozinka povuce iz baze
         }
         $poruka='';
-        if(isset($_GET['p']))
-        {
-            switch ((int)$_GET['p']) {//stavljamo int ispred jer podatak dolazi sa http-a kao string!
-                case 1:
-                    $poruka=' To add delivery first you need to create Patient!';
-                    break;
-                
-                default:
-                    $poruka='';
-                    break;
-            }
-        }
+    
           if(isset($_GET['uvjet']))
         {
             $uvjet = trim($_GET['uvjet']);
