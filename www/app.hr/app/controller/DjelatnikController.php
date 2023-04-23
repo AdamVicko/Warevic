@@ -191,9 +191,4 @@ class DjelatnikController extends AdminController
         return true;
     }
 
-    public function ajaxSearch($uvjet){
-
-        $this->view->api(Djelatnik::read($uvjet));
-    }
-
 }

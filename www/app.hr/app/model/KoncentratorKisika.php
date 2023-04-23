@@ -25,8 +25,8 @@ class KoncentratorKisika
                 count(b.sifra) as prikupljen,
                 count(c.sifra) as isporucen
         from koncentratorKisika a
-        left join prikup b on a.sifra = b.koncentratorKisika
-        left join isporuka c on a.sifra = c.koncentratorKisika
+            left join prikup b on a.sifra = b.koncentratorKisika
+            left join isporuka c on a.sifra = c.koncentratorKisika
         where a.serijskiKod
         like :uvjet
         group by a.sifra,

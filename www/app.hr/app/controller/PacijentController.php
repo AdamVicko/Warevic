@@ -32,14 +32,6 @@ implements ViewSucelje
 
     public function index() 
     {
-        parent::setCSSdependency([
-            '<link rel="stylesheet" href="' . App::config('url') . 'public/css/dependency/cropper.css">'
-        ]);
-        parent::setJSdependency([
-            '<script src="' . App::config('url') . 'public/js/dependency/cropper.js"></script>',
-            '<script>
-            </script>'
-        ]);
 
         $poruka='';
         if(isset($_GET['p']))

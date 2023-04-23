@@ -98,16 +98,6 @@ implements ViewSucelje
    
     public function promjena($sifra='')
     {
-        parent::setCSSdependency([
-            '    <link rel="stylesheet" href="' . App::config('url') . 'public/css/dependency/jquery-ui.css">'
-        ]);
-        parent::setJSdependency([
-            '<script src="' . App::config('url') . 'public/js/dependency/jquery-ui.js"></script>',
-            '<script>
-                let url=\'' . App::config('url') . '\';
-                let isporukasifra=' . $sifra . ';
-            </script>' // app config ima zapisano na kojem smo url-u, iz php proslijedujem controlleru da postoji varijabla URL nakon koje dolazi JS
-        ]);
         $pacijenti=Pacijent::read();
         $koncentratoriKisika=KoncentratorKisika::read();
         $trenutniPodaciIsporuke = Isporuka::readOne($sifra);
@@ -120,13 +110,10 @@ implements ViewSucelje
     }
     public function pripremiZaView()
     {
-       // $this->e = (object)$_POST;
+       
     }
     public function pripremiZaBazu()
     {
-       // if($this->e->datumIsporuke==''){
-       //     $this->e->datumIsporuke=null;
-       // }
-   
+
     }
 }

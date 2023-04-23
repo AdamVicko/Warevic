@@ -9,16 +9,6 @@ abstract class Controller
         $this->view = new View();
     }
 
-    protected function setJSdependency($dependency)
-    {
-        $this->view->setJSdependency($dependency);
-    }
-
-    protected function setCSSdependency($dependency)    
-    {
-        $this->view->setCSSdependency($dependency);
-    }
-
     protected function provjeraIntParametra($parametar)
     {
         if(strlen(trim($parametar))===0){

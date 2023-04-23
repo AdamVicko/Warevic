@@ -28,14 +28,6 @@ class View //ubacivanje sadrzaja u predlozak odnosno slanje sarzaja za svaki dru
             $js=str_replace('\\','/',$phtmlStranica) . '.js';
         }
 
-        if($this->CSSdependency!=null){
-            $cssdependency = $this->CSSdependency;
-        }
-
-        if($this->JSdependency!=null){
-            $jsdependency = $this->JSdependency;
-        }
-
         $viewDatoteka = BP_APP . 'view' . 
         DIRECTORY_SEPARATOR . $phtmlStranica . '.phtml'; // provjerava dal se nalazi ta datoteka u view direktoriju
         ob_start(); // nemoj to slat klijentu (cache)
@@ -60,14 +52,5 @@ class View //ubacivanje sadrzaja u predlozak odnosno slanje sarzaja za svaki dru
         echo json_encode($parametri,JSON_NUMERIC_CHECK);
     }
 
-    public function setJSdependency($dependency)
-    {
-        $this->JSdependency=$dependency;
-    }
-
-    public function setCSSdependency($dependency)
-    {
-        $this->CSSdependency=$dependency;
-    }
 
 }
