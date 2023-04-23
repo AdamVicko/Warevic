@@ -14,7 +14,7 @@
                     <select name="pacijent" id="pacijent">
                     <?php foreach($pacijenti as $p)
                         { ?>
-                            <?php if(($p->isporucen == 0 && $p->prikupljen == 0) || ($p->isporucen == 1 && $p->prikupljen == 1)){ ?>
+                            <?php if($p->isporucen != $p->prikupljen){ ?>
                                 <option value="<?php echo $p->sifra?>"><?php echo $p->imeprezime?></option>
                             <?php }?>
 
@@ -28,7 +28,7 @@
                 <select name="koncentratoriKisika" id="koncentratoriKisika">
                     <?php foreach($koncentratoriKisika as $k)
                         { ?>
-                            <?php if(($k->isporucen == 0 || $k->prikupljen == 0) || ($k->isporucen == 1 || $k->prikupljen == 1)){ ?>
+                            <?php if($k->isporucen != $k->prikupljen ){ ?>
                                   <option value="<?php echo $k->sifra?>"><?php echo $k->serijskiKod?></option>
                             <?php }?>
 

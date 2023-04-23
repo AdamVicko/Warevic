@@ -27,8 +27,8 @@
                     <td><?=$p->imeprezime?></td>
                     <td><?=$p->serijskiKod?></td> 
                     <td>
-                    <a href="<?=App::config('url')?>isporuka/promjena/<?=$p->sifra?>"><i class="bi bi-pencil"></i></a>    
                     <?php if(App::admin()): //ako je auth admin?>
+                            <a href="<?=App::config('url')?>isporuka/promjena/<?=$p->sifra?>"><i class="bi bi-pencil"></i></a>
                             <a
                                 onclick="return confirm('Deleting <?=$p->imeprezime?> on <?=$p->datumIsporuke?> ? ')"
                                 href="<?=APP::config('url')?>isporuka/izbrisi/<?=$p->sifra?>"

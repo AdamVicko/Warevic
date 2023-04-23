@@ -41,13 +41,7 @@
                         <a href="<?=APP::config('url')?>koncentratorKisika/promjena/<?=$p->sifra?>">
                             <i class="bi bi-pencil"></i>
                         </a>
-                        <?php if(($p->isporucen>0) && ($p->prikupljen>0)): ?>
-                        <a 
-                            onclick="return confirm('Deleting Oxygen Concentrator <?=$p->serijskiKod?> and all data about it(Collection and Deliveries) ? ')"
-                            href="<?=APP::config('url')?>koncentratorKisika/izbrisi/<?=$p->sifra?>">
-                            <i class="bi bi-trash3" style="color: tomato;"></i>
-                        </a>
-                        <?php elseif(($p->isporucen==0) && ($p->prikupljen==0)): ?>
+                        <?php if(($p->isporucen == $p->prikupljen) || (($p->isporucen == null) && ($p->prikupljen == null))): ?>
                         <a 
                             onclick="return confirm('Deleting Oxygen Concentrator <?=$p->serijskiKod?> and all data about it(Collection and Deliveries) ? ')"
                             href="<?=APP::config('url')?>koncentratorKisika/izbrisi/<?=$p->sifra?>">

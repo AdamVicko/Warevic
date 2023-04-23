@@ -252,13 +252,6 @@ class KoncentratorKisikaController extends AutorizacijaController
             $this->poruka='Date of buying is mandatory!';
             return false;
         }
-
-        if(strlen(trim($s)) > 50)
-        {
-            $this->poruka='Must not have more than 50 characters in Date of buying!';
-            return false;
-        }
-
         return true;
     }
     private function pocetniPodaci()
