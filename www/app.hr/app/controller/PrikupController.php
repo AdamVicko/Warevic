@@ -59,8 +59,8 @@ implements ViewSucelje
 
     public function novi()
     {
-        $pacijenti=Pacijent::read();
-        $koncentratoriKisika=KoncentratorKisika::read();
+        $pacijenti=Pacijent::readZaNovi();
+        $koncentratoriKisika=KoncentratorKisika::readZaNovi();
         //var_dump($pacijenti);
         //die();
         $this->view->render($this->viewPutanja . 

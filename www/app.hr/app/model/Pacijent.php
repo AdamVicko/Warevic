@@ -47,8 +47,10 @@ class Pacijent
         return $izraz->fetchAll();
     }
 
-    public static function readZaFlag()
+    public static function readZaNovi($uvjet='')
     {
+
+        $uvjet = '%' . $uvjet . '%';
 
         $veza = DB::getInstance(); //read napravljen da nemogu brisati OC ako nije prikupljen 
         $izraz = $veza->prepare('
@@ -62,9 +64,10 @@ class Pacijent
                 a.pacijentKomentar ,
                 c.flag as isporucen
         from pacijent a
-        INNER join prikup b on a.sifra = b.pacijent
-        INNER join isporuka c on a.sifra = c.pacijent
-        where a.imeprezime
+        left join prikup b on a.sifra = b.pacijent
+        left join isporuka c on a.sifra = c.pacijent
+        where concat(a.imeprezime, \' \', ifnull(a.oib,\'\'))
+        like :uvjet
         group by a.sifra, 
                 a.imeprezime ,
                 a.telefon ,
@@ -73,9 +76,10 @@ class Pacijent
                 a.oib ,
                 a.pacijentKomentar,
                 c.flag
-                ;
+        order by a.imeprezime asc ;
 
-        ');
+        '); // ne radi se execute zbog toga sto su mi pocetak i brps vrijednosti a ne parametri te ih execute nece odradit kao sto bi uvjet
+        $izraz->bindParam('uvjet', $uvjet);
 
         $izraz->execute();
         return $izraz->fetchAll();

@@ -47,6 +47,44 @@ class KoncentratorKisika
         return $izraz->fetchAll();
     }
 
+    public static function readZaNovi($uvjet='')
+    {
+
+        $uvjet = '%' . $uvjet . '%';
+
+        $veza = DB::getInstance(); //read napravljen da nemogu brisati OC ako nije prikupljen
+        $izraz = $veza->prepare('
+        
+        select a.sifra,
+                a.serijskiKod,
+                a.radniSat,
+                a.proizvodac,
+                a.model,
+                a.ocKomentar,
+                a.datumKupovine,
+                c.flag as isporucen
+        from koncentratorKisika a
+            left join prikup b on a.sifra = b.koncentratorKisika
+            left join isporuka c on a.sifra = c.koncentratorKisika
+        where a.serijskiKod
+        like :uvjet
+        group by a.sifra,
+                a.serijskiKod,
+                a.radniSat,
+                a.proizvodac,
+                a.model,
+                a.ocKomentar,
+                a.datumKupovine,
+                c.flag 
+        order by a.datumKupovine asc;
+
+        ');
+        $izraz->bindParam('uvjet', $uvjet);
+
+        $izraz->execute();
+        return $izraz->fetchAll();
+    }
+
     public static function readOne($sifra)
     {
         

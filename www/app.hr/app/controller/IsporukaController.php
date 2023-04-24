@@ -60,8 +60,8 @@ implements ViewSucelje
     public function novi()
     {  
         $isporuka=Isporuka::read();
-        $pacijenti=Pacijent::read();
-        $koncentratoriKisika=KoncentratorKisika::read();
+        $pacijenti=Pacijent::readZaNovi();
+        $koncentratoriKisika=KoncentratorKisika::readZaNovi();
         $this->view->render($this->viewPutanja . 
             'detaljiNovo',[
             'e'=>$this->e,
