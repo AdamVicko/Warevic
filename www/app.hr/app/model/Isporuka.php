@@ -15,14 +15,14 @@ class Isporuka
         $izraz = $veza->prepare('
         
         select
-            a.sifra,a.datumIsporuke,d.imeprezime,e.serijskiKod 
+            a.sifra,a.datumIsporuke,d.imeprezime,e.serijskiKod,a.flag
         from isporuka a
             left join pacijent d on d.sifra = a.pacijent
             left join koncentratorKisika e on e.sifra = a.koncentratorKisika 
             where concat(a.datumIsporuke, \' \', d.imeprezime, \' \', e.serijskiKod,\'\')
             like :uvjet
         group by 
-            a.sifra,a.datumIsporuke,d.imeprezime, e.serijskiKod  
+            a.sifra,a.datumIsporuke,d.imeprezime, e.serijskiKod,a.flag
         order by datumIsporuke asc
         limit :pocetak, :brps;
         
@@ -131,9 +131,9 @@ class Isporuka
         $izraz = $veza->prepare('
         
         insert into isporuka 
-            (datumIsporuke,pacijent,koncentratorKisika)
+            (datumIsporuke,pacijent,koncentratorKisika,flag)
         values 
-            (:datumIsporuke,:pacijent,:koncentratorKisika);
+            (:datumIsporuke,:pacijent,:koncentratorKisika,1);
         
         ');
         $izraz->execute([

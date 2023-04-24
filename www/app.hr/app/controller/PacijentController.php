@@ -255,9 +255,9 @@ implements ViewSucelje
             return false;
         }
 
-        if(strlen(trim($s)) > 30)
+        if(strlen(trim($s)) > 40)
         {
-            $this->poruka='Must not have more than 30 characters in Patient Name and Surname!';
+            $this->poruka='Must not have more than 40 characters in Patient Name and Surname!';
             return false;
         }
 
@@ -273,9 +273,9 @@ implements ViewSucelje
             return false;
         }
 
-        if(strlen(trim($s)) > 30)
+        if(strlen(trim($s)) > 40)
         {
-            $this->poruka='Must not have more than 30 characters in Patient telephone!';
+            $this->poruka='Must not have more than 40 characters in Patient telephone!';
             return false;
         }
 

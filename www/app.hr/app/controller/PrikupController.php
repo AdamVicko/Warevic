@@ -61,6 +61,8 @@ implements ViewSucelje
     {
         $pacijenti=Pacijent::read();
         $koncentratoriKisika=KoncentratorKisika::read();
+        //var_dump($pacijenti);
+        //die();
         $this->view->render($this->viewPutanja . 
             'detaljiNovo',[
             'e'=>$this->e,

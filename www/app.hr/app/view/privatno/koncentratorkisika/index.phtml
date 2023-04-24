@@ -38,17 +38,22 @@
                     </td>
                     <td><?=$p->datumKupovine?></td>
                     <td>
+                    <?php if(App::admin()): //ako je auth admin?>
                         <a href="<?=APP::config('url')?>koncentratorKisika/promjena/<?=$p->sifra?>">
                             <i class="bi bi-pencil"></i>
                         </a>
-                        <?php if(($p->isporucen == $p->prikupljen) || (($p->isporucen == null) && ($p->prikupljen == null))): ?>
-                        <a 
+                        <?php if($p->isporucen == 0): ?>
+                            <a 
                             onclick="return confirm('Deleting Oxygen Concentrator <?=$p->serijskiKod?> and all data about it(Collection and Deliveries) ? ')"
                             href="<?=APP::config('url')?>koncentratorKisika/izbrisi/<?=$p->sifra?>">
                             <i class="bi bi-trash3" style="color: tomato;"></i></a>
                         <?php else: ?>
                             <i title="OC is not collected from patient!" class="bi bi-trash3" style="color: grey;"></i>
                         <?php endif; ?>
+                    <?php else: ?>
+                        <i title="Only Admin can change OC" class="bi bi-pencil" style="color: grey;"></i>
+                        <i title="Only Admin can delete OC" class="bi bi-trash3" style="color: grey;"></i>
+                    <?php endif; ?>
                     </td>
                 </tr>
             <?php endforeach; ?>

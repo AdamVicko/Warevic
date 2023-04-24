@@ -21,6 +21,7 @@ implements ViewSucelje
         $e->datumIsporuke='';
         $e->imeprezime='';
         $e->serijskiKod='';
+        $e->flag='';
         return $e;
     }
 
@@ -58,13 +59,15 @@ implements ViewSucelje
 
     public function novi()
     {  
+        $isporuka=Isporuka::read();
         $pacijenti=Pacijent::read();
         $koncentratoriKisika=KoncentratorKisika::read();
         $this->view->render($this->viewPutanja . 
             'detaljiNovo',[
             'e'=>$this->e,
             'pacijenti'=>$pacijenti,
-            'koncentratoriKisika' => $koncentratoriKisika
+            'koncentratoriKisika' => $koncentratoriKisika,
+            'isporuke' => $isporuka
        ]); // kreiram odma isporuku kako bi ju mogo napunit s pacijentom i koncentratorom kisika
     }
 

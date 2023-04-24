@@ -191,12 +191,6 @@ class KoncentratorKisikaController extends AutorizacijaController
             return false;
         }
 
-        if(KoncentratorKisika::postojiIstiUBazi($s))
-        {
-            $this->poruka='The same Serial number is already in database!';
-            return false;
-        }
-
         return true;
     }
     private function kontrolaRadniSat()

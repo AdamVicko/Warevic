@@ -22,8 +22,7 @@ class KoncentratorKisika
                 a.model,
                 a.ocKomentar,
                 a.datumKupovine,
-                count(b.sifra) as prikupljen,
-                count(c.sifra) as isporucen
+                c.flag as isporucen
         from koncentratorKisika a
             left join prikup b on a.sifra = b.koncentratorKisika
             left join isporuka c on a.sifra = c.koncentratorKisika
@@ -35,7 +34,8 @@ class KoncentratorKisika
                 a.proizvodac,
                 a.model,
                 a.ocKomentar,
-                a.datumKupovine
+                a.datumKupovine,
+                c.flag 
         order by a.datumKupovine asc limit :pocetak, :brps;
 
         ');
@@ -97,17 +97,6 @@ class KoncentratorKisika
     public static function delete($sifra)
     {
         $veza = DB::getInstance();
-        
-        $izraz = $veza->prepare('
-
-            select koncentratorKisika 
-            from isporuka
-            where koncentratorKisika=:sifra;
-        
-        ');
-        $izraz->execute([
-            'sifra'=>$sifra
-        ]);
 
         $izraz = $veza->prepare('
         
@@ -119,17 +108,6 @@ class KoncentratorKisika
             'sifra'=>$sifra
         ]);
         
-        $izraz = $veza->prepare('
-
-        select koncentratorKisika 
-        from prikup 
-        where koncentratorKisika=:sifra;
-    
-        ');
-        $izraz->execute([
-            'sifra'=>$sifra
-        ]);
-
         $izraz = $veza->prepare('
         
         delete from prikup
@@ -151,22 +129,6 @@ class KoncentratorKisika
             'sifra'=>$sifra
         ]);
 
-    }
-
-    public static function postojiIstiUBazi($s)
-    {
-        $veza = DB::getInstance();
-        $izraz = $veza->prepare('
-        
-        select sifra from koncentratorKisika
-        where serijskiKod = :serijskiKod
-
-        ');
-        $izraz->execute([
-            'serijskiKod'=>$s
-        ]);
-        $sifra=$izraz->fetchColumn();
-        return $sifra>0;
     }
 
     public static function ukupnoKisika($uvjet='')

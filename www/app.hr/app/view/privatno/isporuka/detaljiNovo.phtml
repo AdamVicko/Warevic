@@ -14,7 +14,7 @@
                     <select name="pacijent" id="pacijent">
                     <?php foreach($pacijenti as $p)
                         { ?>
-                            <?php if($p->isporucen == $p->prikupljen){ ?>
+                            <?php if($p->isporucen == 0){ ?>
                                 <option value="<?php echo $p->sifra?>"><?php echo $p->imeprezime?></option>
                             <?php }?>
 
@@ -26,7 +26,7 @@
                 <select name="koncentratoriKisika" id="koncentratoriKisika">
                     <?php foreach($koncentratoriKisika as $k)
                         { ?>
-                            <?php if($k->isporucen == $k->prikupljen){ ?>
+                            <?php if($k->isporucen == 0){ ?>
                                   <option value="<?php echo $k->sifra?>"><?php echo $k->serijskiKod?></option>
                             <?php }?>
 

@@ -61,6 +61,7 @@ class Prikup
     {
         
         $veza = DB::getInstance();
+
         $izraz = $veza->prepare('
         select 
             a.sifra,
@@ -123,22 +124,45 @@ class Prikup
     }
 
     public static function noviPrikup()
-    {
-        $veza = DB::getInstance();
-        $izraz = $veza->prepare('
-        
-        insert into prikup 
+{
+    $veza = DB::getInstance();
+
+    // get pacijent and koncentratorKisika from $_POST array
+    $pacijent = $_POST['pacijent'];
+    $koncentratorKisika = $_POST['koncentratoriKisika'];
+
+    // update isporuka with flag = 0 for the minimum sifra where pacijent and koncentratorKisika match
+    $izraz = $veza->prepare('
+        UPDATE isporuka a
+        SET flag = 0
+        WHERE a.pacijent = :pacijent
+        AND a.koncentratorKisika = :koncentratorKisika
+        AND a.sifra = (
+            SELECT MAX(b.sifra)
+            FROM isporuka b
+            WHERE b.pacijent = :pacijent
+            AND b.koncentratorKisika = :koncentratorKisika
+        )
+    ');
+    $izraz->execute([
+        'pacijent' => $pacijent,
+        'koncentratorKisika' => $koncentratorKisika
+    ]);
+
+    // insert a new record into prikup
+    $izraz = $veza->prepare('
+        INSERT INTO prikup 
             (datumPrikupa,pacijent,koncentratorKisika)
-        values 
-            (:datumPrikupa,:pacijent,:koncentratorKisika);
-        
-        ');
-        $izraz->execute([
-            'datumPrikupa'=>$_POST['datumPrikupa'],
-            'pacijent'=>$_POST['pacijent'],
-            'koncentratorKisika'=>$_POST['koncentratoriKisika']
-        ]);
-    }
+        VALUES 
+            (:datumPrikupa,:pacijent,:koncentratorKisika)
+    ');
+    $izraz->execute([
+        'datumPrikupa' => $_POST['datumPrikupa'],
+        'pacijent' => $pacijent,
+        'koncentratorKisika' => $koncentratorKisika
+    ]);
+}
+    
 
     
     public static function azurirajPrikup($sifra)
